@@ -90,16 +90,21 @@ class _DateSelectorState extends State<DateSelector> {
                           : (isDark ? Themes.gold : Themes.midnightBlue),
                     ),
                     const SizedBox(width: 10),
-                    Text(
-                      widget.dateController.text,
-                      style: TextStyle(
-                        color: _isToday
-                            ? Themes.gold
-                            : Theme.of(context).textTheme.bodyLarge?.color,
-                        fontSize: dateSize,
-                        fontWeight: _isToday ? FontWeight.w700 : FontWeight.w600,
-                        letterSpacing: 1,
-                        fontFeatures: const [FontFeature.tabularFigures()],
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          widget.dateController.text,
+                          style: TextStyle(
+                            color: _isToday
+                                ? Themes.gold
+                                : Theme.of(context).textTheme.bodyLarge?.color,
+                            fontSize: dateSize,
+                            fontWeight: _isToday ? FontWeight.w700 : FontWeight.w600,
+                            letterSpacing: 1,
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
                       ),
                     ),
                   ],

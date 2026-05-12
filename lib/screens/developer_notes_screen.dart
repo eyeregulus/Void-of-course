@@ -47,6 +47,51 @@ class InfoScreen extends StatelessWidget {
 
       // ▼▼▼ [최신 글] ▼▼▼
 
+
+ DeveloperNote(
+        date: '2026-03-10',
+        titleKo: '<26-03-10 업데이트>',
+        titleEn: '<26-03-10 Update>',
+        contentKo: '''
+안녕하세요 아리온 아인입니다.
+이번 1.2.0+53 업데이트 사항입니다.
+
+1. Void 알림 오류 수정
+2. 캘린더 기능 수정 및 개선 (연/월/일) 선택 방식으로 변경
+3. 
+
+앱을 편하게 사용하시고 계시거나 or 불편한 점이 있다면, 커뮤니티에 오셔서 점성학에 관한 이야기와, 앱에 대한 피드백을 나눠주세요. 
+
+따뜻한 리뷰는 개발자에게 큰 힘이 됩니다.
+
+감사합니다
+아리온 아인 드림
+''',
+        contentEn: '''
+Hello, this is Arion Ayin.
+This is a 1.2.0+53 update.
+
+1. Correct void notification error
+2. 
+3.
+
+If you have any feedback or questions, please contact us.
+''',
+        actions: [
+          NoteAction(
+            label: appLocalizations.btnReview, // '리뷰 남기러 가기' / 'Leave a Review'
+            url:
+                'https://play.google.com/store/apps/details?id=dev.lioluna.voidofcourse',
+          ),
+          NoteAction(
+            label:
+                appLocalizations
+                    .btnContact, // '개발자에게 한마디' / 'Contact Developer'
+            url: 'mailto:arion.ayin@gmail.com',
+          ),
+        ],
+      ),
+
  DeveloperNote(
         date: '2026-03-10',
         titleKo: '<26-03-10 업데이트>',
