@@ -28,10 +28,11 @@
             android:launchMode="singleTop"
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode|navigation"
             android:hardwareAccelerated="true"
             android:resizeableActivity="true"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:enableOnBackInvokedCallback="true">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
@@ -53,6 +54,17 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7332476431820224~6357674762"/>
+
+        <!-- 폴더블 기기 지원 (Samsung Z Flip / Z Fold) -->
+        <!-- 대형 화면 최적화: 메인 화면/커버 화면 모두 대응 -->
+        <meta-data
+            android:name="com.samsung.android.ui.layout.LARGE_SCREEN_OPTIMIZED"
+            android:value="true" />
+        <!-- 다중 윈도우/분할 화면에서도 완전히 재개(resume) 가능하도록 허용 -->
+        <meta-data
+            android:name="android.allow_multiple_resumed_activities"
+            android:value="true" />
+
 
         <service
             android:name="id.flutter.flutter_background_service.BackgroundService"

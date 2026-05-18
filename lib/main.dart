@@ -30,7 +30,15 @@ import 'package:home_widget/home_widget.dart';
 void main() async {
   // 플러터 위젯들이 준비될 때까지 기다려요.
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  // Firebase 초기화 (네트워크 불안정 등 실패 시에도 앱이 크래시되지 않도록 try-catch)
+  // 삼성 Z Flip/Fold 등 폴더블 기기의 첫 실행 시 네트워크 지연 대응
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    developer.log('Firebase init failed (ignored): $e', name: 'Main');
+  }
+
   // Edge-to-Edge 모드 활성화 (Android 15+ 권장)
   // 시스템 바를 투명하게 만들고 전체 화면을 사용합니다.
   SystemChrome.setEnabledSystemUIMode(
@@ -41,14 +49,26 @@ void main() async {
   // 대신 각 화면에서 AnnotatedRegion<SystemUiOverlayStyle>을 사용하여 개별적으로 설정합니다.
   // 이 방식이 더 유연하고 Android 15의 권장사항에 부합합니다.
 
-  //백그라운드 서비스 세팅 대기함수
-  await initializeBackgroundService();
+  // 백그라운드 서비스 세팅
+  // try-catch로 감싸서 서비스 초기화 실패가 앱 전체 크래시로 이어지지 않도록 함
+  // (삼성 One UI / Android 15에서 ForegroundServiceStartNotAllowedException 방지)
+  try {
+    await initializeBackgroundService();
+  } catch (e) {
+    developer.log('Background service init failed (ignored): $e', name: 'Main');
+    // 서비스 초기화 실패는 무시하고 앱은 정상 실행 (알림 기능만 비활성화됨)
+  }
 
   // Google Mobile Ads SDK와 AdService를 초기화해요.
+  // AdMob 초기화 실패 시에도 앱이 크래시되지 않도록 try-catch
   if (Platform.isAndroid || Platform.isIOS) {
-    await MobileAds.instance.initialize();
-    await AdService().initialize();
-    NativeAdService().loadAd();
+    try {
+      await MobileAds.instance.initialize();
+      await AdService().initialize();
+      NativeAdService().loadAd();
+    } catch (e) {
+      developer.log('AdMob init failed (ignored): $e', name: 'Main');
+    }
   }
 
   //앱의 실행

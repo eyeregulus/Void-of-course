@@ -405,7 +405,9 @@ void onStart(ServiceInstance service) async {
               // --- 다음 사이클(무한 루프)을 위한 백그라운드 재계약 ---
               await _scheduleNextVocFromBackground(prefs, vocEnd);
 
-              // 상태가 변했을 때 홈 위젯(가젯)도 즉시 동기화 (종료 직전 업데이트)
+              // _scheduleNextVocFromBackground가 prefs에 새 VOC를 저장했으므로
+              // 최신 값을 읽기 위해 reload 후 위젯 업데이트
+              await prefs.reload();
               await _updateAppWidget(utcNow, prefs);
 
               await Future.delayed(const Duration(seconds: 5));
@@ -629,6 +631,20 @@ Future<void> _updateAppWidget(DateTime utcNow, SharedPreferences prefs) async {
       );
       nextVocStart = nextVocTimes['start'] as DateTime?;
       nextVocEnd = nextVocTimes['end'] as DateTime?;
+    } else if (utcNow.isAfter(vocEnd)) {
+      // 보이드가 이미 종료된 경우:
+      // prefs에 저장된 값이 이미 다음 보이드로 갱신되었을 수 있으므로
+      // vocStart/vocEnd가 미래라면 그대로 사용, 과거라면 다음 보이드 계산
+      if (vocStart.isAfter(utcNow)) {
+        // prefs가 이미 다음 보이드로 갱신됨 → 그대로 사용 (nextVoc 불필요)
+      } else {
+        // 여전히 과거 데이터라면 다음 보이드를 직접 계산
+        final nextVocTimes = calculator.findVoidOfCoursePeriod(
+          vocEnd.add(const Duration(minutes: 1)),
+        );
+        nextVocStart = nextVocTimes['start'] as DateTime?;
+        nextVocEnd = nextVocTimes['end'] as DateTime?;
+      }
     }
 
     await WidgetService.updateWidgetData(

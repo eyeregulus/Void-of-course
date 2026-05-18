@@ -139,8 +139,17 @@ class AstroState with ChangeNotifier {
 
       // 알람이 활성화되어 있으면 예약 알림 설정 (앱 재시작 시에도 동작)
       // 항상 스케줄링하여 서비스가 죽었더라도 재시작되도록 함
+      // try-catch로 감싸서 서비스 시작 실패가 앱 초기화 실패로 번지지 않도록 함
+      // (삼성 One UI / Android 15: 앱 첫 실행 시 ForegroundServiceStartNotAllowedException)
       if (_voidAlarmEnabled) {
-        await _schedulePreVoidAlarm();
+        try {
+          await _schedulePreVoidAlarm();
+        } catch (e) {
+          if (kDebugMode) {
+            developer.log('_schedulePreVoidAlarm failed on init (ignored): $e', name: 'AstroState');
+          }
+          // 서비스 시작 실패는 무시 - 앱은 정상 실행되고 알림만 비활성화됨
+        }
       }
 
       _isInitialized = true;

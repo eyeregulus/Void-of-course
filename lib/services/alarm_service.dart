@@ -1,12 +1,13 @@
 import 'dart:ui';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const int preVoidAlarmId = 100; // pre-void 시작 → 서비스 시작
-const int vocStartAlarmId = 101; // void 시작 → "시작합니다!" 직접 전송 + 서비스 재시작
-const int vocMidAlarmId = 102;   // void 중간 → 서비스 재시작 (죽었을 경우 복구)
-const int vocEndAlarmId = 103;   // void 종료 → "종료됩니다." 직접 전송
+const int preVoidAlarmId = 100; // pre-void
+const int vocStartAlarmId = 101; // void
+const int vocMidAlarmId = 102;   // void
+const int vocEndAlarmId = 103;   // void
 
 class AlarmService {
   static final AlarmService _instance = AlarmService._internal();
@@ -17,7 +18,7 @@ class AlarmService {
     await AndroidAlarmManager.initialize();
   }
 
-  /// 1) pre-void 시작 시점에 백그라운드 서비스를 시작하는 알람 예약
+  /// 1) pre-void
   Future<void> schedulePreVoidAlarm(DateTime preVoidStart) async {
     final now = DateTime.now();
     if (preVoidStart.isBefore(now)) return;
@@ -34,7 +35,7 @@ class AlarmService {
     );
   }
 
-  /// 2) void 시작 시점: "시작합니다!" 직접 전송 + 서비스 재시작
+  /// 2) void
   Future<void> scheduleVocStartAlarm(DateTime vocStart) async {
     final now = DateTime.now();
     if (vocStart.isBefore(now)) return;
@@ -51,7 +52,7 @@ class AlarmService {
     );
   }
 
-  /// 3) void 중간 시점: 서비스가 죽어있으면 재시작 (카운트다운 복구)
+  /// 3) void
   Future<void> scheduleVocMidAlarm(DateTime vocMid) async {
     final now = DateTime.now();
     if (vocMid.isBefore(now)) return;
@@ -68,7 +69,7 @@ class AlarmService {
     );
   }
 
-  /// 4) void 종료 시점: 직접 종료 알림 전송 (서비스 없이도 보장)
+  /// 4) void
   Future<void> scheduleVocEndAlarm(DateTime vocEnd) async {
     final now = DateTime.now();
     if (vocEnd.isBefore(now)) return;
@@ -85,7 +86,6 @@ class AlarmService {
     );
   }
 
-  /// 모든 알람 취소
   Future<void> cancelAlarm() async {
     await Future.wait([
       AndroidAlarmManager.cancel(preVoidAlarmId),
@@ -96,11 +96,44 @@ class AlarmService {
   }
 }
 
-// ─────────────────────────────────────────────
-// AlarmManager 콜백 (top-level 함수여야 함)
-// ─────────────────────────────────────────────
+// -------------------------------------------------------------------
+// AlarmManager (top-level)
+// -------------------------------------------------------------------
 
-/// 1) pre-void 시작: 서비스 시작 → pre-void 카운트다운 시작
+/// (void_alert_channel, void_end_channel)
+Future<FlutterLocalNotificationsPlugin> _initNotificationsPlugin() async {
+  final plugin = FlutterLocalNotificationsPlugin();
+  const AndroidInitializationSettings initSettings =
+      AndroidInitializationSettings('@drawable/ic_notification');
+  await plugin.initialize(
+    const InitializationSettings(android: initSettings),
+  );
+  await plugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(
+        const AndroidNotificationChannel(
+          'void_alert_channel',
+          'Void Alerts',
+          description: 'Alert when Void of Course starts',
+          importance: Importance.high,
+          playSound: true,
+          enableVibration: true,
+        ),
+      );
+  await plugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(
+        const AndroidNotificationChannel(
+          'void_end_channel',
+          'Void End Notifications',
+          description: 'Notification when Void of Course ends',
+          importance: Importance.high,
+        ),
+      );
+  return plugin;
+}
+
+/// 1) pre-void: + (countdown)
 @pragma('vm:entry-point')
 Future<void> _preVoidAlarmCallback() async {
   DartPluginRegistrant.ensureInitialized();
@@ -110,14 +143,40 @@ Future<void> _preVoidAlarmCallback() async {
   final bool isEnabled = prefs.getBool('voidAlarmEnabled') ?? false;
   if (!isEnabled) return;
 
-  final service = FlutterBackgroundService();
-  final isRunning = await service.isRunning();
-  if (!isRunning) {
-    await service.startService();
-  }
+  // 1. (Pre-Void )
+  final plugin = await _initNotificationsPlugin();
+  final isKorean = (prefs.getString('cached_language_code') ?? 'en').startsWith('ko');
+  final preHours = prefs.getInt('cached_pre_void_hours') ?? 6;
+
+  await plugin.show(
+    666,
+    isKorean ? '⏰ 보이드가 ${preHours}시간 후 시작됩니다!' : '⏰ Void starts in $preHours hours!',
+    isKorean ? '미리 준비하세요.' : 'Prepare in advance.',
+    const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'void_alert_channel',
+        'Void Alerts',
+        channelDescription: 'Alert when Void of Course starts',
+        importance: Importance.high,
+        priority: Priority.high,
+        ongoing: false,
+        autoCancel: true,
+        icon: '@drawable/ic_notification',
+      ),
+    ),
+  );
+
+  // 2. (countdown)
+  try {
+    final service = FlutterBackgroundService();
+    final isRunning = await service.isRunning();
+    if (!isRunning) {
+      await service.startService();
+    }
+  } catch (_) {}
 }
 
-/// 2) void 시작: 서비스 재시작 → void 카운트다운 시작
+/// 2) void: + (countdown)
 @pragma('vm:entry-point')
 Future<void> _vocStartAlarmCallback() async {
   DartPluginRegistrant.ensureInitialized();
@@ -127,17 +186,41 @@ Future<void> _vocStartAlarmCallback() async {
   final bool isEnabled = prefs.getBool('voidAlarmEnabled') ?? false;
   if (!isEnabled) return;
 
-  // 서비스가 죽어있으면 재시작 → void 카운트다운 복구
-  final service = FlutterBackgroundService();
-  final isRunning = await service.isRunning();
-  if (!isRunning) {
-    await service.startService();
-  } else {
-    service.invoke("refreshData");
-  }
+  // 1.
+  final plugin = await _initNotificationsPlugin();
+  final isKorean = (prefs.getString('cached_language_code') ?? 'en').startsWith('ko');
+
+  await plugin.show(
+    777,
+    isKorean ? '🚫 보이드가 시작되었습니다!' : '🚫 Void of Course Started!',
+    isKorean ? '중요한 결정을 피하세요.' : 'Avoid important decisions.',
+    const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'void_alert_channel',
+        'Void Alerts',
+        channelDescription: 'Alert when Void of Course starts',
+        importance: Importance.high,
+        priority: Priority.high,
+        ongoing: false,
+        autoCancel: true,
+        icon: '@drawable/ic_notification',
+      ),
+    ),
+  );
+
+  // 2. (countdown)
+  try {
+    final service = FlutterBackgroundService();
+    final isRunning = await service.isRunning();
+    if (!isRunning) {
+      await service.startService();
+    } else {
+      service.invoke("refreshData");
+    }
+  } catch (_) {}
 }
 
-/// 3) void 중간: 서비스가 죽어있으면 재시작 → 카운트다운 복구 + 다음 알람 예약
+/// 3) void: + 
 @pragma('vm:entry-point')
 Future<void> _vocMidAlarmCallback() async {
   DartPluginRegistrant.ensureInitialized();
@@ -147,16 +230,18 @@ Future<void> _vocMidAlarmCallback() async {
   final bool isEnabled = prefs.getBool('voidAlarmEnabled') ?? false;
   if (!isEnabled) return;
 
-  // 1. 서비스 생존 확인 및 재시작
-  final service = FlutterBackgroundService();
-  final isRunning = await service.isRunning();
-  if (!isRunning) {
-    await service.startService();
-  } else {
-    service.invoke("refreshData");
-  }
+  // 1.
+  try {
+    final service = FlutterBackgroundService();
+    final isRunning = await service.isRunning();
+    if (!isRunning) {
+      await service.startService();
+    } else {
+      service.invoke("refreshData");
+    }
+  } catch (_) {}
 
-  // 2. 다음 중간 알람 예약 (체인 생성)
+  // 2. (chain)
   final vocEndString = prefs.getString('cached_voc_end');
   if (vocEndString == null) return;
 
@@ -166,10 +251,9 @@ Future<void> _vocMidAlarmCallback() async {
   final nextMidVoc = now.add(maxInterval);
 
   if (nextMidVoc.isBefore(vocEnd)) {
-    // 다음 중간 알람을 예약합니다.
     await AndroidAlarmManager.oneShotAt(
       nextMidVoc,
-      vocMidAlarmId, // 동일한 ID를 사용하여 기존 알람을 덮어씁니다.
+      vocMidAlarmId,
       _vocMidAlarmCallback,
       exact: true,
       wakeup: true,
@@ -179,7 +263,7 @@ Future<void> _vocMidAlarmCallback() async {
   }
 }
 
-/// 4) void 종료: 서비스 재시작 → 종료 알림 전송 및 서비스 종료
+/// 4) void: +
 @pragma('vm:entry-point')
 Future<void> _vocEndAlarmCallback() async {
   DartPluginRegistrant.ensureInitialized();
@@ -189,13 +273,13 @@ Future<void> _vocEndAlarmCallback() async {
   final bool isEnabled = prefs.getBool('voidAlarmEnabled') ?? false;
   if (!isEnabled) return;
 
-  // 서비스가 죽어있더라도 시작하여 종료 알림을 표시하고 스스로 멈추도록 함
-  final service = FlutterBackgroundService();
-  final isRunning = await service.isRunning();
-  if (!isRunning) {
-    await service.startService();
-  } else {
-    // 이미 실행중이면 refresh 이벤트를 보내 즉시 종료 로직을 타도록 함
-    service.invoke("refreshData");
-  }
+  try {
+    final service = FlutterBackgroundService();
+    final isRunning = await service.isRunning();
+    if (!isRunning) {
+      await service.startService();
+    } else {
+      service.invoke("refreshData");
+    }
+  } catch (_) {}
 }
