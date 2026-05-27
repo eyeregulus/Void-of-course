@@ -10,6 +10,7 @@ import 'package:googleapis/calendar/v3.dart' as gcal;
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'purchase_service.dart';
 import 'astro_calculator.dart';
 import 'timezone_provider.dart';
 import 'package:sweph/sweph.dart';
@@ -69,9 +70,8 @@ class GoogleCalendarService extends ChangeNotifier {
   String? get vocCalendarId => _vocCalendarId;
   String? get lastError => _lastError;
 
-  // TODO: 실제 프리미엄(결제) 여부를 확인하는 로직으로 교체해야 합니다.
-  // 현재는 기능을 테스트할 수 있도록 기본값을 true로 설정해 두었습니다.
-  bool get isPremiumUser => true;
+  // RevenueCat 인앱 결제 서비스의 프리미엄 여부를 가져옵니다.
+  bool get isPremiumUser => PurchaseService.instance.isPremiumUser; 
 
   // ─── 초기화 ───────────────────────────────────────────────────────────────
 

@@ -3,7 +3,7 @@ description: "A new Flutter project."
 
 publish_to: 'none'
 
-version: 1.2.0+54
+version: 1.2.0+57
 
 environment:
   sdk: ^3.7.2
@@ -39,6 +39,7 @@ dependencies:
   google_sign_in: ^6.2.2  # v7은 API 완전 변경됨 → v6 유지
   googleapis_auth: ^2.3.1
   googleapis: ^13.2.0  # Google Calendar API
+  purchases_flutter: ^10.1.1
 
 
 dependency_overrides:

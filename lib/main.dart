@@ -32,6 +32,7 @@ import 'package:void_of_course/services/widget_service.dart';
 import 'package:void_of_course/services/app_analytics.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:void_of_course/services/google_calendar_service.dart';
+import 'package:void_of_course/services/purchase_service.dart';
 
 Future<void> _initWithTimeout(
   String label,
@@ -102,6 +103,13 @@ void main() async {
     timeout: const Duration(seconds: 5),
   );
 
+  // RevenueCat(인앱 결제) 서비스 초기화
+  await _initWithTimeout(
+    'PurchaseService',
+    () => PurchaseService.instance.init(),
+    timeout: const Duration(seconds: 5),
+  );
+
   runApp(
     MultiProvider(
       providers: [
@@ -111,6 +119,8 @@ void main() async {
         ChangeNotifierProvider(create: (context) => TimezoneProvider()),
         // 구글 캘린더 서비스
         ChangeNotifierProvider.value(value: GoogleCalendarService.instance),
+        // 인앱 결제 서비스
+        ChangeNotifierProvider.value(value: PurchaseService.instance),
       ],
       child: const MyApp(),
     ),

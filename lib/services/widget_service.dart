@@ -1,5 +1,4 @@
 import 'dart:developer' as developer;
-
 import 'dart:ui';
 
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
@@ -9,10 +8,10 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sweph/sweph.dart';
 import 'package:timezone/data/latest_all.dart' as tz_data;
-
 import 'package:timezone/timezone.dart' as tz;
 
 import 'astro_calculator.dart';
+import 'purchase_service.dart';
 
 const int _widgetVocStartAlarmId = 110;
 
@@ -253,16 +252,27 @@ class WidgetService {
 
   static Future<void> updateWidgetData({
     required DateTime? vocStart,
-
     required DateTime? vocEnd,
-
     required DateTime? nextVocStart,
-
     required DateTime? nextVocEnd,
-
     required String moonZodiac,
   }) async {
     try {
+      // ── 프리미엄(플러스 이상) 결제 유무 체크 ─────────────────────────
+      if (!PurchaseService.instance.isPlus) {
+        await HomeWidget.saveWidgetData<String>('widget_icon', '🔒');
+        await HomeWidget.saveWidgetData<String>(
+          'widget_title_text',
+          '프리미엄 전용 위젯',
+        );
+        await HomeWidget.saveWidgetData<String>(
+          'widget_times_text',
+          '앱 내 [설정]에서 플러스 또는 프로 패스를\n구매하시면 위젯이 활성화됩니다.',
+        );
+        await HomeWidget.updateWidget(androidName: androidWidgetName);
+        return;
+      }
+
       final now = DateTime.now().toUtc();
 
       var displayStart = vocStart;

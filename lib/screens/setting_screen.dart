@@ -16,6 +16,7 @@ import '../widgets/premium_dialog.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:void_of_course/services/app_analytics.dart';
 import 'package:void_of_course/services/google_calendar_service.dart';
+import 'package:void_of_course/services/purchase_service.dart';
 
 // 설정 화면을 보여주는 위젯이에요.
 class SettingScreen extends StatelessWidget {
@@ -427,9 +428,10 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
 
     if (!success) {
       final err = calService.lastError;
-      final msg = err == 'calendar_permission_denied'
-          ? '캘린더 접근 권한이 필요합니다.'
-          : '로그인에 실패했습니다. 다시 시도해 주세요.';
+      final msg =
+          err == 'calendar_permission_denied'
+              ? '캘린더 접근 권한이 필요합니다.'
+              : '로그인에 실패했습니다. 다시 시도해 주세요.';
       await AppSnackBar.show(context, message: msg);
     }
   }
@@ -453,51 +455,51 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
     setState(() => _isLoading = false);
 
     if (count >= 0) {
-      final msg = locale == 'ko'
-          ? '$count개의 Void of Course 이벤트가 구글 캘린더에 추가되었습니다.'
-          : '$count Void of Course events added to Google Calendar.';
+      final msg =
+          locale == 'ko'
+              ? '$count개의 Void of Course 이벤트가 구글 캘린더에 추가되었습니다.'
+              : '$count Void of Course events added to Google Calendar.';
       await AppSnackBar.show(context, message: msg);
     } else {
-      await AppSnackBar.show(
-        context,
-        message: '동기화에 실패했습니다. 다시 시도해 주세요.',
-      );
+      await AppSnackBar.show(context, message: '동기화에 실패했습니다. 다시 시도해 주세요.');
     }
   }
 
   Future<bool> _showSignOutDialog() async {
     return await showDialog<bool>(
           context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('구글 캘린더 연동 해제'),
-            content: const Text(
-              '연동을 해제하면 구글 캘린더에서 "Void of Course 🌙" 캘린더가 삭제됩니다.\n계속하시겠습니까?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: const Text('취소'),
+          builder:
+              (ctx) => AlertDialog(
+                title: const Text('구글 캘린더 연동 해제'),
+                content: const Text(
+                  '연동을 해제하면 구글 캘린더에서 "Void of Course 🌙" 캘린더가 삭제됩니다.\n계속하시겠습니까?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(false),
+                    child: const Text('취소'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(true),
+                    style: TextButton.styleFrom(foregroundColor: Colors.red),
+                    child: const Text('해제'),
+                  ),
+                ],
               ),
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(true),
-                style: TextButton.styleFrom(foregroundColor: Colors.red),
-                child: const Text('해제'),
-              ),
-            ],
-          ),
         ) ??
         false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GoogleCalendarService>(
-      builder: (context, calService, _) {
+    return Consumer2<GoogleCalendarService, PurchaseService>(
+      builder: (context, calService, purchaseService, _) {
         final isSignedIn = calService.isSignedIn;
         final isSyncing = calService.isSyncing || _isLoading;
         final email = calService.currentUser?.email;
         final theme = Theme.of(context);
         final isDark = theme.brightness == Brightness.dark;
+        final isPremium = purchaseService.isPlus;
 
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 4.0),
@@ -505,10 +507,7 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                theme.cardColor,
-                theme.cardColor.withValues(alpha: 0.8),
-              ],
+              colors: [theme.cardColor, theme.cardColor.withValues(alpha: 0.8)],
             ),
             borderRadius: BorderRadius.circular(20),
             boxShadow: [Themes.cardShadow(isDark)],
@@ -523,8 +522,9 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
                   children: [
                     CircleAvatar(
                       radius: 25,
-                      backgroundColor:
-                          const Color(0xFF4285F4).withValues(alpha: 0.12),
+                      backgroundColor: const Color(
+                        0xFF4285F4,
+                      ).withValues(alpha: 0.12),
                       child: const Icon(
                         Icons.calendar_today,
                         color: Color(0xFF4285F4),
@@ -537,7 +537,7 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '구글 캘린더 연동',
+                            '구글 캘린더',
                             style: TextStyle(
                               color: theme.textTheme.titleLarge?.color,
                               fontSize: 20,
@@ -546,9 +546,7 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            isSignedIn
-                                ? email ?? '연동됨'
-                                : 'VOC 일정을 캘린더로 내보내기',
+                            isSignedIn ? email ?? '연동됨' : 'VOC 일정을 캘린더로 내보내기',
                             style: TextStyle(
                               color: theme.textTheme.bodyMedium?.color
                                   ?.withValues(alpha: 0.6),
@@ -562,19 +560,27 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
                     // 연결 상태 뱃지
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: isSignedIn
-                            ? Colors.green.withValues(alpha: 0.15)
-                            : Colors.grey.withValues(alpha: 0.12),
+                        color:
+                            !isPremium
+                                ? Colors.grey.withValues(alpha: 0.12)
+                                : (isSignedIn
+                                    ? Colors.green.withValues(alpha: 0.15)
+                                    : Colors.grey.withValues(alpha: 0.12)),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        isSignedIn ? '연동됨' : '미연동',
+                        !isPremium ? '🔒 프리미엄' : (isSignedIn ? '연동됨' : '미연동'),
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: isSignedIn ? Colors.green : Colors.grey,
+                          color:
+                              !isPremium
+                                  ? Colors.amber
+                                  : (isSignedIn ? Colors.green : Colors.grey),
                         ),
                       ),
                     ),
@@ -593,16 +599,18 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
                       Icon(
                         Icons.date_range,
                         size: 18,
-                        color: theme.textTheme.bodyMedium?.color
-                            ?.withValues(alpha: 0.5),
+                        color: theme.textTheme.bodyMedium?.color?.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Text(
                         '동기화 기간',
                         style: TextStyle(
                           fontSize: 14,
-                          color: theme.textTheme.bodyMedium?.color
-                              ?.withValues(alpha: 0.7),
+                          color: theme.textTheme.bodyMedium?.color?.withValues(
+                            alpha: 0.7,
+                          ),
                         ),
                       ),
                       const Spacer(),
@@ -610,22 +618,24 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
                         value: calService.syncRange,
                         underline: const SizedBox.shrink(),
                         isDense: true,
-                        items: CalendarSyncRange.values.map((r) {
-                          return DropdownMenuItem(
-                            value: r,
-                            child: Text(
-                              r.labelKo,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: isSyncing
-                            ? null
-                            : (range) {
-                                if (range != null) {
-                                  calService.setSyncRange(range);
-                                }
-                              },
+                        items:
+                            CalendarSyncRange.values.map((r) {
+                              return DropdownMenuItem(
+                                value: r,
+                                child: Text(
+                                  r.labelKo,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              );
+                            }).toList(),
+                        onChanged:
+                            isSyncing
+                                ? null
+                                : (range) {
+                                  if (range != null) {
+                                    calService.setSyncRange(range);
+                                  }
+                                },
                       ),
                     ],
                   ),
@@ -637,16 +647,17 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
                       Expanded(
                         child: FilledButton.icon(
                           onPressed: isSyncing ? null : _handleSync,
-                          icon: isSyncing
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Icon(Icons.sync, size: 18),
+                          icon:
+                              isSyncing
+                                  ? const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                  : const Icon(Icons.sync, size: 18),
                           label: Text(isSyncing ? '동기화 중...' : '지금 동기화'),
                           style: FilledButton.styleFrom(
                             backgroundColor: const Color(0xFF4285F4),
@@ -667,27 +678,83 @@ class _GoogleCalendarCardState extends State<_GoogleCalendarCard> {
                 ],
 
                 // ── 로그아웃 상태일 때: 로그인 버튼 ──
-                if (!isSignedIn) ...[
+                if (!isSignedIn && isPremium) ...[
                   const SizedBox(height: 14),
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
                       onPressed: isSyncing ? null : _handleSignIn,
-                      icon: isSyncing
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                          : const Icon(Icons.login, size: 18),
+                      icon:
+                          isSyncing
+                              ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                              : const Icon(Icons.login, size: 18),
                       label: const Text('구글 계정으로 연동하기'),
                       style: FilledButton.styleFrom(
                         backgroundColor: const Color(0xFF4285F4),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
+                    ),
+                  ),
+                ],
+
+                // ── 프리미엄 미결제 상태일 때: 잠금 해제 안내 ──
+                if (!isPremium) ...[
+                  const SizedBox(height: 16),
+                  const Divider(height: 1),
+                  const SizedBox(height: 14),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.amber.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        const Icon(
+                          Icons.lock_outline,
+                          color: Colors.amber,
+                          size: 28,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          '플러스 패스 전용 기능',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          '프리미엄을 구매하시면 캘린더 동기화가 활성화됩니다.',
+                          style: TextStyle(fontSize: 12),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 12),
+                        FilledButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (ctx) => const PremiumDialog(),
+                            );
+                          },
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.amber,
+                            foregroundColor: Colors.black,
+                          ),
+                          child: const Text('프리미엄 알아보기'),
+                        ),
+                      ],
                     ),
                   ),
                 ],

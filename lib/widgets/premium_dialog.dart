@@ -2,12 +2,16 @@
 // 세 가지 결제 티어를 보여주고, 선택된 티어에 맞는 버튼을 표시해요.
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+import '../services/purchase_service.dart';
+import '../widgets/app_snackbar.dart';
 
 // 결제 티어를 나타내는 열거형이에요.
 enum PremiumTier {
-  adRemove, // 광고 제거 라이트
-  proPass, // 기능 프로 패스 (위젯+캘린더)
-  masterAll, // 마스터 올인원 패스 (전체 해금) — 추천
+  lite, // 광고 제거
+  plus, // 위젯 + 캘린더
+  pro, // 전체 해금 (추천)
 }
 
 // 각 티어의 정보를 담는 모델이에요.
@@ -36,30 +40,49 @@ class PremiumDialog extends StatefulWidget {
 class _PremiumDialogState extends State<PremiumDialog>
     with SingleTickerProviderStateMixin {
   // 기본 선택 티어는 마스터 올인원(추천)이에요.
-  PremiumTier _selectedTier = PremiumTier.masterAll;
+  PremiumTier _selectedTier = PremiumTier.pro;
 
   late final AnimationController _shimmerController;
+  bool _isPurchasing = false;
 
-  // 티어 목록이에요.
-  static const List<_TierInfo> _tiers = [
-    _TierInfo(tier: PremiumTier.adRemove, label: '광고 제거', price: '3,000원'),
-    _TierInfo(
-      tier: PremiumTier.proPass,
-      label: '바탕화면 위젯 \n+ 보이드 구글 캘린더',
-      price: '6,000원',
-    ),
-    _TierInfo(
-      tier: PremiumTier.masterAll,
-      label: '광고제거 + 바탕화면 위젯 \n+ 보이드 구글 캘린더',
-      price: '7,500원',
-      recommended: true,
-    ),
-  ];
+  // 기본 가격 및 티어 정보 매핑
+  // 실제 RevenueCat 패키지 식별자(Identifier)와 일치해야 합니다.
+  static const Map<PremiumTier, String> _tierPackageIds = {
+    PremiumTier.lite: 'lite',
+    PremiumTier.plus: 'plus',
+    PremiumTier.pro: 'pro',
+  };
+
+  List<_TierInfo> _getDefaultTiers(bool isKo) {
+    return [
+      _TierInfo(
+        tier: PremiumTier.lite,
+        label: isKo ? '라이트 - 광고제거' : 'Lite - Ad Removal',
+        price: '\$4.99',
+      ),
+      _TierInfo(
+        tier: PremiumTier.plus,
+        label:
+            isKo
+                ? '플러스 - 바탕화면 위젯 \n+ 보이드 구글 캘린더'
+                : 'Plus - Home Widget \n+ Void Google Calendar',
+        price: '\$16.99',
+      ),
+      _TierInfo(
+        tier: PremiumTier.pro,
+        label:
+            isKo
+                ? '프로 - 전체기능 \n(광고제거 + 위젯 + 캘린더)'
+                : 'Pro - All Features \n(Ad Removal + Widget + Calendar)',
+        price: '\$19.99',
+        recommended: true,
+      ),
+    ];
+  }
 
   @override
   void initState() {
     super.initState();
-    // 골드 shimmer 애니메이션 컨트롤러를 만들어요.
     _shimmerController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -72,14 +95,99 @@ class _PremiumDialogState extends State<PremiumDialog>
     super.dispose();
   }
 
-  // 현재 선택된 티어의 정보를 가져와요.
-  _TierInfo get _selectedTierInfo =>
-      _tiers.firstWhere((t) => t.tier == _selectedTier);
+  // RevenueCat 오퍼링에서 해당 티어의 패키지를 찾습니다.
+  Package? _getPackageForTier(PremiumTier tier, Offerings? offerings) {
+    if (offerings == null || offerings.current == null) return null;
+    final packageId = _tierPackageIds[tier];
+    try {
+      return offerings.current!.availablePackages.firstWhere(
+        (p) => p.identifier == packageId,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  // 현재 선택된 티어의 정보를 가져와요. (RevenueCat에서 불러온 실제 가격 반영)
+  _TierInfo _getDynamicTierInfo(
+    PremiumTier tier,
+    Offerings? offerings,
+    bool isKo,
+  ) {
+    final defaultInfo = _getDefaultTiers(
+      isKo,
+    ).firstWhere((t) => t.tier == tier);
+    final package = _getPackageForTier(tier, offerings);
+    if (package != null) {
+      return _TierInfo(
+        tier: defaultInfo.tier,
+        label: defaultInfo.label,
+        price: package.storeProduct.priceString, // 앱스토어/플레이스토어 실제 표기 가격
+        recommended: defaultInfo.recommended,
+      );
+    }
+    return defaultInfo;
+  }
+
+  _TierInfo _getSelectedTierInfo(Offerings? offerings, bool isKo) =>
+      _getDynamicTierInfo(_selectedTier, offerings, isKo);
+
+  Future<void> _handlePurchase(Package package, bool isKo) async {
+    setState(() => _isPurchasing = true);
+
+    final success = await PurchaseService.instance.purchasePackage(package);
+
+    if (!mounted) return;
+    setState(() => _isPurchasing = false);
+
+    if (success) {
+      Navigator.of(context).pop();
+      AppSnackBar.show(
+        context,
+        message:
+            isKo
+                ? '프리미엄 결제가 완료되었습니다. 감사합니다!'
+                : 'Premium purchase completed. Thank you!',
+      );
+    } else {
+      AppSnackBar.show(
+        context,
+        message:
+            isKo
+                ? '결제를 취소했거나 오류가 발생했습니다.'
+                : 'Purchase cancelled or an error occurred.',
+      );
+    }
+  }
+
+  Future<void> _handleRestore(bool isKo) async {
+    setState(() => _isPurchasing = true);
+
+    final success = await PurchaseService.instance.restorePurchases();
+
+    if (!mounted) return;
+    setState(() => _isPurchasing = false);
+
+    if (success) {
+      Navigator.of(context).pop();
+      AppSnackBar.show(
+        context,
+        message:
+            isKo ? '구매 내역 복원 처리가 완료되었습니다.' : 'Purchases restored successfully.',
+      );
+    } else {
+      AppSnackBar.show(
+        context,
+        message: isKo ? '복원에 실패했습니다.' : 'Failed to restore purchases.',
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final isKo = Localizations.localeOf(context).languageCode == 'ko';
 
     // 다이얼로그 배경색
     final dialogBg = isDark ? const Color(0xFF1E1B2E) : Colors.white;
@@ -87,56 +195,117 @@ class _PremiumDialogState extends State<PremiumDialog>
     final subtitleColor =
         isDark ? const Color(0xFFBBBBBB) : const Color(0xFF666666);
 
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-      child: Container(
-        decoration: BoxDecoration(
-          color: dialogBg,
-          borderRadius: BorderRadius.circular(28),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.35),
-              blurRadius: 40,
-              offset: const Offset(0, 12),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // ── 상단 헤더 (그라데이션 배너) ────────────────────────────
-            _buildHeader(isDark),
+    return Consumer<PurchaseService>(
+      builder: (context, purchaseService, child) {
+        final offerings = purchaseService.offerings;
+        final selectedInfo = _getSelectedTierInfo(offerings, isKo);
+        final selectedPackage = _getPackageForTier(_selectedTier, offerings);
 
-            // ── 티어 선택 목록 ────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Column(
-                children:
-                    _tiers.map((info) {
-                      return _buildTierRow(
-                        info,
-                        titleColor,
-                        subtitleColor,
-                        isDark,
-                      );
-                    }).toList(),
-              ),
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 40,
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: dialogBg,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.35),
+                  blurRadius: 40,
+                  offset: const Offset(0, 12),
+                ),
+              ],
             ),
+            child: Stack(
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // ── 상단 헤더 (그라데이션 배너) ────────────────────────────
+                    _buildHeader(isDark, isKo),
 
-            // ── 구매 버튼 ─────────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-              child: _buildPurchaseButton(),
+                    // ── 티어 선택 목록 ────────────────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
+                      child: Column(
+                        children:
+                            _getDefaultTiers(isKo).map((baseInfo) {
+                              final dynamicInfo = _getDynamicTierInfo(
+                                baseInfo.tier,
+                                offerings,
+                                isKo,
+                              );
+                              return _buildTierRow(
+                                dynamicInfo,
+                                titleColor,
+                                subtitleColor,
+                                isDark,
+                              );
+                            }).toList(),
+                      ),
+                    ),
+
+                    // ── 구매 버튼 ─────────────────────────────────────────────
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                      child: _buildPurchaseButton(
+                        selectedInfo,
+                        selectedPackage,
+                        isKo,
+                      ),
+                    ),
+
+                    // ── 구매 복원 버튼 ───────────────────────────────────────
+                    TextButton(
+                      onPressed:
+                          _isPurchasing ? null : () => _handleRestore(isKo),
+                      child: Text(
+                        isKo
+                            ? '이미 구매하셨나요? 구매 내역 복원'
+                            : 'Already purchased? Restore purchases',
+                        style: TextStyle(
+                          color: subtitleColor,
+                          fontSize: 13,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+
+                if (_isPurchasing)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.4),
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
   // 상단 헤더 위젯이에요.
-  Widget _buildHeader(bool isDark) {
+  Widget _buildHeader(bool isDark, bool isKo) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
@@ -159,9 +328,9 @@ class _PremiumDialogState extends State<PremiumDialog>
       ),
       child: Column(
         children: [
-          const Text(
-            '프리미엄 서비스',
-            style: TextStyle(
+          Text(
+            isKo ? '프리미엄 서비스' : 'Premium Service',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -170,7 +339,9 @@ class _PremiumDialogState extends State<PremiumDialog>
           ),
           const SizedBox(height: 6),
           Text(
-            '한 번 결제로 평생 광고 없이 영구 소장!',
+            isKo
+                ? '한 번 결제로 평생 광고 없이 영구 소장!'
+                : 'Lifetime access with a single purchase!',
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.8),
               fontSize: 13,
@@ -361,8 +532,7 @@ class _PremiumDialogState extends State<PremiumDialog>
   }
 
   // 구매 버튼이에요. 선택된 티어의 가격을 보여줘요.
-  Widget _buildPurchaseButton() {
-    final info = _selectedTierInfo;
+  Widget _buildPurchaseButton(_TierInfo info, Package? package, bool isKo) {
     final isGold = info.recommended;
 
     return SizedBox(
@@ -400,13 +570,28 @@ class _PremiumDialogState extends State<PremiumDialog>
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
-            onTap: () {
-              // TODO: 실제 결제 로직 연결
-              Navigator.of(context).pop();
-            },
+            onTap:
+                (_isPurchasing || package == null)
+                    ? () {
+                      // 상품 정보를 가져오지 못했을 때의 처리
+                      if (package == null) {
+                        AppSnackBar.show(
+                          context,
+                          message:
+                              isKo
+                                  ? '상품 정보를 불러오지 못했습니다. 스토어 연결 상태를 확인해주세요.'
+                                  : 'Failed to load product info. Please check your store connection.',
+                        );
+                      }
+                    }
+                    : () => _handlePurchase(package, isKo),
             child: Center(
               child: Text(
-                '${info.price}에 평생 소장하기',
+                package == null
+                    ? (isKo ? '상품 정보 불러오는 중...' : 'Loading product info...')
+                    : (isKo
+                        ? '${info.price}에 평생 소장하기'
+                        : 'Get lifetime access for ${info.price}'),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,

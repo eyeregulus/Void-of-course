@@ -2,9 +2,11 @@ import 'dart:io';
 import 'dart:developer' as developer;
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:void_of_course/services/ad_ids.dart';
+import 'package:void_of_course/services/purchase_service.dart';
 
 /// 전면 광고 및 광고 정책을 관리하는 서비스 클래스입니다.
 class AdService {
@@ -40,7 +42,10 @@ class AdService {
         !(_prefs?.getBool(_hasCompletedFirstLaunchKey) ?? false);
     await _loadCalculateClickCount();
     if (kDebugMode) {
-      developer.log('AdService initialized. Click count: $_calculateClickCount', name: 'AdService');
+      developer.log(
+        'AdService initialized. Click count: $_calculateClickCount',
+        name: 'AdService',
+      );
     }
     if (Platform.isAndroid || Platform.isIOS) {
       _loadInterstitialAd();
@@ -88,7 +93,10 @@ class AdService {
         },
         onAdFailedToLoad: (error) {
           if (kDebugMode) {
-            developer.log('Interstitial ad failed to load: $error', name: 'AdService');
+            developer.log(
+              'Interstitial ad failed to load: $error',
+              name: 'AdService',
+            );
           }
           _interstitialAd?.dispose();
           _interstitialAd = null;
@@ -106,6 +114,12 @@ class AdService {
       return false;
     }
 
+    // 프리미엄(라이트 이상) 결제 유저인 경우 광고를 표시하지 않습니다.
+    if (PurchaseService.instance.isLite) {
+      onAdDismissed();
+      return false;
+    }
+
     if (await _skipInterstitialForFirstLaunch()) {
       onAdDismissed();
       return false;
@@ -114,7 +128,10 @@ class AdService {
     _calculateClickCount++;
     await _saveCalculateClickCount();
     if (kDebugMode) {
-      developer.log('showAdIfNeeded called. Click count: $_calculateClickCount', name: 'AdService');
+      developer.log(
+        'showAdIfNeeded called. Click count: $_calculateClickCount',
+        name: 'AdService',
+      );
     }
 
     if ((Platform.isAndroid || Platform.isIOS) &&
@@ -155,6 +172,12 @@ class AdService {
       return;
     }
 
+    // 프리미엄(라이트 이상) 결제 유저인 경우 광고를 표시하지 않습니다.
+    if (PurchaseService.instance.isLite) {
+      onAdFailed();
+      return;
+    }
+
     if (await _skipInterstitialForFirstLaunch()) {
       onAdFailed();
       return;
@@ -172,7 +195,10 @@ class AdService {
     // 30분 이내에 광고를 본 경우, 광고를 표시하지 않습니다.
     if (currentTimeMillis - lastAdShowTimeMillis < thirtyMinutesInMillis) {
       if (kDebugMode) {
-        developer.log('스플래시 광고: 마지막 광고 표시 후 30분이 지나지 않았습니다.', name: 'AdService');
+        developer.log(
+          '스플래시 광고: 마지막 광고 표시 후 30분이 지나지 않았습니다.',
+          name: 'AdService',
+        );
       }
       onAdFailed();
       return;
@@ -210,10 +236,7 @@ class AdService {
           _loadInterstitialAd(); // 다음 광고를 미리 로드합니다.
         },
       );
-      await _showInterstitialWithTimeout(
-        _interstitialAd!,
-        () => onAdFailed(),
-      );
+      await _showInterstitialWithTimeout(_interstitialAd!, () => onAdFailed());
     } else {
       // 광고가 아직 로드되지 않은 경우, 바로 onAdFailed를 호출합니다.
       if (kDebugMode) {
@@ -247,6 +270,12 @@ class AdService {
     // 디버그 모드에서는 스플래시 광고를 즉시 건너뜁니다.
     if (kDebugMode) {
       developer.log('디버그 모드이므로 스플래시 광고를 건너뜁니다.', name: 'AdService');
+      onAdFailed();
+      return;
+    }
+
+    // 프리미엄(라이트 이상) 결제 유저인 경우 광고를 표시하지 않습니다.
+    if (PurchaseService.instance.isLite) {
       onAdFailed();
       return;
     }
@@ -315,10 +344,7 @@ class AdService {
         },
       );
 
-      await _showInterstitialWithTimeout(
-        _interstitialAd!,
-        () => onAdFailed(),
-      );
+      await _showInterstitialWithTimeout(_interstitialAd!, () => onAdFailed());
       return;
     }
 

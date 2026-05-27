@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:void_of_course/services/ad_ids.dart';
+import 'package:void_of_course/services/purchase_service.dart';
 
 class NativeAdService extends ChangeNotifier {
   static final NativeAdService _instance = NativeAdService._internal();
@@ -14,6 +15,11 @@ class NativeAdService extends ChangeNotifier {
   bool get isAdLoaded => _isAdLoaded;
 
   void loadAd() {
+    if (PurchaseService.instance.isLite) {
+      // 프리미엄 결제 유저인 경우 네이티브 광고를 로드하지 않습니다.
+      return;
+    }
+
     _nativeAd = NativeAd(
       adUnitId: AdIds.nativeAd,
       request: const AdRequest(),
