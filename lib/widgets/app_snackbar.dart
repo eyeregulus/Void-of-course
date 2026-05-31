@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:void_of_course/themes.dart';
 
@@ -16,17 +15,13 @@ class AppSnackBar {
     return bottomSafe + navBarHeight + bannerHeight + 10;
   }
 
-  static ({Color background, Color text}) _colorsForTheme(Brightness brightness) {
+  static ({Color background, Color text}) _colorsForTheme(
+    Brightness brightness,
+  ) {
     if (brightness == Brightness.dark) {
-      return (
-        background: const Color(0xFFF0EDE5),
-        text: Themes.midnightBlue,
-      );
+      return (background: const Color(0xFFF0EDE5), text: Themes.midnightBlue);
     }
-    return (
-      background: const Color(0xFF1A1A2E),
-      text: Colors.white,
-    );
+    return (background: const Color(0xFF1A1A2E), text: Colors.white);
   }
 
   static Future<void> show(
@@ -127,14 +122,14 @@ class _SnackBarOverlayState extends State<_SnackBarOverlay>
     super.initState();
     widget.onStateCreated(this);
 
-    // [변경포인트 1] 나타나고 사라지는 애니메이션 자체의 속도를 250ms(0.25초)로 고정하여 
+    // [변경포인트 1] 나타나고 사라지는 애니메이션 자체의 속도를 250ms(0.25초)로 고정하여
     // 반응 속도를 대폭 끌어올렸습니다. 스르륵 열리는 맛은 유지하되 매우 빠릿해집니다.
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 250),
     );
 
-    // [변경포인트 2] 커브 조건을 변경하여 나타날 때는 끝이 부드러운 easeOut, 
+    // [변경포인트 2] 커브 조건을 변경하여 나타날 때는 끝이 부드러운 easeOut,
     // 사라질 때는 시작이 부드러운 easeIn 계열을 적용해 '스르륵 빠릿하게' 움직이도록 제어합니다.
     final curve = CurvedAnimation(
       parent: _controller,
@@ -155,11 +150,11 @@ class _SnackBarOverlayState extends State<_SnackBarOverlay>
     // 1. 0.25초 동안 빠르게 스르륵 올라옴
     await _controller.forward();
     if (!mounted) return;
-    
+
     // 2. 사용자가 지정한 duration(기본 2초) 동안 화면에 머무름
     await Future.delayed(widget.displayDuration);
     if (!mounted) return;
-    
+
     // 3. 다시 0.25초 동안 빠르게 스르륵 내려감
     await dismissAnimated();
   }
@@ -209,10 +204,7 @@ class _SnackBarOverlayState extends State<_SnackBarOverlay>
               ),
               child: Text(
                 widget.message,
-                style: TextStyle(
-                  color: widget.textColor,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: widget.textColor, fontSize: 14),
               ),
             ),
           ),

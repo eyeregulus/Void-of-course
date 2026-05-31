@@ -307,4 +307,86 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get invalidVocData => '잘못된 VOC 데이터';
+
+  @override
+  String get premium => '프리미엄';
+
+  @override
+  String goToServiceTitle(String serviceName) {
+    return '$serviceName로 이동';
+  }
+
+  @override
+  String goToServiceContent(String serviceName) {
+    return '$serviceName(으)로 이동하시겠습니까?';
+  }
+
+  @override
+  String get yes => '예';
+
+  @override
+  String get no => '아니오';
+
+  @override
+  String get googleCalendar => '구글 캘린더';
+
+  @override
+  String get linked => '연동됨';
+
+  @override
+  String get linkGoogleCalendar => '구글 계정으로 연동하기';
+
+  @override
+  String get googleCalendarVocSync => '구글 캘린더 보이드 연동';
+
+  @override
+  String get notLinked => '미연동';
+
+  @override
+  String get syncDuration => '동기화 기간';
+
+  @override
+  String get syncing => '동기화 중...';
+
+  @override
+  String get syncNow => '지금 동기화';
+
+  @override
+  String get unlink => '해제';
+
+  @override
+  String get plusPassFeature => '플러스 패스 전용 기능';
+
+  @override
+  String get premiumCalendarSyncDesc => '프리미엄을 구매하시면 캘린더 동기화가 활성화됩니다.';
+
+  @override
+  String get explorePremium => '프리미엄 혜택 알아보기';
+
+  @override
+  String get calendarPermissionRequired => '캘린더 접근 권한이 필요합니다.';
+
+  @override
+  String get loginFailedRetry => '로그인에 실패했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get googleCalendarUnlinked => '구글 캘린더 연동이 해제되었습니다.';
+
+  @override
+  String vocEventsAdded(int count) {
+    return '$count개의 Void of Course 이벤트가 구글 캘린더에 추가되었습니다.';
+  }
+
+  @override
+  String get syncFailedRetry => '동기화에 실패했습니다. 다시 시도해 주세요.';
+
+  @override
+  String get unlinkGoogleCalendarTitle => '구글 캘린더 연동 해제';
+
+  @override
+  String get unlinkGoogleCalendarContent =>
+      '연동을 해제하면 구글 캘린더에서 \"Void of Course 🌙\" 캘린더가 삭제됩니다.\n계속하시겠습니까?';
+
+  @override
+  String get cancel => '취소';
 }

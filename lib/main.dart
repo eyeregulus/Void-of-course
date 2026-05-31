@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'screens/calendar_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/premium_screen.dart';
 import 'screens/developer_notes_screen.dart';
 import 'screens/setting_screen.dart';
 import 'services/astro_state.dart';
@@ -284,9 +285,12 @@ class _MainAppScreenState extends State<MainAppScreen> with WidgetsBindingObserv
           CalendarVocCache.instance.preloadAroundSilent(DateTime.now(), radius: 2);
           break;
         case 2:
-          eventName = 'click_settings_tab';
+          eventName = 'click_premium_tab';
           break;
         case 3:
+          eventName = 'click_settings_tab';
+          break;
+        case 4:
           eventName = 'click_info_tab';
           break;
       }
@@ -299,7 +303,10 @@ class _MainAppScreenState extends State<MainAppScreen> with WidgetsBindingObserv
         case 1:
           AppAnalytics.logScreenView('calendar');
           break;
-        case 3:
+        case 2:
+          AppAnalytics.logScreenView('premium');
+          break;
+        case 4:
           AppAnalytics.logScreenView('developer_notes');
           break;
       }
@@ -427,6 +434,10 @@ class _MainAppScreenState extends State<MainAppScreen> with WidgetsBindingObserv
                     label: AppLocalizations.of(context)!.calendar,
                   ),
                   BottomNavigationBarItem(
+                    icon: const Icon(Icons.workspace_premium),
+                    label: AppLocalizations.of(context)!.premium,
+                  ),
+                  BottomNavigationBarItem(
                     icon: const Icon(Icons.settings),
                     label: AppLocalizations.of(context)!.settings,
                   ),
@@ -447,6 +458,7 @@ class _MainAppScreenState extends State<MainAppScreen> with WidgetsBindingObserv
     return [
       const HomeScreen(),
       const CalendarScreen(),
+      const PremiumScreen(),
       const SettingScreen(),
       const InfoScreen()
     ];

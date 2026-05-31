@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!provider.isInitialized) {
       Future.microtask(() => provider.initialize());
     }
-
   }
 
   @override
@@ -97,10 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(context),
-      body: _buildBody(context),
-    );
+    return Scaffold(appBar: _buildAppBar(context), body: _buildBody(context));
   }
 
   AppBar _buildAppBar(BuildContext context) {
@@ -115,7 +111,8 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Icon(
                 Icons.auto_awesome,
-                color: isDark ? const Color(0xFFD4AF37) : const Color(0xFF2C3E50),
+                color:
+                    isDark ? const Color(0xFFD4AF37) : const Color(0xFF2C3E50),
                 size: 22,
               ),
               const SizedBox(width: 10),
@@ -131,12 +128,12 @@ class _HomeScreenState extends State<HomeScreen> {
               final tzInfo = tzProvider.currentTimezoneInfo;
               if (tzInfo != null) {
                 final localeCode = Localizations.localeOf(context).languageCode;
-                final countryName = localeCode == 'ko'
-                    ? tzInfo.countryNameKo
-                    : tzInfo.countryNameEn;
-                final cityName = localeCode == 'ko'
-                    ? tzInfo.cityNameKo
-                    : tzInfo.cityNameEn;
+                final countryName =
+                    localeCode == 'ko'
+                        ? tzInfo.countryNameKo
+                        : tzInfo.countryNameEn;
+                final cityName =
+                    localeCode == 'ko' ? tzInfo.cityNameKo : tzInfo.cityNameEn;
                 final displayOffset = tzProvider.getDisplayOffset();
                 return Padding(
                   padding: const EdgeInsets.only(top: 4),
@@ -165,19 +162,25 @@ class _HomeScreenState extends State<HomeScreen> {
             if (tzInfo != null && tzInfo.isDstCountry) {
               return IconButton(
                 icon: Icon(
-                  tzProvider.isDstApplied
-                      ? Icons.light_mode
-                      : Icons.dark_mode,
-                  color: isDark ? const Color(0xFFD4AF37) : const Color(0xFF2C3E50),
+                  tzProvider.isDstApplied ? Icons.light_mode : Icons.dark_mode,
+                  color:
+                      isDark
+                          ? const Color(0xFFD4AF37)
+                          : const Color(0xFF2C3E50),
                 ),
                 onPressed: () async {
                   // DST 토글: 천문 계산은 UTC 기반이므로 재계산 불필요
                   // 카드 위젯들이 TimezoneProvider를 리스닝하므로 convert()로 자동 갱신
                   await FirebaseAnalytics.instance.logEvent(
                     name: 'toggle_dst',
-                    parameters: {'enabled': (!tzProvider.isDstApplied).toString()},
+                    parameters: {
+                      'enabled': (!tzProvider.isDstApplied).toString(),
+                    },
                   );
-                  final astroState = Provider.of<AstroState>(context, listen: false);
+                  final astroState = Provider.of<AstroState>(
+                    context,
+                    listen: false,
+                  );
                   await tzProvider.toggleDst();
                   if (mounted) {
                     await astroState.updateVocAlarmForTimezone();
@@ -195,7 +198,9 @@ class _HomeScreenState extends State<HomeScreen> {
             color: isDark ? const Color(0xFFD4AF37) : const Color(0xFF2C3E50),
           ),
           onPressed: () {
-            FirebaseAnalytics.instance.logEvent(name: 'click_timezone_selector');
+            FirebaseAnalytics.instance.logEvent(
+              name: 'click_timezone_selector',
+            );
             showTimezoneSelectorDialog(context);
           },
           tooltip: 'Timezone',
@@ -216,32 +221,32 @@ class _HomeScreenState extends State<HomeScreen> {
             final appLocalizations = AppLocalizations.of(context)!;
             showDialog(
               context: context,
-              builder: (context) => AlertDialog(
-                title: Text(appLocalizations.voidAlarmTitle),
-                content:
-                    Text(appLocalizations.resetVoidAlarmForTimezoneChange),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      // 경고 플래그를 리셋하고 대화 상자를 닫습니다.
-                      astroState.showTimezoneChangeWarning = false;
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(appLocalizations.ok),
+              builder:
+                  (context) => AlertDialog(
+                    title: Text(appLocalizations.voidAlarmTitle),
+                    content: Text(
+                      appLocalizations.resetVoidAlarmForTimezoneChange,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          // 경고 플래그를 리셋하고 대화 상자를 닫습니다.
+                          astroState.showTimezoneChangeWarning = false;
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(appLocalizations.ok),
+                      ),
+                    ],
                   ),
-                ],
-              ),
             );
           }
         });
 
         // 날짜 컨트롤러는 AstroState에서 전달되는 selectedDate로 업데이트합니다.
-        _dateController.text =
-            DateFormat('yyyy/MM/dd').format(astroState.selectedDate.toLocal());
+        _dateController.text = DateFormat(
+          'yyyy/MM/dd',
+        ).format(astroState.selectedDate.toLocal());
 
-        
-        
-        
         if (!astroState.isInitialized) {
           return Center(
             child: CircularProgressIndicator(
@@ -260,17 +265,18 @@ class _HomeScreenState extends State<HomeScreen> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: isDark
-                  ? [
-                      const Color(0xFF0F0F1A),
-                      const Color(0xFF1A1A2E),
-                      const Color(0xFF16213E),
-                    ]
-                  : [
-                      const Color(0xFFF8F6F0),
-                      const Color(0xFFFFFDF8),
-                      const Color(0xFFF0EDE5),
-                    ],
+              colors:
+                  isDark
+                      ? [
+                        const Color(0xFF0F0F1A),
+                        const Color(0xFF1A1A2E),
+                        const Color(0xFF16213E),
+                      ]
+                      : [
+                        const Color(0xFFF8F6F0),
+                        const Color(0xFFFFFDF8),
+                        const Color(0xFFF0EDE5),
+                      ],
               stops: const [0.0, 0.5, 1.0],
             ),
           ),
@@ -279,9 +285,10 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, constraints) {
                 return RefreshIndicator(
                   onRefresh: _onPullRefresh,
-                  color: isDark
-                      ? const Color(0xFFD4AF37)
-                      : const Color(0xFF2C3E50),
+                  color:
+                      isDark
+                          ? const Color(0xFFD4AF37)
+                          : const Color(0xFF2C3E50),
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(),
                     child: ConstrainedBox(

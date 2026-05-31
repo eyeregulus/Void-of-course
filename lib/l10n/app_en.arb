@@ -185,5 +185,51 @@
     "calendar": "Calendar",
     "voidCalendar": "Void Calendar",
     "noVocFound": "No Void of Course period for this day.",
-    "invalidVocData": "Invalid VOC data"
+    "invalidVocData": "Invalid VOC data",
+    "premium": "Premium",
+    "goToServiceTitle": "Go to {serviceName}",
+    "@goToServiceTitle": {
+        "placeholders": {
+            "serviceName": {
+                "type": "String"
+            }
+        }
+    },
+    "goToServiceContent": "Do you want to go to {serviceName}?",
+    "@goToServiceContent": {
+        "placeholders": {
+            "serviceName": {
+                "type": "String"
+            }
+        }
+    },
+    "yes": "Yes",
+    "no": "No",
+    "googleCalendar": "Google Calendar",
+    "linked": "Linked",
+    "linkGoogleCalendar": "Link with Google Account",
+    "googleCalendarVocSync": "Google Calendar VOC Sync",
+    "notLinked": "Not linked",
+    "syncDuration": "Sync Range",
+    "syncing": "Syncing...",
+    "syncNow": "Sync Now",
+    "unlink": "Unlink",
+    "plusPassFeature": "Plus Pass Exclusive Feature",
+    "premiumCalendarSyncDesc": "Calendar sync will be enabled when you purchase Premium.",
+    "explorePremium": "Explore Premium",
+    "calendarPermissionRequired": "Calendar access permission is required.",
+    "loginFailedRetry": "Failed to log in. Please try again.",
+    "googleCalendarUnlinked": "Google Calendar has been unlinked.",
+    "vocEventsAdded": "{count} Void of Course events added to Google Calendar.",
+    "@vocEventsAdded": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "syncFailedRetry": "Sync failed. Please try again.",
+    "unlinkGoogleCalendarTitle": "Unlink Google Calendar",
+    "unlinkGoogleCalendarContent": "Unlinking will remove the \"Void of Course 🌙\" calendar from Google Calendar.\nDo you want to continue?",
+    "cancel": "Cancel"
 }

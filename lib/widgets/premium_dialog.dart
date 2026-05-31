@@ -337,16 +337,6 @@ class _PremiumDialogState extends State<PremiumDialog>
               letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 6),
-          Text(
-            isKo
-                ? '한 번 결제로 평생 광고 없이 영구 소장!'
-                : 'Lifetime access with a single purchase!',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.8),
-              fontSize: 13,
-            ),
-          ),
         ],
       ),
     );

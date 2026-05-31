@@ -311,4 +311,88 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invalidVocData => 'Invalid VOC data';
+
+  @override
+  String get premium => 'Premium';
+
+  @override
+  String goToServiceTitle(String serviceName) {
+    return 'Go to $serviceName';
+  }
+
+  @override
+  String goToServiceContent(String serviceName) {
+    return 'Do you want to go to $serviceName?';
+  }
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get googleCalendar => 'Google Calendar';
+
+  @override
+  String get linked => 'Linked';
+
+  @override
+  String get linkGoogleCalendar => 'Link with Google Account';
+
+  @override
+  String get googleCalendarVocSync => 'Google Calendar VOC Sync';
+
+  @override
+  String get notLinked => 'Not linked';
+
+  @override
+  String get syncDuration => 'Sync Range';
+
+  @override
+  String get syncing => 'Syncing...';
+
+  @override
+  String get syncNow => 'Sync Now';
+
+  @override
+  String get unlink => 'Unlink';
+
+  @override
+  String get plusPassFeature => 'Plus Pass Exclusive Feature';
+
+  @override
+  String get premiumCalendarSyncDesc =>
+      'Calendar sync will be enabled when you purchase Premium.';
+
+  @override
+  String get explorePremium => 'Explore Premium';
+
+  @override
+  String get calendarPermissionRequired =>
+      'Calendar access permission is required.';
+
+  @override
+  String get loginFailedRetry => 'Failed to log in. Please try again.';
+
+  @override
+  String get googleCalendarUnlinked => 'Google Calendar has been unlinked.';
+
+  @override
+  String vocEventsAdded(int count) {
+    return '$count Void of Course events added to Google Calendar.';
+  }
+
+  @override
+  String get syncFailedRetry => 'Sync failed. Please try again.';
+
+  @override
+  String get unlinkGoogleCalendarTitle => 'Unlink Google Calendar';
+
+  @override
+  String get unlinkGoogleCalendarContent =>
+      'Unlinking will remove the \"Void of Course 🌙\" calendar from Google Calendar.\nDo you want to continue?';
+
+  @override
+  String get cancel => 'Cancel';
 }

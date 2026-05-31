@@ -607,6 +607,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invalid VOC data'**
   String get invalidVocData;
+
+  /// No description provided for @premium.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium'**
+  String get premium;
+
+  /// No description provided for @goToServiceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to {serviceName}'**
+  String goToServiceTitle(String serviceName);
+
+  /// No description provided for @goToServiceContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to go to {serviceName}?'**
+  String goToServiceContent(String serviceName);
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @googleCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Calendar'**
+  String get googleCalendar;
+
+  /// No description provided for @linked.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked'**
+  String get linked;
+
+  /// No description provided for @linkGoogleCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Link with Google Account'**
+  String get linkGoogleCalendar;
+
+  /// No description provided for @googleCalendarVocSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Calendar VOC Sync'**
+  String get googleCalendarVocSync;
+
+  /// No description provided for @notLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Not linked'**
+  String get notLinked;
+
+  /// No description provided for @syncDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Range'**
+  String get syncDuration;
+
+  /// No description provided for @syncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing...'**
+  String get syncing;
+
+  /// No description provided for @syncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Now'**
+  String get syncNow;
+
+  /// No description provided for @unlink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink'**
+  String get unlink;
+
+  /// No description provided for @plusPassFeature.
+  ///
+  /// In en, this message translates to:
+  /// **'Plus Pass Exclusive Feature'**
+  String get plusPassFeature;
+
+  /// No description provided for @premiumCalendarSyncDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar sync will be enabled when you purchase Premium.'**
+  String get premiumCalendarSyncDesc;
+
+  /// No description provided for @explorePremium.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore Premium'**
+  String get explorePremium;
+
+  /// No description provided for @calendarPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar access permission is required.'**
+  String get calendarPermissionRequired;
+
+  /// No description provided for @loginFailedRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to log in. Please try again.'**
+  String get loginFailedRetry;
+
+  /// No description provided for @googleCalendarUnlinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Calendar has been unlinked.'**
+  String get googleCalendarUnlinked;
+
+  /// No description provided for @vocEventsAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Void of Course events added to Google Calendar.'**
+  String vocEventsAdded(int count);
+
+  /// No description provided for @syncFailedRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed. Please try again.'**
+  String get syncFailedRetry;
+
+  /// No description provided for @unlinkGoogleCalendarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink Google Calendar'**
+  String get unlinkGoogleCalendarTitle;
+
+  /// No description provided for @unlinkGoogleCalendarContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlinking will remove the \"Void of Course 🌙\" calendar from Google Calendar.\nDo you want to continue?'**
+  String get unlinkGoogleCalendarContent;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate
