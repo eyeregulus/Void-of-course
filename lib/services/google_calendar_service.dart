@@ -71,7 +71,7 @@ class GoogleCalendarService extends ChangeNotifier {
   String? get lastError => _lastError;
 
   // RevenueCat 인앱 결제 서비스의 프리미엄 여부를 가져옵니다.
-  bool get isPremiumUser => PurchaseService.instance.isPremiumUser; 
+  bool get isPremiumUser => PurchaseService.instance.isPremiumUser;
 
   // ─── 초기화 ───────────────────────────────────────────────────────────────
 
@@ -290,7 +290,7 @@ class GoogleCalendarService extends ChangeNotifier {
               ? '달이 보이드 오브 코스 상태입니다.\n이 시간에는 중요한 결정이나 시작을 피하는 것이 좋습니다.'
               : 'The Moon is Void of Course.\nAvoid important decisions or new beginnings during this time.';
 
-      const batchSize = 10;
+      const batchSize = 40;
       for (var i = 0; i < vocPeriods.length; i += batchSize) {
         final chunk = vocPeriods.skip(i).take(batchSize);
         final results = await Future.wait(
@@ -366,13 +366,17 @@ class GoogleCalendarService extends ChangeNotifier {
       final newId = created.id!;
 
       // 빨간색으로 설정
-      await api.calendarList.patch(
-        gcal.CalendarListEntry(
-          backgroundColor: _kCalendarColor,
-          foregroundColor: _kCalendarFgColor,
-        ),
-        newId,
-      );
+      try {
+        await api.calendarList.patch(
+          gcal.CalendarListEntry(
+            backgroundColor: _kCalendarColor,
+            foregroundColor: _kCalendarFgColor,
+          ),
+          newId,
+        );
+      } catch (e) {
+        debugPrint('[GoogleCalendar] 색상 변경 실패 (무시됨): $e');
+      }
 
       _vocCalendarId = newId;
       await _persistCalendarId(newId);
@@ -475,7 +479,7 @@ class GoogleCalendarService extends ChangeNotifier {
     if (ids.isEmpty) return;
 
     int deleted = 0;
-    const batchSize = 10;
+    const batchSize = 40;
     for (int i = 0; i < ids.length; i += batchSize) {
       final chunk = ids.skip(i).take(batchSize);
       await Future.wait(
