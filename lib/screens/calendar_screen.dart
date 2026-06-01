@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:void_of_course/l10n/app_localizations.dart';
+import '../widgets/premium_badge.dart';
 
 import '../services/app_analytics.dart';
 import '../services/calendar_voc_cache.dart';
@@ -104,7 +105,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
       final startUtc = currentVoc['start'] as DateTime?;
       final endUtc = currentVoc['end'] as DateTime?;
-      if (startUtc == null || endUtc == null) continue;                                                
+      if (startUtc == null || endUtc == null) continue;
 
       final tzStart = tzProvider.convert(startUtc);
       final tzEnd = tzProvider.convert(endUtc);
@@ -242,6 +243,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            const SizedBox(width: 8),
+            const PremiumBadge(),
             if (_isLoading) ...[
               const SizedBox(width: 12),
               SizedBox(
@@ -262,159 +265,158 @@ class _CalendarScreenState extends State<CalendarScreen> {
       body: Column(
         children: [
           TableCalendar<Map<String, dynamic>>(
-                firstDay: DateTime.utc(2020, 1, 1),
-                lastDay: DateTime.utc(2050, 12, 31),
-                focusedDay: _focusedDay,
-                locale: appLocalizations.localeName,
-                pageAnimationEnabled: true,
-                pageJumpingEnabled: false,
-                daysOfWeekHeight: 24,
-                daysOfWeekStyle: DaysOfWeekStyle(
-                  weekdayStyle: TextStyle(
-                    fontSize: 13,
-                    height: 1.0,
-                    color:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white70
-                            : Colors.black54,
-                  ),
-                  weekendStyle: TextStyle(
-                    fontSize: 13,
-                    height: 1.0,
-                    color:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.redAccent
-                            : Colors.red,
-                  ),
-                ),
-                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                eventLoader: _getEventsForDay,
-                onDaySelected: _onDaySelected,
-                onPageChanged: _onCalendarPageChanged,
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Themes.gold.withOpacity(0.3)
-                            : Themes.midnightBlue.withOpacity(0.3),
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Themes.gold
-                            : Themes.midnightBlue,
-                    shape: BoxShape.circle,
-                  ),
-                  markerDecoration: BoxDecoration(
-                    color:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.redAccent
-                            : Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  markerSize: 6.0,
-                ),
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  titleCentered: true,
-                  titleTextStyle: TextStyle(
-                    color:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                    fontSize: 18,
-                  ),
-                  leftChevronIcon: Icon(
-                    Icons.chevron_left,
-                    color:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                  ),
-                  rightChevronIcon: Icon(
-                    Icons.chevron_right,
-                    color:
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                  ),
-                ),
-                calendarBuilders: CalendarBuilders(
-                  dowBuilder: (context, day) {
-                    final isWeekend =
-                        day.weekday == DateTime.saturday ||
-                        day.weekday == DateTime.sunday;
-                    final isDark =
-                        Theme.of(context).brightness == Brightness.dark;
-                    final label = DateFormat.E(
-                      appLocalizations.localeName,
-                    ).format(day);
+            firstDay: DateTime.utc(2020, 1, 1),
+            lastDay: DateTime.utc(2050, 12, 31),
+            focusedDay: _focusedDay,
+            locale: appLocalizations.localeName,
+            pageAnimationEnabled: true,
+            pageJumpingEnabled: false,
+            daysOfWeekHeight: 24,
+            daysOfWeekStyle: DaysOfWeekStyle(
+              weekdayStyle: TextStyle(
+                fontSize: 13,
+                height: 1.0,
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.black54,
+              ),
+              weekendStyle: TextStyle(
+                fontSize: 13,
+                height: 1.0,
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.redAccent
+                        : Colors.red,
+              ),
+            ),
+            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+            eventLoader: _getEventsForDay,
+            onDaySelected: _onDaySelected,
+            onPageChanged: _onCalendarPageChanged,
+            calendarStyle: CalendarStyle(
+              todayDecoration: BoxDecoration(
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Themes.gold.withOpacity(0.3)
+                        : Themes.midnightBlue.withOpacity(0.3),
+                shape: BoxShape.circle,
+              ),
+              selectedDecoration: BoxDecoration(
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Themes.gold
+                        : Themes.midnightBlue,
+                shape: BoxShape.circle,
+              ),
+              markerDecoration: BoxDecoration(
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.redAccent
+                        : Colors.red,
+                shape: BoxShape.circle,
+              ),
+              markerSize: 6.0,
+            ),
+            headerStyle: HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+              titleTextStyle: TextStyle(
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                fontSize: 18,
+              ),
+              leftChevronIcon: Icon(
+                Icons.chevron_left,
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+              ),
+              rightChevronIcon: Icon(
+                Icons.chevron_right,
+                color:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+              ),
+            ),
+            calendarBuilders: CalendarBuilders(
+              dowBuilder: (context, day) {
+                final isWeekend =
+                    day.weekday == DateTime.saturday ||
+                    day.weekday == DateTime.sunday;
+                final isDark = Theme.of(context).brightness == Brightness.dark;
+                final label = DateFormat.E(
+                  appLocalizations.localeName,
+                ).format(day);
 
-                    return Align(
-                      alignment: const Alignment(0, -0.35),
-                      child: Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 13,
-                          height: 1.0,
-                          color:
-                              isWeekend
-                                  ? (isDark ? Colors.redAccent : Colors.red)
-                                  : (isDark ? Colors.white70 : Colors.black54),
+                return Align(
+                  alignment: const Alignment(0, -0.35),
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 13,
+                      height: 1.0,
+                      color:
+                          isWeekend
+                              ? (isDark ? Colors.redAccent : Colors.red)
+                              : (isDark ? Colors.white70 : Colors.black54),
+                    ),
+                  ),
+                );
+              },
+              defaultBuilder: (context, day, focusedDay) {
+                final vocSpan = _vocSpans[_calendarDayKey(day)];
+                if (vocSpan == null || !vocSpan['isMultiDay']) {
+                  return null;
+                }
+
+                final isFirstDay = vocSpan['isFirstDay'] as bool;
+                final isLastDay = vocSpan['isLastDay'] as bool;
+                final markerColor =
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.redAccent
+                        : Colors.red;
+
+                return Stack(
+                  children: [
+                    Align(
+                      alignment: const Alignment(0, 0.8),
+                      child: Container(
+                        height: 6,
+                        margin: const EdgeInsets.symmetric(horizontal: 1),
+                        decoration: BoxDecoration(
+                          color: markerColor,
+                          borderRadius: BorderRadius.horizontal(
+                            left:
+                                isFirstDay
+                                    ? const Radius.circular(10)
+                                    : Radius.zero,
+                            right:
+                                isLastDay
+                                    ? const Radius.circular(10)
+                                    : Radius.zero,
+                          ),
                         ),
                       ),
-                    );
-                  },
-                  defaultBuilder: (context, day, focusedDay) {
-                    final vocSpan = _vocSpans[_calendarDayKey(day)];
-                    if (vocSpan == null || !vocSpan['isMultiDay']) {
-                      return null;
-                    }
-
-                    final isFirstDay = vocSpan['isFirstDay'] as bool;
-                    final isLastDay = vocSpan['isLastDay'] as bool;
-                    final markerColor =
-                        Theme.of(context).brightness == Brightness.dark
-                            ? Colors.redAccent
-                            : Colors.red;
-
-                    return Stack(
-                      children: [
-                        Align(
-                          alignment: const Alignment(0, 0.8),
-                          child: Container(
-                            height: 6,
-                            margin: const EdgeInsets.symmetric(horizontal: 1),
-                            decoration: BoxDecoration(
-                              color: markerColor,
-                              borderRadius: BorderRadius.horizontal(
-                                left:
-                                    isFirstDay
-                                        ? const Radius.circular(10)
-                                        : Radius.zero,
-                                right:
-                                    isLastDay
-                                        ? const Radius.circular(10)
-                                        : Radius.zero,
-                              ),
-                            ),
-                          ),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        day.day.toString(),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
                         ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            day.day.toString(),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
           const SizedBox(height: 8.0),
           Expanded(
@@ -456,7 +458,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                   Icons.timer_off_outlined,
                                   color: Colors.red,
                                 ),
-                                title: const Text('Void of Course'),
+                                title: const Text('Void of course'),
                                 subtitle: Text(
                                   '${timeFormat.format(tzStart)} - ${timeFormat.format(tzEnd)}',
                                 ),

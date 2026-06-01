@@ -35,14 +35,14 @@
     "mailAppError": "Cannot open mail app. Please check your default mail app settings.",
     "contactEmail": "Arion.Ayin@gmail.com",
     "infoScreenTitle": "Info",
-    "headerSubtitle": "Void of Course Calculator",
+    "headerSubtitle": "Void of course Calculator",
     "whoAreWeTitle": "Who are we?",
     "whoAreWeSubtitle": "• Arion Ayin's Mission : Fathoming the world with the eyes of a lion",
     "whoIsItUsefulForTitle": "Who is it useful for?",
-    "whoIsItUsefulForSubtitle": "• Those who need simple date selection\n• Those who need Void of Course calculations\n• Those who need an indicator for action",
+    "whoIsItUsefulForSubtitle": "• Those who need simple date selection\n• Those who need Void of course calculations\n• Those who need an indicator for action",
     "whyDidWeMakeThisAppTitle": "Why did we make this?",
     "whyDidWeMakeThisAppSubtitle": "• With the hope that anyone can easily access this information.",
-    "copyrightText": "© Arion Ayin. All rights reserved.\nWith respect to Alexander Kolesnikov's iLuna",
+    "copyrightText": "© EyeofRegulus. All rights reserved.\nWith respect to Alexander Kolesnikov's iLuna",
     "newMoon": "New Moon",
     "crescentMoon": "Crescent Moon",
     "firstQuarter": "First Quarter",
@@ -54,7 +54,7 @@
     "sunMoonPositionError": "Sun or Moon position not available.",
     "initializationError": "Initialization Error",
     "calculationError": "Error during calculation",
-    "vocStartsInMinutes": "{minutesRemaining} minutes until Void of Course begins.",
+    "vocStartsInMinutes": "{minutesRemaining} minutes until Void of course begins.",
     "@vocStartsInMinutes": {
         "placeholders": {
             "minutesRemaining": {
@@ -63,7 +63,7 @@
             }
         }
     },
-    "vocStartsInHours": "Void of Course begins in {count} hours.",
+    "vocStartsInHours": "Void of course begins in {count} hours.",
     "@vocStartsInHours": {
         "placeholders": {
             "count": {
@@ -72,23 +72,23 @@
             }
         }
     },
-    "vocStartsSoon": "Void of Course begins soon.",
-    "vocNotificationTitle": "Void of Course Notification",
-    "vocOngoingTitle": "Void of Course in Progress",
-    "vocOngoingBody": "Currently in Void of Course period.",
-    "vocEndedTitle": "Void of Course Ended",
-    "vocEndedBody": "The Void of Course period has ended.",
+    "vocStartsSoon": "Void of course begins soon.",
+    "vocNotificationTitle": "Void of course Notification",
+    "vocOngoingTitle": "Void of course in Progress",
+    "vocOngoingBody": "Currently in Void of course period.",
+    "vocEndedTitle": "Void of course Ended",
+    "vocEndedBody": "The Void of course period has ended.",
     "nextMoonPhaseTimePassed": "Next Moon Phase time has passed.",
     "moonSignEndTimePassed": "Moon Sign end time has passed.",
     "vocEndTimePassed": "VOC end time has passed.",
     "timeToRefreshData": "Time to refresh data: {refreshReason}. Refreshing...",
     "voidAlarmExactAlarmDeniedMessage": "Please allow the *Alarms & Reminders* permission in the app settings.",
-    "noUpcomingVocFound": "No upcoming Void of Course period found or it has passed. No alarm scheduled.",
+    "noUpcomingVocFound": "No upcoming Void of course period found or it has passed. No alarm scheduled.",
     "errorSchedulingAlarm": "Error scheduling alarm",
     "errorShowingImmediateAlarm": "Error showing immediate alarm",
     "calculating": "Calculating...",
-    "vocStartedTitle": "Void of Course Started",
-    "vocStartedBody": "The Void of Course period has now begun.",
+    "vocStartedTitle": "Void of course Started",
+    "vocStartedBody": "The Void of course period has now begun.",
     "vocRemainingTimeHourMinute": "Time remaining: {hours}h {minutes}m",
     "@vocRemainingTimeHourMinute": {
         "placeholders": {
@@ -108,7 +108,7 @@
             }
         }
     },
-    "preVocNotificationBodyHourMinute": "{hours}h {minutes}m until Void of Course begins.",
+    "preVocNotificationBodyHourMinute": "{hours}h {minutes}m until Void of course begins.",
     "@preVocNotificationBodyHourMinute": {
         "placeholders": {
             "hours": {
@@ -119,7 +119,7 @@
             }
         }
     },
-    "preVocNotificationBodyMinute": "{minutes} minutes until Void of Course begins.",
+    "preVocNotificationBodyMinute": "{minutes} minutes until Void of course begins.",
     "@preVocNotificationBodyMinute": {
         "placeholders": {
             "minutes": {
@@ -131,7 +131,7 @@
     "vocStatusIsVoc": "There is a void Now",
     "vocStatusHasVocToday": "Todays schedule has a void",
     "vocStatusIsNotVoc": "It is not a void",
-    "voidOfCourse": "Void of Course",
+    "voidOfCourse": "Void of course",
     "vocStartTime": "Starts: {time}",
     "@vocStartTime": {
         "placeholders": {
@@ -181,10 +181,10 @@
     "msgAppNotFound": "Cannot find an app to open this.",
     "msgEmailCopied": "Email app not found. Address copied to clipboard.",
     "ok": "OK",
-    "resetVoidAlarmForTimezoneChange": "The timezone has changed. Please set the Void of Course alarm again.",
+    "resetVoidAlarmForTimezoneChange": "The timezone has changed. Please set the Void of course alarm again.",
     "calendar": "Calendar",
     "voidCalendar": "Void Calendar",
-    "noVocFound": "No Void of Course period for this day.",
+    "noVocFound": "No Void of course period for this day.",
     "invalidVocData": "Invalid VOC data",
     "premium": "Premium",
     "goToServiceTitle": "Go to {serviceName}",
@@ -220,7 +220,7 @@
     "calendarPermissionRequired": "Calendar access permission is required.",
     "loginFailedRetry": "Failed to log in. Please try again.",
     "googleCalendarUnlinked": "Google Calendar has been unlinked.",
-    "vocEventsAdded": "{count} Void of Course events added to Google Calendar.",
+    "vocEventsAdded": "{count} Void of course events added to Google Calendar.",
     "@vocEventsAdded": {
         "placeholders": {
             "count": {
@@ -230,7 +230,7 @@
     },
     "syncFailedRetry": "Sync failed. Please try again.",
     "unlinkGoogleCalendarTitle": "Unlink Google Calendar",
-    "unlinkGoogleCalendarContent": "Unlinking will remove the \"Void of Course 🌙\" calendar from Google Calendar.\nDo you want to continue?",
+    "unlinkGoogleCalendarContent": "Unlinking will remove the \"Void of course 🌙\" calendar from Google Calendar.\nDo you want to continue?",
     "cancel": "Cancel",
     "addHomeWidget": "Add Widget",
     "addHomeWidgetDesc": "Add the Void widget to your home screen.",

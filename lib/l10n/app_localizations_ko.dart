@@ -64,7 +64,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get mailAppError => '메일 앱을 열 수 없습니다. 기본 메일 앱 설정을 확인해주세요.';
 
   @override
-  String get contactEmail => 'Arion.Ayin@gmail.com';
+  String get contactEmail => 'eyeregulus@gmail.com';
 
   @override
   String get infoScreenTitle => '개발자 노트';
@@ -94,7 +94,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get copyrightText =>
-      '© Arion Ayin. All rights reserved.\nWith respect to Alexander Kolesnikov\'s iLuna';
+      '© EyeofRegulus. All rights reserved.\nWith respect to Alexander Kolesnikov\'s iLuna';
 
   @override
   String get newMoon => '신월';
@@ -154,7 +154,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get vocStartsSoon => '보이드가 곧 시작됩니다.';
 
   @override
-  String get vocNotificationTitle => 'Void of Course 알림';
+  String get vocNotificationTitle => 'Void of course 알림';
 
   @override
   String get vocOngoingTitle => '보이드 중';
@@ -374,7 +374,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String vocEventsAdded(int count) {
-    return '$count개의 Void of Course 이벤트가 구글 캘린더에 추가되었습니다.';
+    return '$count개의 Void of course 이벤트가 구글 캘린더에 추가되었습니다.';
   }
 
   @override
@@ -385,7 +385,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get unlinkGoogleCalendarContent =>
-      '연동을 해제하면 구글 캘린더에서 \"Void of Course 🌙\" 캘린더가 삭제됩니다.\n계속하시겠습니까?';
+      '연동을 해제하면 구글 캘린더에서 \"Void of course 🌙\" 캘린더가 삭제됩니다.\n계속하시겠습니까?';
 
   @override
   String get cancel => '취소';

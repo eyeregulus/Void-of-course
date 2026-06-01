@@ -8,6 +8,7 @@ import 'package:void_of_course/l10n/app_localizations.dart';
 import 'package:void_of_course/widgets/app_snackbar.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:void_of_course/services/app_analytics.dart';
+import '../widgets/premium_badge.dart';
 
 // 링크 버튼 정보를 담는 클래스예요.
 class NoteAction {
@@ -48,11 +49,11 @@ class InfoScreen extends StatelessWidget {
     final List<DeveloperNote> notes = [
       // ▼▼▼ [최신 글] ▼▼▼
       DeveloperNote(
-        date: '2026-06-02',
-        titleKo: '<26-06-02 업데이트>',
-        titleEn: '<26-06-02 Update>',
+        date: '2026-06-05',
+        titleKo: '<26-06-05 업데이트>',
+        titleEn: '<26-06-05 Update>',
         contentKo: '''
-안녕하세요 아리온 아인입니다.
+안녕하세요 리오입니다.
 이번 1.2.0+ 00000000000000000 업데이트 사항입니다.
 
 1. 보이드 알람 시간체크 방식 변경
@@ -65,10 +66,10 @@ class InfoScreen extends StatelessWidget {
 따뜻한 리뷰는 개발자에게 큰 힘이 됩니다.
 
 감사합니다
-아리온 아인 드림
+리오 드림
 ''',
         contentEn: '''
-Hello, this is Arion Ayin.
+Hi, this is developer Lio.
 This is a 1.2.0+ 00000000000000000000 update.
 
 1. Void notification time check method changed
@@ -88,7 +89,7 @@ If you have any feedback or questions, please contact us.
             label:
                 appLocalizations
                     .btnContact, // '개발자에게 한마디' / 'Contact Developer'
-            url: 'mailto:arion.ayin@gmail.com',
+            url: 'mailto:eyeregulus@gmail.com',
           ),
         ],
       ),
@@ -98,7 +99,7 @@ If you have any feedback or questions, please contact us.
         titleKo: '<26-03-10 업데이트>',
         titleEn: '<26-03-10 Update>',
         contentKo: '''
-안녕하세요 아리온 아인입니다.
+안녕하세요 리오입니다.
 이번 1.2.0+51 업데이트 사항입니다.
 
 1. Void 알림 오류 수정
@@ -110,10 +111,10 @@ If you have any feedback or questions, please contact us.
 따뜻한 리뷰는 개발자에게 큰 힘이 됩니다.
 
 감사합니다
-아리온 아인 드림
+리오 드림
 ''',
         contentEn: '''
-Hello, this is Arion Ayin.
+Hi, this is developer Lio.
 This is a 1.2.0+51 update.
 
 1. Correct void notification error
@@ -132,7 +133,7 @@ If you have any feedback or questions, please contact us.
             label:
                 appLocalizations
                     .btnContact, // '개발자에게 한마디' / 'Contact Developer'
-            url: 'mailto:arion.ayin@gmail.com',
+            url: 'mailto:eyeregulus@gmail.com',
           ),
         ],
       ),
@@ -142,7 +143,7 @@ If you have any feedback or questions, please contact us.
         titleKo: '<26-02-10 업데이트>',
         titleEn: '<26-02-10 Update>',
         contentKo: '''
-안녕하세요 아리온 아인입니다.
+안녕하세요 리오입니다.
 이번 1.2.0+42 업데이트 사항입니다.
 
 1. 25개국 표준시 지원 추가
@@ -153,10 +154,10 @@ If you have any feedback or questions, please contact us.
 따뜻한 리뷰는 개발자에게 큰 힘이 됩니다.
 
 감사합니다
-아리온 아인 드림
+리오 드림
 ''',
         contentEn: '''
-Hello, this is Arion Ayin.
+Hi, this is developer Lio.
 This is a 1.2.0+42 update.
 
 1. 25 National Standard Time Support Added
@@ -175,7 +176,7 @@ If you have any feedback or questions, please contact us.
             label:
                 appLocalizations
                     .btnContact, // '개발자에게 한마디' / 'Contact Developer'
-            url: 'mailto:arion.ayin@gmail.com',
+            url: 'mailto:eyeregulus@gmail.com',
           ),
         ],
       ),
@@ -185,7 +186,7 @@ If you have any feedback or questions, please contact us.
         titleKo: '<26-02-01 업데이트>',
         titleEn: '<26-02-01 Update>',
         contentKo: '''
-안녕하세요 아리온 아인입니다.
+안녕하세요 리오입니다.
 이번 1.2.0 업데이트 사항입니다.
 
 1. 문 페이즈, 문 인 싸인의 시작 및 종료 시간 추가
@@ -196,10 +197,10 @@ If you have any feedback or questions, please contact us.
 따뜻한 리뷰는 개발자에게 큰 힘이 됩니다.
 
 감사합니다
-아리온 아인 드림
+리오 드림
 ''',
         contentEn: '''
-Hello, this is Arion Ayin.
+Hi, this is developer Lio.
 Here are the updates for this release:
 
 1. Added start and end times for Moon Phase and Moon in Sign
@@ -218,21 +219,21 @@ If you have any feedback or questions, please contact us.
             label:
                 appLocalizations
                     .btnContact, // '개발자에게 한마디' / 'Contact Developer'
-            url: 'mailto:arion.ayin@gmail.com',
+            url: 'mailto:eyeregulus@gmail.com',
           ),
         ],
       ),
 
       DeveloperNote(
         date: '2025-12-19',
-        titleKo: '<아리온 아인의 비전>',
-        titleEn: '<Vision of Arion Ayin>',
+        titleKo: '<Eye of Regulus의 비전>',
+        titleEn: '<Vision of Eye of Regulus>',
         contentKo: '''
-안녕하세요 아리온 아인입니다.
+안녕하세요 리오입니다.
 여기 한국은 날씨가 많이 춥습니다.
-모든 글로벌 유저분들의 건강을 기원합니다.
+모든 유저분들의 건강을 기원합니다.
 
-아리온 아인의 운영비전은 다음과 같습니다.
+저의 운영비전은 다음과 같습니다.
 **사자의 눈으로 세상을 헤아린다**
 
 유저분께서 남겨주신 피드백들을 통해, 앱이라는 도구로써 집단지식을 창출할 수 있어 뿌듯하게 생각합니다.
@@ -255,26 +256,26 @@ If you have any feedback or questions, please contact us.
 따뜻한 리뷰는 개발자에게 큰 힘이 됩니다.
 
 감사합니다
-아리온 아인 드림
+리오 드림
 ''',
         contentEn: '''
-Hello, this is Arion Ayin.
+Hi, this is developer Lio.
 It is very cold here in Korea.
-I wish good health to all our global users.
+I wish good health to all our users.
 
-Arion Ayin's operational vision is as follows:
+My operational vision is as follows:
 **Fathoming the world with the eyes of a lion**
 
 I am proud to create collective intelligence using this app as a tool, thanks to the feedback you have left.
-We plan to continue building a platform that accumulates value.
+I plan to continue building a platform that accumulates value.
 
 Also, about 20 iOS (Apple) users have requested an App Store release.
 
-1. We plan to proceed with the App Store release when the Android user base reaches 1,000 and the service value is verified.
+1. I plan to proceed with the App Store release when the Android user base reaches 1,000 and the service value is verified.
 
-2. If you wish for an earlier release, we will proceed as soon as the operating costs for the iOS development environment are secured through voluntary sponsorship from users. This is to maintain the service's independence and free principles. (Check the link below)
+2. If you wish for an earlier release, I will proceed as soon as the operating costs for the iOS development environment are secured through voluntary sponsorship from users. This is to maintain the service's independence and free principles. (Check the link below)
 
-Void of Course is useful for selecting dates.
+Void of course is useful for choosing a date.
 Choose the day that suits you best, and get guidance for your decisions.
 (Be sure to use the alarm service to prepare for the Void Time)
 
@@ -294,7 +295,7 @@ Warm reviews are a great strength to the developer.
             label:
                 appLocalizations
                     .btnContact, // '개발자에게 한마디' / 'Contact Developer'
-            url: 'mailto:arion.ayin@gmail.com',
+            url: 'mailto:eyeregulus@gmail.com',
           ),
         ],
       ),
@@ -314,6 +315,8 @@ Warm reviews are a great strength to the developer.
             Text(
               appLocalizations.infoScreenTitle,
             ), // '개발자 노트' / 'Developer Notes'
+            const SizedBox(width: 8),
+            const PremiumBadge(),
           ],
         ),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,

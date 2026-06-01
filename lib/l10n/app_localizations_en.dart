@@ -72,7 +72,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get infoScreenTitle => 'Info';
 
   @override
-  String get headerSubtitle => 'Void of Course Calculator';
+  String get headerSubtitle => 'Void of course Calculator';
 
   @override
   String get whoAreWeTitle => 'Who are we?';
@@ -86,7 +86,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get whoIsItUsefulForSubtitle =>
-      '• Those who need simple date selection\n• Those who need Void of Course calculations\n• Those who need an indicator for action';
+      '• Those who need simple date selection\n• Those who need Void of course calculations\n• Those who need an indicator for action';
 
   @override
   String get whyDidWeMakeThisAppTitle => 'Why did we make this?';
@@ -97,7 +97,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get copyrightText =>
-      '© Arion Ayin. All rights reserved.\nWith respect to Alexander Kolesnikov\'s iLuna';
+      '© EyeofRegulus. All rights reserved.\nWith respect to Alexander Kolesnikov\'s iLuna';
 
   @override
   String get newMoon => 'New Moon';
@@ -140,7 +140,7 @@ class AppLocalizationsEn extends AppLocalizations {
       minutesRemaining,
     );
 
-    return '$minutesRemainingString minutes until Void of Course begins.';
+    return '$minutesRemainingString minutes until Void of course begins.';
   }
 
   @override
@@ -150,26 +150,26 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     final String countString = countNumberFormat.format(count);
 
-    return 'Void of Course begins in $countString hours.';
+    return 'Void of course begins in $countString hours.';
   }
 
   @override
-  String get vocStartsSoon => 'Void of Course begins soon.';
+  String get vocStartsSoon => 'Void of course begins soon.';
 
   @override
-  String get vocNotificationTitle => 'Void of Course Notification';
+  String get vocNotificationTitle => 'Void of course Notification';
 
   @override
-  String get vocOngoingTitle => 'Void of Course in Progress';
+  String get vocOngoingTitle => 'Void of course in Progress';
 
   @override
-  String get vocOngoingBody => 'Currently in Void of Course period.';
+  String get vocOngoingBody => 'Currently in Void of course period.';
 
   @override
-  String get vocEndedTitle => 'Void of Course Ended';
+  String get vocEndedTitle => 'Void of course Ended';
 
   @override
-  String get vocEndedBody => 'The Void of Course period has ended.';
+  String get vocEndedBody => 'The Void of course period has ended.';
 
   @override
   String get nextMoonPhaseTimePassed => 'Next Moon Phase time has passed.';
@@ -191,7 +191,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noUpcomingVocFound =>
-      'No upcoming Void of Course period found or it has passed. No alarm scheduled.';
+      'No upcoming Void of course period found or it has passed. No alarm scheduled.';
 
   @override
   String get errorSchedulingAlarm => 'Error scheduling alarm';
@@ -203,10 +203,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get calculating => 'Calculating...';
 
   @override
-  String get vocStartedTitle => 'Void of Course Started';
+  String get vocStartedTitle => 'Void of course Started';
 
   @override
-  String get vocStartedBody => 'The Void of Course period has now begun.';
+  String get vocStartedBody => 'The Void of course period has now begun.';
 
   @override
   String vocRemainingTimeHourMinute(int hours, int minutes) {
@@ -220,12 +220,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String preVocNotificationBodyHourMinute(int hours, int minutes) {
-    return '${hours}h ${minutes}m until Void of Course begins.';
+    return '${hours}h ${minutes}m until Void of course begins.';
   }
 
   @override
   String preVocNotificationBodyMinute(int minutes) {
-    return '$minutes minutes until Void of Course begins.';
+    return '$minutes minutes until Void of course begins.';
   }
 
   @override
@@ -241,7 +241,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get vocStatusIsNotVoc => 'It is not a void';
 
   @override
-  String get voidOfCourse => 'Void of Course';
+  String get voidOfCourse => 'Void of course';
 
   @override
   String vocStartTime(String time) {
@@ -298,7 +298,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetVoidAlarmForTimezoneChange =>
-      'The timezone has changed. Please set the Void of Course alarm again.';
+      'The timezone has changed. Please set the Void of course alarm again.';
 
   @override
   String get calendar => 'Calendar';
@@ -307,7 +307,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voidCalendar => 'Void Calendar';
 
   @override
-  String get noVocFound => 'No Void of Course period for this day.';
+  String get noVocFound => 'No Void of course period for this day.';
 
   @override
   String get invalidVocData => 'Invalid VOC data';
@@ -380,7 +380,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String vocEventsAdded(int count) {
-    return '$count Void of Course events added to Google Calendar.';
+    return '$count Void of course events added to Google Calendar.';
   }
 
   @override
@@ -391,7 +391,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unlinkGoogleCalendarContent =>
-      'Unlinking will remove the \"Void of Course 🌙\" calendar from Google Calendar.\nDo you want to continue?';
+      'Unlinking will remove the \"Void of course 🌙\" calendar from Google Calendar.\nDo you want to continue?';
 
   @override
   String get cancel => 'Cancel';

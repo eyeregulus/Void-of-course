@@ -367,15 +367,19 @@ class GoogleCalendarService extends ChangeNotifier {
 
       // 빨간색으로 설정
       try {
+        // 구글 서버에 캘린더가 완전히 생성될 때까지 약간 대기 (404 에러 방지)
+        await Future.delayed(const Duration(milliseconds: 500));
+        
         await api.calendarList.patch(
           gcal.CalendarListEntry(
-            backgroundColor: _kCalendarColor,
-            foregroundColor: _kCalendarFgColor,
+            backgroundColor: '#ff0000',
+            foregroundColor: '#ffffff',
           ),
           newId,
+          colorRgbFormat: true,
         );
       } catch (e) {
-        debugPrint('[GoogleCalendar] 색상 변경 실패 (무시됨): $e');
+        debugPrint('[GoogleCalendar] 색상 강제 지정 실패 (무시됨): $e');
       }
 
       _vocCalendarId = newId;

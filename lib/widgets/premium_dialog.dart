@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../services/purchase_service.dart';
 import '../widgets/app_snackbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // 결제 티어를 나타내는 열거형이에요.
 enum PremiumTier {
@@ -38,11 +39,16 @@ class PremiumDialog extends StatefulWidget {
 }
 
 class _PremiumDialogState extends State<PremiumDialog>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   // 기본 선택 티어는 마스터 올인원(추천)이에요.
   PremiumTier _selectedTier = PremiumTier.pro;
 
   late final AnimationController _shimmerController;
+
+  bool _hasSeenPremiumInfo = true;
+  late final AnimationController _pulseController;
+  late final Animation<double> _pulseAnimation;
+
   bool _isPurchasing = false;
 
   // 기본 가격 및 티어 정보 매핑
@@ -57,20 +63,20 @@ class _PremiumDialogState extends State<PremiumDialog>
     return [
       _TierInfo(
         tier: PremiumTier.lite,
-        label: isKo ? 'Lite - 광고제거' : 'Lite - Remove ads',
+        label: isKo ? 'LITE - 광고제거' : 'LITE - Remove ads',
         price: isKo ? '₩ 7,500' : '\$4.99',
       ),
       _TierInfo(
         tier: PremiumTier.plus,
-        label: isKo ? 'Plus - 위젯 + 캘린더' : 'Plus - Widget + Calendar',
+        label: isKo ? 'PLUS - 위젯 + 캘린더' : 'PLUS - Widget + Calendar',
         price: isKo ? '₩ 25,000' : '\$16.99',
       ),
       _TierInfo(
         tier: PremiumTier.pro,
         label:
             isKo
-                ? 'Pro - 광고제거\n+ 위젯 + 캘린더'
-                : 'Pro - Remove ads + Widget + Calendar',
+                ? 'PRO - 광고제거\n+ 위젯 + 캘린더'
+                : 'PRO - Remove ads + Widget + Calendar',
         price: isKo ? '₩ 30,000' : '\$19.99',
         recommended: true,
       ),
@@ -84,11 +90,143 @@ class _PremiumDialogState extends State<PremiumDialog>
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat();
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
+
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+
+    _checkFirstTimeInfo();
+  }
+
+  Future<void> _checkFirstTimeInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeen = prefs.getBool('has_seen_premium_info_1_2') ?? false;
+    if (mounted) {
+      setState(() {
+        _hasSeenPremiumInfo = hasSeen;
+      });
+    }
+  }
+
+  Future<void> _markInfoSeen() async {
+    if (!_hasSeenPremiumInfo) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('has_seen_premium_info_1_2', true);
+      setState(() {
+        _hasSeenPremiumInfo = true;
+      });
+    }
+  }
+
+  void _showInfoCarousel(bool isKo) {
+    _markInfoSeen();
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.all(20),
+          child: Container(
+            height: 500,
+            decoration: BoxDecoration(
+              color: Theme.of(ctx).cardColor,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: PageView(
+                    children: [
+                      _buildCarouselPage(
+                        imagePath: 'assets/app_Image/Void Widget.jpg',
+                        title: isKo ? '보이드 홈 위젯' : 'Void Home Widget',
+                        desc:
+                            isKo
+                                ? '바탕화면에서 언제든지 다음 보이드 오브 코스 기간을 확인하고 미리 대비하세요.'
+                                : 'Check the next Void of Course period right from your home screen.',
+                      ),
+                      _buildCarouselPage(
+                        imagePath: 'assets/app_Image/Google Calender.png',
+                        title: isKo ? '구글 캘린더 동기화' : 'Google Calendar Sync',
+                        desc:
+                            isKo
+                                ? '번거로운 일정 등록 없이, 구글 캘린더에 보이드 기간을 한눈에 표시해 드립니다.'
+                                : 'Seamlessly sync and view all Void periods directly in your Google Calendar.',
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.swipe, size: 16, color: Colors.grey),
+                      const SizedBox(width: 8),
+                      Text(
+                        isKo ? '좌우로 스와이프하여 넘겨보세요' : 'Swipe left or right',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: Text(isKo ? '닫기' : 'Close'),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCarouselPage({
+    required String imagePath,
+    required String title,
+    required String desc,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(imagePath, fit: BoxFit.contain),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            desc,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 14),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   void dispose() {
     _shimmerController.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
@@ -333,39 +471,65 @@ class _PremiumDialogState extends State<PremiumDialog>
 
   // 상단 헤더 위젯이에요.
   Widget _buildHeader(bool isDark, bool isKo) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors:
-              isDark
-                  ? [
-                    const Color.fromARGB(255, 0, 0, 0),
-                    const Color(0xFF1A1040),
-                  ]
-                  : [
-                    const Color.fromARGB(255, 0, 0, 0),
-                    const Color.fromARGB(255, 0, 0, 0),
-                  ],
-        ),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      child: Column(
-        children: [
-          Text(
-            isKo ? '프리미엄 서비스' : 'Premium Service',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
+    return Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(24, 28, 24, 20),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors:
+                  isDark
+                      ? [
+                        const Color.fromARGB(255, 0, 0, 0),
+                        const Color(0xFF1A1040),
+                      ]
+                      : [
+                        const Color.fromARGB(255, 0, 0, 0),
+                        const Color.fromARGB(255, 0, 0, 0),
+                      ],
             ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           ),
-        ],
-      ),
+          child: Column(
+            children: [
+              Text(
+                isKo ? '프리미엄 서비스' : 'Premium Service',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 24,
+          right: 20,
+          child: GestureDetector(
+            onTap: () => _showInfoCarousel(isKo),
+            child:
+                _hasSeenPremiumInfo
+                    ? const Icon(
+                      Icons.info_outline,
+                      color: Colors.white70,
+                      size: 24,
+                    )
+                    : ScaleTransition(
+                      scale: _pulseAnimation,
+                      child: const Icon(
+                        Icons.info,
+                        color: Colors.amber,
+                        size: 28,
+                      ),
+                    ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -509,28 +673,7 @@ class _PremiumDialogState extends State<PremiumDialog>
                           ),
                         ),
                       ),
-                      if (isOwned) ...[
-                        const SizedBox(width: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.green.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.green, width: 1),
-                          ),
-                          child: Text(
-                            isKo ? '보유중' : 'Owned',
-                            style: const TextStyle(
-                              color: Colors.green,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ] else if (isRecommended) ...[
+                      if (isRecommended) ...[
                         const SizedBox(width: 6),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -545,9 +688,37 @@ class _PremiumDialogState extends State<PremiumDialog>
               ),
             ),
             const SizedBox(width: 8),
-            // 가격 (보유중이면 가격 대신 표시)
+            // 가격 (보유중이면 가격 대신 뱃지와 체크 표시)
             isOwned
-                ? Icon(Icons.check_circle, color: Colors.green, size: 20)
+                ? Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: Colors.green, width: 1),
+                      ),
+                      child: Text(
+                        isKo ? '보유중' : 'Owned',
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    const Icon(
+                      Icons.check_circle,
+                      color: Colors.green,
+                      size: 20,
+                    ),
+                  ],
+                )
                 : Text(
                   info.price,
                   style: TextStyle(

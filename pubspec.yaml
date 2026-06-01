@@ -57,5 +57,6 @@ flutter:
   generate: true
   assets:
     - assets/sweph/
+    - assets/app_Image/
 
   uses-material-design: true

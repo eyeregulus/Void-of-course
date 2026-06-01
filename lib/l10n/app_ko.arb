@@ -14,7 +14,7 @@
     "voidAlarmEnabledMessage": "보이드 알람이 활성화되었습니다.\n6시간 이전부터 알람이 울립니다.",
     "voidAlarmDisabledMessage": "보이드 알람이 비활성화되었습니다.",
     "mailAppError": "메일 앱을 열 수 없습니다. 기본 메일 앱 설정을 확인해주세요.",
-    "contactEmail": "Arion.Ayin@gmail.com",
+    "contactEmail": "eyeregulus@gmail.com",
     "infoScreenTitle": "개발자 노트",
     "whoAreWeTitle": "우리는 누구인가요?",
     "whoAreWeSubtitle": "• 아리온아인의 사명 : |||사자의 눈으로 세상을 헤아립니다.",
@@ -22,7 +22,7 @@
     "whoIsItUsefulForSubtitle": "• 간단한 택일이 필요하신 분들|||• 보이드 오브 코스 계산이 필요한 분들|||• 행동의 지표성이 필요한 분들",
     "whyDidWeMakeThisAppTitle": "왜 이 앱을 만들었나요?",
     "whyDidWeMakeThisAppSubtitle": "• 달의 에너지가 닿지 않는 시간을 피하고,\n유저들이 지혜로운 결정을 할 수 있도록\n돕기 위해",
-    "copyrightText": "© Arion Ayin. All rights reserved.\nWith respect to Alexander Kolesnikov's iLuna",
+    "copyrightText": "© EyeofRegulus. All rights reserved.\nWith respect to Alexander Kolesnikov's iLuna",
     "sunMoonPositionError": "태양 또는 달의 위치를 사용할 수 없습니다.",
     "initializationError": "초기화 오류",
     "calculationError": "계산 중 오류 발생",
@@ -45,7 +45,7 @@
         }
     },
     "vocStartsSoon": "보이드가 곧 시작됩니다.",
-    "vocNotificationTitle": "Void of Course 알림",
+    "vocNotificationTitle": "Void of course 알림",
     "vocOngoingTitle": "보이드 중",
     "vocOngoingBody": "지금은 보이드 시간입니다.",
     "vocEndedTitle": "보이드 종료",
@@ -213,7 +213,7 @@
     "calendarPermissionRequired": "캘린더 접근 권한이 필요합니다.",
     "loginFailedRetry": "로그인에 실패했습니다. 다시 시도해 주세요.",
     "googleCalendarUnlinked": "구글 캘린더 연동이 해제되었습니다.",
-    "vocEventsAdded": "{count}개의 Void of Course 이벤트가 구글 캘린더에 추가되었습니다.",
+    "vocEventsAdded": "{count}개의 Void of course 이벤트가 구글 캘린더에 추가되었습니다.",
     "@vocEventsAdded": {
         "placeholders": {
             "count": {
@@ -223,7 +223,7 @@
     },
     "syncFailedRetry": "동기화에 실패했습니다. 다시 시도해 주세요.",
     "unlinkGoogleCalendarTitle": "구글 캘린더 연동 해제",
-    "unlinkGoogleCalendarContent": "연동을 해제하면 구글 캘린더에서 \"Void of Course 🌙\" 캘린더가 삭제됩니다.\n계속하시겠습니까?",
+    "unlinkGoogleCalendarContent": "연동을 해제하면 구글 캘린더에서 \"Void of course 🌙\" 캘린더가 삭제됩니다.\n계속하시겠습니까?",
     "cancel": "취소",
     "addHomeWidget": "보이드 위젯",
     "addHomeWidgetDesc": "바탕화면에 보이드 위젯을\n추가합니다.",

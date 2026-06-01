@@ -9,6 +9,7 @@ import '../widgets/premium_dialog.dart';
 import 'package:void_of_course/themes.dart';
 import 'package:void_of_course/l10n/app_localizations.dart';
 import 'package:home_widget/home_widget.dart';
+import '../widgets/premium_badge.dart';
 
 class PremiumScreen extends StatelessWidget {
   const PremiumScreen({super.key});
@@ -29,6 +30,8 @@ class PremiumScreen extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(appLocalizations.premium),
+            const SizedBox(width: 8),
+            const PremiumBadge(),
           ],
         ),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -86,10 +89,13 @@ class _GoogleCalendarCardState extends State<GoogleCalendarCard> {
     final calService = GoogleCalendarService.instance;
     final success = await calService.signIn();
     if (!mounted) return;
-    setState(() => _isLoading = false);
 
-    final appLocalizations = AppLocalizations.of(context)!;
-    if (!success) {
+    if (success) {
+      // 로그인(연동) 성공 시 별도 버튼 클릭 없이 즉시 동기화 실행
+      await _handleSync();
+    } else {
+      setState(() => _isLoading = false);
+      final appLocalizations = AppLocalizations.of(context)!;
       final err = calService.lastError;
       final msg = err == 'calendar_permission_denied'
           ? appLocalizations.calendarPermissionRequired

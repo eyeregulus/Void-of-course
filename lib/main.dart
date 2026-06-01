@@ -144,7 +144,7 @@ class MyApp extends StatelessWidget {
       builder: (context, myTheme) {
         final localeProvider = Provider.of<LocaleProvider>(context);
         return MaterialApp(
-          title: 'Void of Course',
+          title: 'Void of course',
           debugShowCheckedModeBanner: false,
           theme: myTheme,
           home: const SplashScreen(),

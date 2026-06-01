@@ -215,7 +215,7 @@ abstract class AppLocalizations {
   /// No description provided for @headerSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Void of Course Calculator'**
+  /// **'Void of course Calculator'**
   String get headerSubtitle;
 
   /// No description provided for @whoAreWeTitle.
@@ -239,7 +239,7 @@ abstract class AppLocalizations {
   /// No description provided for @whoIsItUsefulForSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'• Those who need simple date selection\n• Those who need Void of Course calculations\n• Those who need an indicator for action'**
+  /// **'• Those who need simple date selection\n• Those who need Void of course calculations\n• Those who need an indicator for action'**
   String get whoIsItUsefulForSubtitle;
 
   /// No description provided for @whyDidWeMakeThisAppTitle.
@@ -257,7 +257,7 @@ abstract class AppLocalizations {
   /// No description provided for @copyrightText.
   ///
   /// In en, this message translates to:
-  /// **'© Arion Ayin. All rights reserved.\nWith respect to Alexander Kolesnikov\'s iLuna'**
+  /// **'© EyeofRegulus. All rights reserved.\nWith respect to Alexander Kolesnikov\'s iLuna'**
   String get copyrightText;
 
   /// No description provided for @newMoon.
@@ -329,49 +329,49 @@ abstract class AppLocalizations {
   /// No description provided for @vocStartsInMinutes.
   ///
   /// In en, this message translates to:
-  /// **'{minutesRemaining} minutes until Void of Course begins.'**
+  /// **'{minutesRemaining} minutes until Void of course begins.'**
   String vocStartsInMinutes(int minutesRemaining);
 
   /// No description provided for @vocStartsInHours.
   ///
   /// In en, this message translates to:
-  /// **'Void of Course begins in {count} hours.'**
+  /// **'Void of course begins in {count} hours.'**
   String vocStartsInHours(int count);
 
   /// No description provided for @vocStartsSoon.
   ///
   /// In en, this message translates to:
-  /// **'Void of Course begins soon.'**
+  /// **'Void of course begins soon.'**
   String get vocStartsSoon;
 
   /// No description provided for @vocNotificationTitle.
   ///
   /// In en, this message translates to:
-  /// **'Void of Course Notification'**
+  /// **'Void of course Notification'**
   String get vocNotificationTitle;
 
   /// No description provided for @vocOngoingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Void of Course in Progress'**
+  /// **'Void of course in Progress'**
   String get vocOngoingTitle;
 
   /// No description provided for @vocOngoingBody.
   ///
   /// In en, this message translates to:
-  /// **'Currently in Void of Course period.'**
+  /// **'Currently in Void of course period.'**
   String get vocOngoingBody;
 
   /// No description provided for @vocEndedTitle.
   ///
   /// In en, this message translates to:
-  /// **'Void of Course Ended'**
+  /// **'Void of course Ended'**
   String get vocEndedTitle;
 
   /// No description provided for @vocEndedBody.
   ///
   /// In en, this message translates to:
-  /// **'The Void of Course period has ended.'**
+  /// **'The Void of course period has ended.'**
   String get vocEndedBody;
 
   /// No description provided for @nextMoonPhaseTimePassed.
@@ -407,7 +407,7 @@ abstract class AppLocalizations {
   /// No description provided for @noUpcomingVocFound.
   ///
   /// In en, this message translates to:
-  /// **'No upcoming Void of Course period found or it has passed. No alarm scheduled.'**
+  /// **'No upcoming Void of course period found or it has passed. No alarm scheduled.'**
   String get noUpcomingVocFound;
 
   /// No description provided for @errorSchedulingAlarm.
@@ -431,13 +431,13 @@ abstract class AppLocalizations {
   /// No description provided for @vocStartedTitle.
   ///
   /// In en, this message translates to:
-  /// **'Void of Course Started'**
+  /// **'Void of course Started'**
   String get vocStartedTitle;
 
   /// No description provided for @vocStartedBody.
   ///
   /// In en, this message translates to:
-  /// **'The Void of Course period has now begun.'**
+  /// **'The Void of course period has now begun.'**
   String get vocStartedBody;
 
   /// No description provided for @vocRemainingTimeHourMinute.
@@ -455,13 +455,13 @@ abstract class AppLocalizations {
   /// No description provided for @preVocNotificationBodyHourMinute.
   ///
   /// In en, this message translates to:
-  /// **'{hours}h {minutes}m until Void of Course begins.'**
+  /// **'{hours}h {minutes}m until Void of course begins.'**
   String preVocNotificationBodyHourMinute(int hours, int minutes);
 
   /// No description provided for @preVocNotificationBodyMinute.
   ///
   /// In en, this message translates to:
-  /// **'{minutes} minutes until Void of Course begins.'**
+  /// **'{minutes} minutes until Void of course begins.'**
   String preVocNotificationBodyMinute(int minutes);
 
   /// No description provided for @notAvailable.
@@ -491,7 +491,7 @@ abstract class AppLocalizations {
   /// No description provided for @voidOfCourse.
   ///
   /// In en, this message translates to:
-  /// **'Void of Course'**
+  /// **'Void of course'**
   String get voidOfCourse;
 
   /// No description provided for @vocStartTime.
@@ -581,7 +581,7 @@ abstract class AppLocalizations {
   /// No description provided for @resetVoidAlarmForTimezoneChange.
   ///
   /// In en, this message translates to:
-  /// **'The timezone has changed. Please set the Void of Course alarm again.'**
+  /// **'The timezone has changed. Please set the Void of course alarm again.'**
   String get resetVoidAlarmForTimezoneChange;
 
   /// No description provided for @calendar.
@@ -599,7 +599,7 @@ abstract class AppLocalizations {
   /// No description provided for @noVocFound.
   ///
   /// In en, this message translates to:
-  /// **'No Void of Course period for this day.'**
+  /// **'No Void of course period for this day.'**
   String get noVocFound;
 
   /// No description provided for @invalidVocData.
@@ -731,7 +731,7 @@ abstract class AppLocalizations {
   /// No description provided for @vocEventsAdded.
   ///
   /// In en, this message translates to:
-  /// **'{count} Void of Course events added to Google Calendar.'**
+  /// **'{count} Void of course events added to Google Calendar.'**
   String vocEventsAdded(int count);
 
   /// No description provided for @syncFailedRetry.
@@ -749,7 +749,7 @@ abstract class AppLocalizations {
   /// No description provided for @unlinkGoogleCalendarContent.
   ///
   /// In en, this message translates to:
-  /// **'Unlinking will remove the \"Void of Course 🌙\" calendar from Google Calendar.\nDo you want to continue?'**
+  /// **'Unlinking will remove the \"Void of course 🌙\" calendar from Google Calendar.\nDo you want to continue?'**
   String get unlinkGoogleCalendarContent;
 
   /// No description provided for @cancel.
