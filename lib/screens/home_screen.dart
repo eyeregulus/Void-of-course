@@ -141,29 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(width: 8),
                       const PremiumBadge(),
                     ],
-                    if (!purchaseService.isPro &&
-                        !purchaseService.isPlus &&
-                        !purchaseService.isLite) ...[
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          'FREE',
-                          style: TextStyle(
-                            color: Colors.grey.withValues(alpha: 0.8),
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
+
                   ],
                 );
               },

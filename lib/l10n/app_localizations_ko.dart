@@ -394,7 +394,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get addHomeWidget => '보이드 위젯';
 
   @override
-  String get addHomeWidgetDesc => '바탕화면에 보이드 위젯을\n추가합니다.';
+  String get addHomeWidgetDesc => '바탕화면에\n보이드 위젯을 추가합니다.';
 
   @override
   String get widgetAutoPinNotSupported =>

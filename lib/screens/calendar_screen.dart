@@ -387,7 +387,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       alignment: const Alignment(0, 0.8),
                       child: Container(
                         height: 6,
-                        margin: const EdgeInsets.symmetric(horizontal: 1),
+                        margin: EdgeInsets.only(
+                          left: isFirstDay ? 12.0 : 0.0,
+                          right: isLastDay ? 12.0 : 0.0,
+                        ),
                         decoration: BoxDecoration(
                           color: markerColor,
                           borderRadius: BorderRadius.horizontal(
