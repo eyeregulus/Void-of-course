@@ -1,5 +1,5 @@
 import 'package:sweph/sweph.dart';
-import 'lib/services/astro_calculator.dart';
+import 'lib/core/astro/astro_calculator.dart';
 import 'dart:developer' as developer;
 
 void main() async {
