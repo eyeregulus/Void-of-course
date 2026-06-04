@@ -11,7 +11,6 @@ import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
 import 'package:void_of_course/core/astro/astro_calculator.dart';
-import 'package:void_of_course/features/premium/services/purchase_service.dart';
 
 const int _widgetVocStartAlarmId = 110;
 
@@ -33,7 +32,7 @@ class WidgetService {
 
   static Future<bool> refreshInstalledFlag(
     SharedPreferences? prefs, {
-    bool allowClear = true,
+    bool allowClear = false,
   }) async {
     final p = prefs ?? await SharedPreferences.getInstance();
     try {
@@ -62,13 +61,15 @@ class WidgetService {
   static Future<bool> isEnabled([SharedPreferences? prefs]) async {
     final p = prefs ?? await SharedPreferences.getInstance();
     if (p.getBool(_installedPrefKey) ?? false) return true;
-    return refreshInstalledFlag(p);
+    return refreshInstalledFlag(p, allowClear: false);
   }
 
   static Future<void> setInstallStatus(bool installed) async {
     final prefs = await SharedPreferences.getInstance();
-
-    await prefs.setBool(_installedPrefKey, installed);
+    // false로 임의 초기화되는 현상을 방지하여, 위젯이 설치되었던 이력이 있으면 업데이트가 유지되도록 함
+    if (installed) {
+      await prefs.setBool(_installedPrefKey, true);
+    }
   }
 
   static Future<void> cancelRefreshAlarms() async {
@@ -258,8 +259,11 @@ class WidgetService {
     required String moonZodiac,
   }) async {
     try {
+      final prefsForCheck = await SharedPreferences.getInstance();
+      final isPlusUser = prefsForCheck.getBool('sp_is_plus') ?? false;
+
       // ── 프리미엄(플러스 이상) 결제 유무 체크 ─────────────────────────
-      if (!PurchaseService.instance.isPlus) {
+      if (!isPlusUser) {
         await HomeWidget.saveWidgetData<String>('widget_icon', '🔒');
         await HomeWidget.saveWidgetData<String>(
           'widget_title_text',

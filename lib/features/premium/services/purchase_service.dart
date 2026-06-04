@@ -57,6 +57,13 @@ class PurchaseService extends ChangeNotifier {
     // 초기 상태 불러오기 및 재설치 유저 자동 복원
     try {
       final prefs = await SharedPreferences.getInstance();
+      
+      // 로컬 캐시된 프리미엄 상태 우선 복원 (오프라인 및 즉시 로딩 대응)
+      _isLite = prefs.getBool('sp_is_lite') ?? false;
+      _isPlus = prefs.getBool('sp_is_plus') ?? false;
+      _isPro = prefs.getBool('sp_is_pro') ?? false;
+      notifyListeners();
+
       final hasRestored = prefs.getBool('has_auto_restored_purchases') ?? false;
 
       // 안드로이드의 경우 첫 실행 시 자동으로 구매 내역을 스토어에서 복원 (재설치 시 프리미엄 유지)
@@ -105,6 +112,15 @@ class PurchaseService extends ChangeNotifier {
     _isPro = hasPro;
     _isLite = hasLite || hasPro;
     _isPlus = hasPlus || hasPro;
+
+    // 백그라운드 isolate 및 위젯 서비스에서 접근할 수 있도록 SharedPreferences에 저장
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setBool('sp_is_lite', _isLite);
+      prefs.setBool('sp_is_plus', _isPlus);
+      prefs.setBool('sp_is_pro', _isPro);
+    }).catchError((e) {
+      developer.log('Failed to save premium status to SharedPreferences', error: e);
+    });
 
     // 디버그용: 활성화된 모든 Entitlement ID 추출
     final activeIds =
