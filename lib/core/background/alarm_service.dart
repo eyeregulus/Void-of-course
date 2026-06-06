@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 
@@ -38,6 +39,8 @@ class AlarmService {
 
   Future<void> init() async {
 
+    if (!Platform.isAndroid) return;
+
     await AndroidAlarmManager.initialize();
 
   }
@@ -45,6 +48,8 @@ class AlarmService {
 
 
   Future<void> schedulePreVoidAlarm(DateTime preVoidStart) async {
+
+    if (!Platform.isAndroid) return;
 
     final now = DateTime.now();
 
@@ -78,6 +83,8 @@ class AlarmService {
 
   Future<void> scheduleVocStartAlarm(DateTime vocStart) async {
 
+    if (!Platform.isAndroid) return;
+
     final now = DateTime.now();
 
     if (vocStart.isBefore(now)) return;
@@ -109,6 +116,8 @@ class AlarmService {
 
 
   Future<void> scheduleVocMidAlarm(DateTime vocMid) async {
+
+    if (!Platform.isAndroid) return;
 
     final now = DateTime.now();
 
@@ -142,6 +151,8 @@ class AlarmService {
 
   Future<void> scheduleVocEndAlarm(DateTime vocEnd) async {
 
+    if (!Platform.isAndroid) return;
+
     final now = DateTime.now();
 
     if (vocEnd.isBefore(now)) return;
@@ -173,6 +184,8 @@ class AlarmService {
 
 
   Future<void> cancelAlarm() async {
+
+    if (!Platform.isAndroid) return;
 
     await Future.wait([
 
@@ -302,7 +315,7 @@ Future<void> _vocMidAlarmCallback() async {
 
 
 
-  if (nextMidVoc.isBefore(vocEnd)) {
+  if (nextMidVoc.isBefore(vocEnd) && Platform.isAndroid) {
 
     await AndroidAlarmManager.oneShotAt(
 

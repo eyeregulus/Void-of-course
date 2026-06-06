@@ -103,6 +103,16 @@ public class BackgroundService extends Service implements MethodChannel.MethodCa
     }
 
     @Override
+    public void onTimeout(int startId, int fgsType) {
+        if (Build.VERSION.SDK_INT >= 35) {
+            Log.w(TAG, "Service timeout reached: startId=" + startId + ", fgsType=" + fgsType);
+            isManuallyStopped = true;
+            WatchdogReceiver.remove(this);
+            stopSelf();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         if (!isManuallyStopped) {
             WatchdogReceiver.enqueue(this);

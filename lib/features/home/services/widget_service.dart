@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
@@ -73,6 +74,7 @@ class WidgetService {
   }
 
   static Future<void> cancelRefreshAlarms() async {
+    if (!Platform.isAndroid) return;
     await AndroidAlarmManager.cancel(_widgetVocStartAlarmId);
 
     await AndroidAlarmManager.cancel(_widgetVocEndAlarmId);
@@ -139,7 +141,9 @@ class WidgetService {
     try {
       DartPluginRegistrant.ensureInitialized();
 
-      await AndroidAlarmManager.initialize();
+      if (Platform.isAndroid) {
+        await AndroidAlarmManager.initialize();
+      }
 
       final prefs = await SharedPreferences.getInstance();
 
@@ -161,17 +165,9 @@ class WidgetService {
 
       final utcNow = DateTime.now().toUtc();
 
-      DateTime? nextVocStart;
-
-      DateTime? nextVocEnd;
-
-      if (utcNow.isAfter(period.start) && utcNow.isBefore(period.end)) {
-        final next = await findNextVocPeriod(period.end);
-
-        nextVocStart = next?.start;
-
-        nextVocEnd = next?.end;
-      }
+      final next = await findNextVocPeriod(period.end);
+      final nextVocStart = next?.start;
+      final nextVocEnd = next?.end;
 
       final moonZodiac = _calculator.getMoonZodiacEmoji(utcNow);
 
@@ -348,6 +344,42 @@ class WidgetService {
         'Start : $widgetStartTimeText\nEnd   : $widgetEndTimeText',
       );
 
+      // Save millisecond timestamps for native Android widget dynamic update
+      if (displayStart != null) {
+        await HomeWidget.saveWidgetData<int>('current_voc_start_ms', displayStart.millisecondsSinceEpoch);
+      } else {
+        await HomeWidget.saveWidgetData<int>('current_voc_start_ms', 0);
+      }
+
+      if (displayEnd != null) {
+        await HomeWidget.saveWidgetData<int>('current_voc_end_ms', displayEnd.millisecondsSinceEpoch);
+      } else {
+        await HomeWidget.saveWidgetData<int>('current_voc_end_ms', 0);
+      }
+
+      await HomeWidget.saveWidgetData<String>('current_voc_start_text', widgetStartTimeText);
+      await HomeWidget.saveWidgetData<String>('current_voc_end_text', widgetEndTimeText);
+
+      final nextStartText = nextVocStart != null ? dateFormat.format(tz.TZDateTime.from(nextVocStart, location)) : 'N/A';
+      final nextEndText = nextVocEnd != null ? dateFormat.format(tz.TZDateTime.from(nextVocEnd, location)) : 'N/A';
+
+      if (nextVocStart != null) {
+        await HomeWidget.saveWidgetData<int>('next_voc_start_ms', nextVocStart.millisecondsSinceEpoch);
+      } else {
+        await HomeWidget.saveWidgetData<int>('next_voc_start_ms', 0);
+      }
+
+      if (nextVocEnd != null) {
+        await HomeWidget.saveWidgetData<int>('next_voc_end_ms', nextVocEnd.millisecondsSinceEpoch);
+      } else {
+        await HomeWidget.saveWidgetData<int>('next_voc_end_ms', 0);
+      }
+
+      await HomeWidget.saveWidgetData<String>('next_voc_start_text', nextStartText);
+      await HomeWidget.saveWidgetData<String>('next_voc_end_text', nextEndText);
+
+      await HomeWidget.saveWidgetData<String>('moon_zodiac', moonZodiac);
+
       await HomeWidget.updateWidget(androidName: androidWidgetName);
 
       if (kDebugMode) {
@@ -373,6 +405,7 @@ class WidgetService {
 
     required DateTime vocEnd,
   }) async {
+    if (!Platform.isAndroid) return;
     if (!await refreshInstalledFlag(null, allowClear: false)) return;
 
     final utcNow = DateTime.now().toUtc();

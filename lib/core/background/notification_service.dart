@@ -17,6 +17,13 @@ class NotificationService {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@drawable/ic_notification');
 
+    const DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'void_channel_id',
       'Void Notifications',
@@ -34,7 +41,10 @@ class NotificationService {
     );
 
     const InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin,
+    );
 
     tz.initializeTimeZones();
 
@@ -72,6 +82,16 @@ class NotificationService {
               >()
               ?.requestNotificationsPermission();
       return androidResult ?? false;
+    } else if (Platform.isIOS) {
+      final bool? iosResult = await _notificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(
+            alert: true,
+            badge: true,
+            sound: true,
+          );
+      return iosResult ?? false;
     }
     return false;
   }

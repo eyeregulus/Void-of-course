@@ -9,7 +9,7 @@ class PurchaseService extends ChangeNotifier {
   static final PurchaseService instance = PurchaseService._();
 
   // TODO: RevenueCat 대시보드에서 발급받은 API 키로 변경해주세요.
-  // static const String _appleApiKey = 'goog_YOUR_APPLE_API_KEY';
+  static const String _appleApiKey = 'appl_YOUR_APPLE_API_KEY';
   static const String _googleApiKey = 'goog_aDuTsOqaJNZcWsTxPsJsnChRfYb';
 
   // Entitlements (RevenueCat 대시보드의 Entitlements ID와 정확히 일치해야 합니다)
@@ -43,8 +43,7 @@ class PurchaseService extends ChangeNotifier {
     if (defaultTargetPlatform == TargetPlatform.android) {
       configuration = PurchasesConfiguration(_googleApiKey);
     } else {
-      // TODO: Apple API Key 추가 후 코드 복원
-      return;
+      configuration = PurchasesConfiguration(_appleApiKey);
     }
 
     await Purchases.configure(configuration);
