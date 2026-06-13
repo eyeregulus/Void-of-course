@@ -257,7 +257,7 @@ abstract class AppLocalizations {
   /// No description provided for @copyrightText.
   ///
   /// In en, this message translates to:
-  /// **'© EyeofRegulus. All rights reserved.\nWith respect to Alexander Kolesnikov\'s iLuna'**
+  /// **'© Eye of regulus. All rights reserved.\nWith respect to Alexander Kolesnikov\'s iLuna'**
   String get copyrightText;
 
   /// No description provided for @newMoon.

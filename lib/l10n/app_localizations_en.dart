@@ -97,7 +97,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get copyrightText =>
-      '© EyeofRegulus. All rights reserved.\nWith respect to Alexander Kolesnikov\'s iLuna';
+      '© Eye of regulus. All rights reserved.\nWith respect to Alexander Kolesnikov\'s iLuna';
 
   @override
   String get newMoon => 'New Moon';
