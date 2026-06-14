@@ -30,7 +30,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get community => '오픈카톡';
 
   @override
-  String get blog => '블로그';
+  String get youtube => '유튜브';
 
   @override
   String get darkMode => '다크 모드';
@@ -278,6 +278,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get btnReview => '리뷰 남기러 가기';
 
   @override
+  String get btnReviewEventForm => '리뷰 이벤트 구글폼';
+
+  @override
   String get btnContact => '개발자에게 한마디';
 
   @override
@@ -399,4 +402,24 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get widgetAutoPinNotSupported =>
       '이 기기에서는 위젯 자동 추가를 지원하지 않습니다. 홈 화면을 길게 눌러 직접 추가해주세요.';
+
+  @override
+  String get updateRequiredTitle => '업데이트 안내';
+
+  @override
+  String get updateRequiredBody =>
+      '앱을 안정적으로 이용하기 위해 필수 업데이트가 필요합니다. 최신 버전으로 업데이트 해 주세요.';
+
+  @override
+  String get updateRecommendedTitle => '업데이트 권장';
+
+  @override
+  String get updateRecommendedBody =>
+      '새로운 기능과 성능 개선이 포함된 새로운 버전이 출시되었습니다. 업데이트 하시겠습니까?';
+
+  @override
+  String get updateNow => '업데이트';
+
+  @override
+  String get updateLater => '나중에';
 }

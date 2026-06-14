@@ -7,7 +7,7 @@
     "korean": "한국어",
     "english": "영어",
     "community": "오픈카톡",
-    "blog": "블로그",
+    "youtube": "유튜브",
     "darkMode": "다크 모드",
     "voidAlarmTitle": "보이드 알람",
     "voidAlarmSubtitle": "보이드 6시간 전부터 알림합니다.",
@@ -169,6 +169,7 @@
     "noPostsFound": "등록된 게시글이 없습니다.",
     "btnReadMore": "자세히 보기",
     "btnReview": "리뷰 남기러 가기",
+    "btnReviewEventForm": "리뷰 이벤트 구글폼",
     "btnContact": "개발자에게 한마디",
     "btnSupport": "개발자에게 후원하기",
     "msgAppNotFound": "실행 가능한 앱을 찾을 수 없습니다.",
@@ -227,5 +228,11 @@
     "cancel": "취소",
     "addHomeWidget": "보이드 위젯",
     "addHomeWidgetDesc": "바탕화면에\n보이드 위젯을 추가",
-    "widgetAutoPinNotSupported": "이 기기에서는 위젯 자동 추가를 지원하지 않습니다. 홈 화면을 길게 눌러 직접 추가해주세요."
+    "widgetAutoPinNotSupported": "이 기기에서는 위젯 자동 추가를 지원하지 않습니다. 홈 화면을 길게 눌러 직접 추가해주세요.",
+    "updateRequiredTitle": "업데이트 안내",
+    "updateRequiredBody": "앱을 안정적으로 이용하기 위해 필수 업데이트가 필요합니다. 최신 버전으로 업데이트 해 주세요.",
+    "updateRecommendedTitle": "업데이트 권장",
+    "updateRecommendedBody": "새로운 기능과 성능 개선이 포함된 새로운 버전이 출시되었습니다. 업데이트 하시겠습니까?",
+    "updateNow": "업데이트",
+    "updateLater": "나중에"
 }

@@ -30,7 +30,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get community => 'Open Kakaotalk';
 
   @override
-  String get blog => 'Blog';
+  String get youtube => 'YouTube';
 
   @override
   String get darkMode => 'Dark Mode';
@@ -281,6 +281,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get btnReview => 'Leave a Review';
 
   @override
+  String get btnReviewEventForm => 'Review Event Google Form';
+
+  @override
   String get btnContact => 'Contact Developer';
 
   @override
@@ -405,4 +408,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get widgetAutoPinNotSupported =>
       'Auto-pinning widgets is not supported on this device. Please add it manually by long-pressing your home screen.';
+
+  @override
+  String get updateRequiredTitle => 'Update Required';
+
+  @override
+  String get updateRequiredBody =>
+      'A critical update is required to continue using the app. Please update to the latest version.';
+
+  @override
+  String get updateRecommendedTitle => 'Update Available';
+
+  @override
+  String get updateRecommendedBody =>
+      'A new version with features and improvements is available. Would you like to update?';
+
+  @override
+  String get updateNow => 'Update';
+
+  @override
+  String get updateLater => 'Later';
 }

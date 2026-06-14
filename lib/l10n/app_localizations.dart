@@ -140,11 +140,11 @@ abstract class AppLocalizations {
   /// **'Open Kakaotalk'**
   String get community;
 
-  /// No description provided for @blog.
+  /// No description provided for @youtube.
   ///
   /// In en, this message translates to:
-  /// **'Blog'**
-  String get blog;
+  /// **'YouTube'**
+  String get youtube;
 
   /// No description provided for @darkMode.
   ///
@@ -548,6 +548,12 @@ abstract class AppLocalizations {
   /// **'Leave a Review'**
   String get btnReview;
 
+  /// No description provided for @btnReviewEventForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Event Google Form'**
+  String get btnReviewEventForm;
+
   /// No description provided for @btnContact.
   ///
   /// In en, this message translates to:
@@ -775,6 +781,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Auto-pinning widgets is not supported on this device. Please add it manually by long-pressing your home screen.'**
   String get widgetAutoPinNotSupported;
+
+  /// No description provided for @updateRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Required'**
+  String get updateRequiredTitle;
+
+  /// No description provided for @updateRequiredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A critical update is required to continue using the app. Please update to the latest version.'**
+  String get updateRequiredBody;
+
+  /// No description provided for @updateRecommendedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Available'**
+  String get updateRecommendedTitle;
+
+  /// No description provided for @updateRecommendedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version with features and improvements is available. Would you like to update?'**
+  String get updateRecommendedBody;
+
+  /// No description provided for @updateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updateNow;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get updateLater;
 }
 
 class _AppLocalizationsDelegate

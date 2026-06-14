@@ -49,6 +49,68 @@ class InfoScreen extends StatelessWidget {
     final List<DeveloperNote> notes = [
       // ▼▼▼ [최신 글] ▼▼▼
       DeveloperNote(
+        date: '2026-06-15',
+        titleKo: '<26-06-15 IOS 출시 이벤트🎊🎉 >',
+        titleEn: '<26-06-15 IOS Launching Event🎊🎉 >',
+        contentKo: '''
+안녕하세요 리오입니다.
+이번에 IOS 앱을 출시하게 되어,\n작은 이벤트를 진행하게 되었습니다 🎊🎉 
+
+리뷰 이벤트 참여 방법은 아래와 같습니다.
+
+대상 : 안드로이드 / IOS 에서 리뷰해주신 모든 유저분들
+상품 : 참여자 전원 프리미엄 "Plus" 기능 1개월 이용권
+기간 : 26.06.15 ~ 26.06.30
+
+참여 방법 : 아래 구글폼에 리뷰 캡쳐 사진을 포함하여, \n구글폼을 입력해주세요.
+🇰🇷한국 & 🌍글로벌 유저 모두 참여 가능합니다.
+
+- 그중 가장 정성스러운 리뷰를 남겨주신 1분을 선정하여, 프리미엄 "Plus" 기능을 영구 지원해 드립니다.
+- 당첨자 발표 : 26.06.30 (개발자노트 게시)
+
+감사합니다
+리오 드림
+''',
+        contentEn: '''
+Hi, this is lio.
+I'm happy to announce the 1.2.2 IOS app launching event🎊🎉
+
+Event Details:
+- Eligibility: All users who leave a review on the "Void of Course" Android/IOS app
+- Prize: 1 Month Free "Plus" Premium Service for all participants
+- Event Period: 26.06.15 ~ 26.06.30
+
+- How to Participate: Submit the Google Form (including a screenshot of your review)
+🇰🇷 Korean users & 🌍 International users are eligible to participate.
+
+- Additionally, the most high-quality review will be selected, and (Lifetime) "Plus" Premium service will be provided.
+- The winner of the event will be announced on 26.06.30 (in the developer notes section)
+
+All my best
+Lio
+''',
+        actions: [
+          NoteAction(
+            label: appLocalizations.btnReview, // '리뷰 남기러 가기' / 'Leave a Review'
+            url:
+                'https://play.google.com/store/apps/details?id=dev.lioluna.voidofcourse',
+          ),
+          NoteAction(
+            label:
+                appLocalizations
+                    .btnReviewEventForm, // '리뷰 이벤트 구글폼' / 'Review Event Google Form'
+            url: 'https://forms.gle/Deq7FYd2EdQgv1S88',
+          ),
+          NoteAction(
+            label:
+                appLocalizations
+                    .btnContact, // '개발자에게 한마디' / 'Contact Developer'
+            url: 'mailto:eyeregulus@gmail.com',
+          ),
+        ],
+      ),
+
+      DeveloperNote(
         date: '2026-06-05',
         titleKo: '<26-06-05 업데이트>',
         titleEn: '<26-06-05 Update>',
@@ -466,6 +528,18 @@ Warm reviews are a great strength to the developer.
                                                 child: OutlinedButton.icon(
                                                   onPressed: () async {
                                                     try {
+                                                      String targetUrl =
+                                                          action.url;
+                                                      if (Theme.of(
+                                                                context,
+                                                              ).platform ==
+                                                              TargetPlatform
+                                                                  .iOS &&
+                                                          targetUrl ==
+                                                              'https://play.google.com/store/apps/details?id=dev.lioluna.voidofcourse') {
+                                                        targetUrl =
+                                                            'https://apps.apple.com/kr/app/void-of-course/id6777887938';
+                                                      }
                                                       await FirebaseAnalytics
                                                           .instance
                                                           .logEvent(
@@ -474,11 +548,11 @@ Warm reviews are a great strength to the developer.
                                                             parameters: {
                                                               'label':
                                                                   action.label,
-                                                              'url': action.url,
+                                                              'url': targetUrl,
                                                             },
                                                           );
                                                       final uri = Uri.parse(
-                                                        action.url,
+                                                        targetUrl,
                                                       );
                                                       bool launched = false;
                                                       if (await canLaunchUrl(
@@ -536,9 +610,22 @@ Warm reviews are a great strength to the developer.
                                                       }
                                                     }
                                                   },
-                                                  icon: const Icon(Icons.link),
-                                                  label: Text(action.label),
+                                                  icon: const Icon(
+                                                    Icons.link,
+                                                    color: Colors.black,
+                                                  ),
+                                                  label: Text(
+                                                    action.label,
+                                                    style: const TextStyle(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
                                                   style: OutlinedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color(0xFFD4AF37),
+                                                    foregroundColor:
+                                                        Colors.black,
+                                                    side: BorderSide.none,
                                                     padding:
                                                         const EdgeInsets.symmetric(
                                                           vertical: 12,

@@ -7,7 +7,7 @@
     "korean": "Korean",
     "english": "English",
     "community": "Open Kakaotalk",
-    "blog": "Blog",
+    "youtube": "YouTube",
     "darkMode": "Dark Mode",
     "voidAlarmTitle": "Void Alarm",
     "voidAlarmSubtitle": "Alerts from 6 hours before void.",
@@ -176,6 +176,7 @@
     "noPostsFound": "No posts found.",
     "btnReadMore": "Read More",
     "btnReview": "Leave a Review",
+    "btnReviewEventForm": "Review Event Google Form",
     "btnContact": "Contact Developer",
     "btnSupport": "Buy me a coffee",
     "msgAppNotFound": "Cannot find an app to open this.",
@@ -234,5 +235,11 @@
     "cancel": "Cancel",
     "addHomeWidget": "Add Widget",
     "addHomeWidgetDesc": "Add the Void widget to your home screen.",
-    "widgetAutoPinNotSupported": "Auto-pinning widgets is not supported on this device. Please add it manually by long-pressing your home screen."
+    "widgetAutoPinNotSupported": "Auto-pinning widgets is not supported on this device. Please add it manually by long-pressing your home screen.",
+    "updateRequiredTitle": "Update Required",
+    "updateRequiredBody": "A critical update is required to continue using the app. Please update to the latest version.",
+    "updateRecommendedTitle": "Update Available",
+    "updateRecommendedBody": "A new version with features and improvements is available. Would you like to update?",
+    "updateNow": "Update",
+    "updateLater": "Later"
 }

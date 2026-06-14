@@ -34,6 +34,7 @@ import 'package:void_of_course/core/utils/app_analytics.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:void_of_course/features/calendar/services/google_calendar_service.dart';
 import 'package:void_of_course/features/premium/services/purchase_service.dart';
+import 'package:void_of_course/core/services/version_check_service.dart';
 
 Future<void> _initWithTimeout(
   String label,
@@ -256,6 +257,13 @@ class _MainAppScreenState extends State<MainAppScreen>
   }
 
   Future<void> _checkForUpdate() async {
+    if (Platform.isIOS) {
+      if (mounted) {
+        await VersionCheckService.checkForUpdates(context);
+      }
+      return;
+    }
+
     try {
       final info = await InAppUpdate.checkForUpdate();
       if (info.updateAvailability == UpdateAvailability.updateAvailable) {

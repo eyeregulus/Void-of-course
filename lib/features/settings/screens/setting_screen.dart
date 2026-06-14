@@ -311,6 +311,27 @@ class SettingScreen extends StatelessWidget {
                         ),
                       ),
 
+                      // ▼▼▼ 유튜브 설정 카드 ▼▼▼
+                      SettingCard(
+                        icon: Icons.play_circle_fill_outlined, // 유튜브를 상징하는 아이콘
+                        title: appLocalizations.youtube, // '유튜브' 제목
+                        iconColor: const Color(0xFFFF0000), // 유튜브 레드
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios, // 오른쪽 화살표 아이콘
+                          size: 30,
+                          color: Colors.grey,
+                        ),
+                        onTap: () {
+                          // 카드 아무 곳이나 누르면 확인 대화상자를 띄웁니다.
+                          _showUrlConfirmationDialog(
+                            context,
+                            url: 'https://www.youtube.com/@ERE-Co',
+                            serviceNameKo: '유튜브',
+                            serviceNameEn: 'YouTube',
+                          );
+                        },
+                      ),
+
                       // 네 번째 설정 카드: 오픈카톡
                       SettingCard(
                         icon: Icons.chat_bubble, // 카카오톡을 상징하는 말풍선 아이콘
@@ -328,27 +349,6 @@ class SettingScreen extends StatelessWidget {
                             url: 'https://open.kakao.com/o/gIzVMFji',
                             serviceNameKo: '오픈카톡',
                             serviceNameEn: 'Open Kakaotalk',
-                          );
-                        },
-                      ),
-
-                      // ▼▼▼ 블로그 설정 카드 ▼▼▼
-                      SettingCard(
-                        icon: Icons.article_outlined, // 블로그를 상징하는 아이콘
-                        title: appLocalizations.blog, // '블로그' 제목
-                        iconColor: const Color(0xFF03C75A), // 녹색
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios, // 오른쪽 화살표 아이콘
-                          size: 30,
-                          color: Colors.grey,
-                        ),
-                        onTap: () {
-                          // 카드 아무 곳이나 누르면 확인 대화상자를 띄웁니다.
-                          _showUrlConfirmationDialog(
-                            context,
-                            url: 'https://arion-ayin.github.io/',
-                            serviceNameKo: '블로그',
-                            serviceNameEn: 'Blog',
                           );
                         },
                       ),
