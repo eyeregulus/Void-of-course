@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get info => 'Info';
+  String get info => 'Developer Note';
 
   @override
   String get language => 'Language';
@@ -69,7 +69,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contactEmail => 'Arion.Ayin@gmail.com';
 
   @override
-  String get infoScreenTitle => 'Info';
+  String get infoScreenTitle => 'Developer Note';
 
   @override
   String get headerSubtitle => 'Void of course Calculator';

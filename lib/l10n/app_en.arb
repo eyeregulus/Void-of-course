@@ -209,7 +209,7 @@
     "googleCalendar": "Google Calendar",
     "linked": "Linked",
     "linkGoogleCalendar": "Link with Google Account",
-    "googleCalendarVocSync": "Google Calendar VOC",
+    "googleCalendarVocSync": "Void Google Calendar Sync",
     "notLinked": "Not linked",
     "syncDuration": "Sync Range",
     "syncing": "Syncing...",
