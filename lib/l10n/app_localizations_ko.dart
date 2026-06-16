@@ -331,7 +331,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get no => '아니오';
 
   @override
-  String get googleCalendar => '보이드 구글 캘린더';
+  String get googleCalendar => '구글 캘린더';
 
   @override
   String get linked => '연동됨';

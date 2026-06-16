@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get info => 'Developer Note';
+  String get info => 'Info';
 
   @override
   String get language => 'Language';
@@ -344,7 +344,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get linkGoogleCalendar => 'Link with Google Account';
 
   @override
-  String get googleCalendarVocSync => 'Google Calendar VOC';
+  String get googleCalendarVocSync => 'Void Google Calendar Sync';
 
   @override
   String get notLinked => 'Not linked';

@@ -156,14 +156,14 @@ class MyApp extends StatelessWidget {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
 
-          // ▼▼▼ [수정 1] 글자 크기 고정 설정 (UI 깨짐 방지) ▼▼▼
           builder: (context, child) {
+            if (child == null) return const SizedBox.shrink();
+            final mediaQueryData = MediaQuery.maybeOf(context) ??
+                MediaQueryData.fromView(View.of(context));
             return MediaQuery(
               // 사용자가 시스템 글자 크기를 키워도 앱 내에서는 1.0배로 고정
-              data: MediaQuery.of(
-                context,
-              ).copyWith(textScaler: const TextScaler.linear(1.0)),
-              child: child!,
+              data: mediaQueryData.copyWith(textScaler: const TextScaler.linear(1.0)),
+              child: child,
             );
           },
           // ▲▲▲ 여기까지 ▲▲▲
@@ -463,7 +463,7 @@ class _MainAppScreenState extends State<MainAppScreen>
                   ),
                   BottomNavigationBarItem(
                     icon: const Icon(Icons.description),
-                    label: AppLocalizations.of(context)!.infoScreenTitle,
+                    label: AppLocalizations.of(context)!.info,
                   ),
                 ],
               ),

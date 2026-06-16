@@ -49,31 +49,32 @@ class InfoScreen extends StatelessWidget {
     final List<DeveloperNote> notes = [
       // ▼▼▼ [최신 글] ▼▼▼
       DeveloperNote(
-        date: '2026-06-15',
-        titleKo: '<26-06-15 IOS 출시 이벤트🎊🎉 >',
-        titleEn: '<26-06-15 IOS Launching Event🎊🎉 >',
+        date: '2026-06-22',
+        titleKo: '<IOS 출시 이벤트🎊🎉 >',
+        titleEn: '<IOS Launching Event🎊🎉 >',
         contentKo: '''
 안녕하세요 리오입니다.
-이번에 IOS 앱을 출시하게 되어,\n작은 이벤트를 진행하게 되었습니다 🎊🎉 
+이번에 IOS 앱을 출시하게 되어,\n작은 이벤트를 진행하게 되었습니다 🎊🎉
 
 리뷰 이벤트 참여 방법은 아래와 같습니다.
 
-대상 : 안드로이드 / IOS 에서 리뷰해주신 모든 유저분들
-상품 : 참여자 전원 프리미엄 "Plus" 기능 1개월 이용권
-기간 : 26.06.15 ~ 26.06.30
+대상 : 안드로이드 / IOS 에서 리뷰 남겨주신 유저
+상품 : 프리미엄 "Plus" 기능 1개월 이용권
+기간 : 26.06.22 ~ 26.06.30
 
-참여 방법 : 아래 구글폼에 리뷰 캡쳐 사진을 포함하여, \n구글폼을 입력해주세요.
+참여 방법 : 아래 구글폼에 리뷰 캡쳐 사진을 포함하여, 구글폼을 입력해주세요.
 🇰🇷한국 & 🌍글로벌 유저 모두 참여 가능합니다.
 
-- 그중 가장 정성스러운 리뷰를 남겨주신 1분을 선정하여, 프리미엄 "Plus" 기능을 영구 지원해 드립니다.
+- 가장 정성스러운 리뷰를 남겨주신 1분을 선정하여, 프리미엄 "Plus" 기능을 영구 지원해 드립니다.
 - 당첨자 발표 : 26.06.30 (개발자노트 게시)
 
+많은 참여 부탁드립니다.
 감사합니다
 리오 드림
 ''',
         contentEn: '''
 Hi, this is lio.
-I'm happy to announce the 1.2.2 IOS app launching event🎊🎉
+I'm happy to announce the IOS app launching event🎊🎉
 
 Event Details:
 - Eligibility: All users who leave a review on the "Void of Course" Android/IOS app

@@ -53,7 +53,12 @@
             android:value="2" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-7332476431820224~6357674762"/>
+            android:value="ca-app-pub-5966930532953512~8402744947"/>
+        
+        <!-- 백그라운드 서비스 및 Vulkan 드라이버 이슈(삼성 엑시노스 등)로 인한 프리징 현상 방지를 위해 Impeller를 비활성화하고 Skia 엔진을 사용합니다. -->
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
 
         <!-- 폴더블 기기 지원 (Samsung Z Flip / Z Fold) -->
         <!-- 대형 화면 최적화: 메인 화면/커버 화면 모두 대응 -->

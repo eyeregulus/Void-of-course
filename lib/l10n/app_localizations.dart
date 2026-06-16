@@ -209,7 +209,7 @@ abstract class AppLocalizations {
   /// No description provided for @infoScreenTitle.
   ///
   /// In en, this message translates to:
-  /// **'Info'**
+  /// **'Developer Note'**
   String get infoScreenTitle;
 
   /// No description provided for @headerSubtitle.
@@ -665,7 +665,7 @@ abstract class AppLocalizations {
   /// No description provided for @googleCalendarVocSync.
   ///
   /// In en, this message translates to:
-  /// **'Google Calendar VOC'**
+  /// **'Void Google Calendar Sync'**
   String get googleCalendarVocSync;
 
   /// No description provided for @notLinked.
