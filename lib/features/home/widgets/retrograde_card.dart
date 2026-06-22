@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -256,8 +255,13 @@ class RetrogradeCard extends StatelessWidget {
           width:
               label == '시작' || label == '종료'
                   ? (isCompact ? 22.0 : 26.0)
-                  : (isCompact ? 28.0 : 36.0),
-          child: Text(label, style: textStyle),
+                  : (isCompact ? 38.0 : 46.0),
+          child: Text(
+            label,
+            style: textStyle,
+            maxLines: 1,
+            softWrap: false,
+          ),
         ),
         Text(' : ', style: textStyle),
         Expanded(

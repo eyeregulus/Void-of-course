@@ -31,6 +31,17 @@ class AppAnalytics {
     );
   }
 
+  static Future<void> setRetrogradeCardEnabled(bool enabled) async {
+    await _analytics.logEvent(
+      name: 'toggle_retrograde_card',
+      parameters: {'enabled': enabled.toString()},
+    );
+    await _analytics.setUserProperty(
+      name: 'retrograde_card_enabled',
+      value: enabled.toString(),
+    );
+  }
+
   static Future<void> logScreenView(String screenName) {
     return _analytics.logScreenView(
       screenName: screenName,

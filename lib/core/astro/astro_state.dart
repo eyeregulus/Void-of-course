@@ -184,6 +184,10 @@ class AstroState with ChangeNotifier {
       name: 'language',
       value: _currentLocale,
     );
+    await FirebaseAnalytics.instance.setUserProperty(
+      name: 'retrograde_card_enabled',
+      value: _showRetrogradeCard.toString(),
+    );
 
     await _updateData();
 

@@ -35,6 +35,8 @@ import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:void_of_course/features/calendar/services/google_calendar_service.dart';
 import 'package:void_of_course/features/premium/services/purchase_service.dart';
 import 'package:void_of_course/core/services/version_check_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 Future<void> _initWithTimeout(
   String label,
@@ -158,11 +160,14 @@ class MyApp extends StatelessWidget {
 
           builder: (context, child) {
             if (child == null) return const SizedBox.shrink();
-            final mediaQueryData = MediaQuery.maybeOf(context) ??
+            final mediaQueryData =
+                MediaQuery.maybeOf(context) ??
                 MediaQueryData.fromView(View.of(context));
             return MediaQuery(
               // 사용자가 시스템 글자 크기를 키워도 앱 내에서는 1.0배로 고정
-              data: mediaQueryData.copyWith(textScaler: const TextScaler.linear(1.0)),
+              data: mediaQueryData.copyWith(
+                textScaler: const TextScaler.linear(1.0),
+              ),
               child: child,
             );
           },
@@ -199,6 +204,7 @@ class _MainAppScreenState extends State<MainAppScreen>
           listen: false,
         ).updateLocale(initialLocale.languageCode);
       }
+      _checkAndShowEventNotice();
     });
     _checkForUpdate();
     _checkWidgetStatus();
@@ -232,6 +238,140 @@ class _MainAppScreenState extends State<MainAppScreen>
         developer.log('Error checking widget status: $e', name: 'Main');
       }
     }
+  }
+
+  Future<void> _checkAndShowEventNotice() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentVersion =
+          '${packageInfo.version}+${packageInfo.buildNumber}';
+      final lastShown = prefs.getString('last_shown_notice_version');
+
+      if (lastShown != currentVersion) {
+        await Future.delayed(const Duration(milliseconds: 600));
+        if (!mounted) return;
+
+        await _showNoticeDialog(currentVersion, prefs);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        developer.log('Error showing event notice: $e', name: 'Main');
+      }
+    }
+  }
+
+  Future<void> _showNoticeDialog(
+    String currentVersion,
+    SharedPreferences prefs,
+  ) async {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isKo = locale == 'ko';
+
+    final title = isKo ? 'iOS 출시 기념 이벤트 🎊' : 'iOS Launch Event 🎊';
+    final body =
+        isKo
+            ? '안녕하세요 리오입니다.\n'
+                'iOS 앱스토어 출시 기념 리뷰 이벤트가 진행되고 있습니다.\n'
+                '이벤트 기간 : 26.06.23 ~ 07.07\n'
+                '자세한 내용은 개발자 노트를 확인해주세요^^'
+            : 'Hello, this is Lio.\n'
+                'The iOS App Store launch celebration review event is underway!\n'
+                'Event Period: Jun 23 ~ Jul 7, 2026\n'
+                'Please check the developer notes for details^^';
+    final closeText = isKo ? '닫기' : 'Close';
+    final viewDetailsText = isKo ? '자세히 보기' : 'View Details';
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final Color backgroundColor =
+            isDark ? const Color(0xFF1A1A2E) : Colors.white;
+        final Color textColor =
+            isDark ? const Color(0xFFF0EDE5) : const Color(0xFF1A1A2E);
+        final Color primaryColor = const Color(0xFFD4AF37); // Gold
+
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          backgroundColor: backgroundColor,
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.campaign, color: primaryColor, size: 28),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          color: textColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  body,
+                  style: TextStyle(
+                    color: textColor.withValues(alpha: 0.8),
+                    fontSize: 14,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _onTabTapped(4);
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor: primaryColor,
+                      ),
+                      child: Text(
+                        viewDetailsText,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor:
+                            isDark
+                                ? const Color(0xFFB8B5AD)
+                                : const Color(0xFF6B7280),
+                      ),
+                      child: Text(
+                        closeText,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    await prefs.setString('last_shown_notice_version', currentVersion);
   }
 
   @override
@@ -352,11 +492,7 @@ class _MainAppScreenState extends State<MainAppScreen>
           }
           return const Scaffold(
             backgroundColor: Color(0xFF2C3E50),
-            body: Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
-              ),
-            ),
+            body: Center(child: CircularProgressIndicator(color: Colors.white)),
           );
         }
 

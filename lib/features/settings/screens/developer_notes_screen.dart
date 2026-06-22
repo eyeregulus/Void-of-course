@@ -53,7 +53,7 @@ class InfoScreen extends StatelessWidget {
         titleKo: '<IOS 출시 이벤트🎊🎉 >',
         titleEn: '<IOS Launching Event🎊🎉 >',
         contentKo: '''
-안녕하세요, 리오입니다 👋
+안녕하세요, 리오입니다 🦁
 
 Void of Course iOS 버전이 출시되었습니다! 🎉
 출시를 기념하여 작은 감사 이벤트를 진행합니다.
@@ -77,7 +77,7 @@ Void of Course iOS 버전이 출시되었습니다! 🎉
 🌍 한국 및 글로벌 유저 모두 참여 가능
 ''',
         contentEn: '''
-Hey everyone, Lio here 👋
+Hi, this is Lio 🦁
 
 Void of Course is now officially available on iOS! 🎉
 To celebrate the launch, I'm running a small thank-you event.
@@ -88,7 +88,7 @@ As a token of appreciation, I'm offering gifts to everyone who shares their thou
 
 🎁 Rewards
 • All participants - 1 month of Premium Plus for free
-• Most thoughtful feedback(1 Korean, 1 Global) - Premium Plus lifetime access
+• Best reviewer(1 Korean, 1 Global) - Premium Plus lifetime access
 
 📋 How to Join
 1. Leave a review on the Play Store or App Store
