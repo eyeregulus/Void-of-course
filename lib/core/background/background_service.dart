@@ -120,10 +120,10 @@ void onStart(ServiceInstance service) async {
       AndroidInitializationSettings('@drawable/ic_notification');
   const DarwinInitializationSettings initializationSettingsDarwin =
       DarwinInitializationSettings(
-    requestAlertPermission: false,
-    requestBadgePermission: false,
-    requestSoundPermission: false,
-  );
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+      );
   const InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
     iOS: initializationSettingsDarwin,
@@ -183,7 +183,7 @@ void onStart(ServiceInstance service) async {
   // 캐시된 설정값 (매초 reload 대신 주기적으로 갱신)
   String? cachedStartStr = prefs.getString('cached_voc_start');
   String? cachedEndStr = prefs.getString('cached_voc_end');
-  int cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 6;
+  int cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 48;
   bool cachedIsEnabled = prefs.getBool('voidAlarmEnabled') ?? false;
   String cachedLanguageCode = prefs.getString('cached_language_code') ?? 'en';
 
@@ -193,7 +193,7 @@ void onStart(ServiceInstance service) async {
     await prefs.reload();
     cachedStartStr = prefs.getString('cached_voc_start');
     cachedEndStr = prefs.getString('cached_voc_end');
-    cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 6;
+    cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 48;
     cachedIsEnabled = prefs.getBool('voidAlarmEnabled') ?? false;
     cachedLanguageCode = prefs.getString('cached_language_code') ?? 'en';
     tickCount = 0; // 갱신 타이머 리셋
@@ -201,7 +201,10 @@ void onStart(ServiceInstance service) async {
 
   // 서비스 시작 직후 즉시 알림 업데이트 (빈 알림 방지)
   // Timer.periodic 전에 먼저 실행하여 빈 포그라운드 알림을 덮어씀
-  if (Platform.isAndroid && cachedIsEnabled && cachedStartStr != null && cachedEndStr != null) {
+  if (Platform.isAndroid &&
+      cachedIsEnabled &&
+      cachedStartStr != null &&
+      cachedEndStr != null) {
     // UTC 기준으로 비교 (기기 타임존과 무관하게 정확한 epoch 비교)
     final DateTime utcNow = DateTime.now().toUtc();
     final String startStr = cachedStartStr!;
@@ -280,9 +283,10 @@ void onStart(ServiceInstance service) async {
             await prefs.reload();
             cachedStartStr = prefs.getString('cached_voc_start');
             cachedEndStr = prefs.getString('cached_voc_end');
-            cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 6;
+            cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 48;
             cachedIsEnabled = prefs.getBool('voidAlarmEnabled') ?? false;
-            cachedLanguageCode = prefs.getString('cached_language_code') ?? 'en';
+            cachedLanguageCode =
+                prefs.getString('cached_language_code') ?? 'en';
           }
 
           // 캐시된 값 사용 (30초마다 갱신됨)
@@ -392,7 +396,8 @@ void onStart(ServiceInstance service) async {
                     android: AndroidNotificationDetails(
                       'void_end_channel',
                       'Void End Notifications',
-                      channelDescription: 'Notification when Void of Course ends',
+                      channelDescription:
+                          'Notification when Void of Course ends',
                       importance: Importance.high,
                       priority: Priority.high,
                       ongoing: false,
@@ -427,7 +432,8 @@ void onStart(ServiceInstance service) async {
 
             // 카운트다운 알림 업데이트 (소리/진동 없이, 삭제 불가)
             // 텍스트 내용이 변경되었을 때만 show 호출하여 배터리 절약
-            if (currentState == statePreVoid || currentState == stateVocActive) {
+            if (currentState == statePreVoid ||
+                currentState == stateVocActive) {
               if (content != previousContent) {
                 await notificationsPlugin.show(
                   countdownNotificationId,

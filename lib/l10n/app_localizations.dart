@@ -113,7 +113,7 @@ abstract class AppLocalizations {
   /// No description provided for @info.
   ///
   /// In en, this message translates to:
-  /// **'Info'**
+  /// **'Note'**
   String get info;
 
   /// No description provided for @language.
@@ -161,13 +161,13 @@ abstract class AppLocalizations {
   /// No description provided for @voidAlarmSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Alerts from 6 hours before void.'**
+  /// **'Alerts from 48 hours before void.'**
   String get voidAlarmSubtitle;
 
   /// No description provided for @voidAlarmEnabledMessage.
   ///
   /// In en, this message translates to:
-  /// **'Void alarm has been activated.\nThe alarm will sound 6 hours before.'**
+  /// **'Void alarm has been activated.\nThe alarm will sound 48 hours before.'**
   String get voidAlarmEnabledMessage;
 
   /// No description provided for @voidAlarmDisabledMessage.
@@ -547,6 +547,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Leave a Review'**
   String get btnReview;
+
+  /// No description provided for @btnReviewPlayStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave a Review on Google Play'**
+  String get btnReviewPlayStore;
+
+  /// No description provided for @btnReviewAppStore.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave a Review on App Store'**
+  String get btnReviewAppStore;
 
   /// No description provided for @btnReviewEventForm.
   ///

@@ -15,7 +15,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings => '설정';
 
   @override
-  String get info => '정보';
+  String get info => '노트';
 
   @override
   String get language => '언어';
@@ -39,10 +39,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get voidAlarmTitle => '보이드 알람';
 
   @override
-  String get voidAlarmSubtitle => '보이드 6시간 전부터 알림합니다.';
+  String get voidAlarmSubtitle => '보이드 48시간 전부터 알림합니다.';
 
   @override
-  String get voidAlarmEnabledMessage => '보이드 알람이 활성화되었습니다.\n6시간 이전부터 알람이 울립니다.';
+  String get voidAlarmEnabledMessage =>
+      '보이드 알람이 활성화되었습니다.\n48시간 이전부터 알람이 울립니다.';
 
   @override
   String get voidAlarmDisabledMessage => '보이드 알람이 비활성화되었습니다.';
@@ -276,6 +277,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get btnReview => '리뷰 남기러 가기';
+
+  @override
+  String get btnReviewPlayStore => '구글 플레이 스토어 리뷰 남기기';
+
+  @override
+  String get btnReviewAppStore => '앱스토어 리뷰 남기기';
 
   @override
   String get btnReviewEventForm => '리뷰 이벤트 구글폼';

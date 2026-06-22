@@ -49,7 +49,7 @@ class InfoScreen extends StatelessWidget {
     final List<DeveloperNote> notes = [
       // ▼▼▼ [최신 글] ▼▼▼
       DeveloperNote(
-        date: '2026-06-22',
+        date: '2026-06-23',
         titleKo: '<IOS 출시 이벤트🎊🎉 >',
         titleEn: '<IOS Launching Event🎊🎉 >',
         contentKo: '''
@@ -64,7 +64,7 @@ Void of Course iOS 버전이 출시되었습니다! 🎉
 
 🎁 참여 혜택
 •참여자 전원 - 프리미엄 Plus 1개월 이용권
-•베스트 리뷰어 1명 - 프리미엄 Plus 영구권
+•베스트 리뷰어 2명(한국/글로벌 각 1명씩) - 프리미엄 Plus 영구권
 
 📋 참여 방법
 1. 구글 플레이/애플 앱스토어에 리뷰를 남겨주세요.
@@ -73,7 +73,7 @@ Void of Course iOS 버전이 출시되었습니다! 🎉
 (이메일 제출시, 리뷰를 남긴 계정과 동일한 이메일을 남겨주셔야 합니다.)
 
 📅 기간: 2026.06.23 ~ 2026.07.07
-🏆 당첨자 발표: 2026.07.10 (개발자 노트)
+🏆 당첨자 발표: 2026.07.10 (개별 이메일 연락)
 🌍 한국 및 글로벌 유저 모두 참여 가능
 ''',
         contentEn: '''
@@ -87,8 +87,8 @@ I'd love to hear your honest feedback on the app.
 As a token of appreciation, I'm offering gifts to everyone who shares their thoughts.
 
 🎁 Rewards
-• All participants — 1 month of Premium Plus for free
-• Most thoughtful feedback — Premium Plus lifetime access
+• All participants - 1 month of Premium Plus for free
+• Most thoughtful feedback(1 Korean, 1 Global) - Premium Plus lifetime access
 
 📋 How to Join
 1. Leave a review on the Play Store or App Store
@@ -96,8 +96,8 @@ As a token of appreciation, I'm offering gifts to everyone who shares their thou
 3. Submit the review screenshot and your email address via the Google Form below
 (Please use the same email address as the account used for the review)
 
-📅 Period: Jun 23 – Jul 7, 2026
-🏆 Winner announced: Jul 10, 2026 (Developer Notes)
+📅 Period: Jun 23 ~ Jul 7, 2026
+🏆 Winner announced: Jul 10, 2026 (Email)
 🌍 Open to both Korean and global users
 
 Thank you so much for your support
@@ -105,9 +105,13 @@ Lio
 ''',
         actions: [
           NoteAction(
-            label: appLocalizations.btnReview, // '리뷰 남기러 가기' / 'Leave a Review'
+            label: appLocalizations.btnReviewPlayStore,
             url:
                 'https://play.google.com/store/apps/details?id=dev.lioluna.voidofcourse',
+          ),
+          NoteAction(
+            label: appLocalizations.btnReviewAppStore,
+            url: 'https://apps.apple.com/kr/app/void-of-course/id6777887938',
           ),
           NoteAction(
             label:

@@ -88,7 +88,7 @@ class RetrogradeCard extends StatelessWidget {
             : const Color(0xFF4CAF50); // 순행: 초록색
 
     final statusText =
-        isRetrograde ? (isKo ? '역행' : 'Retro') : (isKo ? '순행' : 'Direct');
+        isRetrograde ? (isKo ? '역행' : 'Retrograde') : (isKo ? '순행' : 'Direct');
 
     final circleSize = isCompact ? 36.0 : 42.0;
     final isMercury = planetSymbol == '☿';
