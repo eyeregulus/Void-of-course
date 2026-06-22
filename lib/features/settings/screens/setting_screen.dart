@@ -211,15 +211,14 @@ class SettingScreen extends StatelessWidget {
                       SettingCard(
                         icon: Icons.explore_outlined,
                         title:
-                            isKorean
-                                ? '수성, 금성 역행'
-                                : 'Mercury & Venus Retrograde',
+                            isKorean ? '수성·금성 역행' : 'Mercury·Venus Retrograde',
                         iconColor: Colors.orangeAccent,
                         trailing: Consumer<AstroState>(
                           builder: (context, astroState, child) {
                             return Switch(
                               value: astroState.showRetrogradeCard,
                               onChanged: (value) async {
+                                await AppAnalytics.setRetrogradeCardEnabled(value);
                                 await astroState.setShowRetrogradeCard(value);
                                 if (!context.mounted) return;
 
