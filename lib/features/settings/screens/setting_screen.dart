@@ -137,7 +137,12 @@ class SettingScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 // 화면을 스크롤 가능하게 만들어요.
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0), // 화면 가장자리로부터 16만큼 떨어뜨려요.
+                  padding: const EdgeInsets.only(
+                    left: 16.0,
+                    right: 16.0,
+                    bottom: 16.0,
+                    top: 0.0,
+                  ), // 화면 가장자리로부터 떨어뜨려요. (위쪽 여백은 없앰)
                   child: Column(
                     // 카드들을 위에서 아래로 차례대로 쌓을 거예요.
                     children: [

@@ -351,13 +351,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               dateController: _dateController,
                               onPreviousDay: () => _changeDate(-1),
                               onNextDay: () => _changeDate(1),
+                              onResetToToday: () => _resetDateToToday(),
                               showCalendar: () => showCalendarDialog(context),
                               selectedDate: astroState.selectedDate,
+                              isRetrogradeCardVisible: astroState.showRetrogradeCard,
                             ),
-                            const SizedBox(height: 7),
-                            ResetDateButton(
-                              onPressed: () => _resetDateToToday(),
-                            ),
+                            if (!astroState.showRetrogradeCard) ...[
+                              const SizedBox(height: 7),
+                              ResetDateButton(
+                                onPressed: () => _resetDateToToday(),
+                              ),
+                            ],
                           ],
                         ),
                       ),

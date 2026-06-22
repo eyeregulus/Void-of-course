@@ -15,7 +15,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get info => 'Info';
+  String get info => 'Note';
 
   @override
   String get language => 'Language';
@@ -39,11 +39,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voidAlarmTitle => 'Void Alarm';
 
   @override
-  String get voidAlarmSubtitle => 'Alerts from 6 hours before void.';
+  String get voidAlarmSubtitle => 'Alerts from 48 hours before void.';
 
   @override
   String get voidAlarmEnabledMessage =>
-      'Void alarm has been activated.\nThe alarm will sound 6 hours before.';
+      'Void alarm has been activated.\nThe alarm will sound 48 hours before.';
 
   @override
   String get voidAlarmDisabledMessage => 'Void alarm has been deactivated.';
@@ -279,6 +279,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get btnReview => 'Leave a Review';
+
+  @override
+  String get btnReviewPlayStore => 'Leave a Review on Google Play';
+
+  @override
+  String get btnReviewAppStore => 'Leave a Review on App Store';
 
   @override
   String get btnReviewEventForm => 'Review Event Google Form';
