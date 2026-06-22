@@ -161,13 +161,13 @@ abstract class AppLocalizations {
   /// No description provided for @voidAlarmSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Alerts from 48 hours before void.'**
+  /// **'Alerts from 6 hours before void.'**
   String get voidAlarmSubtitle;
 
   /// No description provided for @voidAlarmEnabledMessage.
   ///
   /// In en, this message translates to:
-  /// **'Void alarm has been activated.\nThe alarm will sound 48 hours before.'**
+  /// **'Void alarm has been activated.\nThe alarm will sound 6 hours before.'**
   String get voidAlarmEnabledMessage;
 
   /// No description provided for @voidAlarmDisabledMessage.

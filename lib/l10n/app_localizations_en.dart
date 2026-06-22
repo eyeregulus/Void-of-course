@@ -39,11 +39,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voidAlarmTitle => 'Void Alarm';
 
   @override
-  String get voidAlarmSubtitle => 'Alerts from 48 hours before void.';
+  String get voidAlarmSubtitle => 'Alerts from 6 hours before void.';
 
   @override
   String get voidAlarmEnabledMessage =>
-      'Void alarm has been activated.\nThe alarm will sound 48 hours before.';
+      'Void alarm has been activated.\nThe alarm will sound 6 hours before.';
 
   @override
   String get voidAlarmDisabledMessage => 'Void alarm has been deactivated.';

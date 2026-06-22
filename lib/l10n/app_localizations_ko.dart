@@ -39,11 +39,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get voidAlarmTitle => '보이드 알람';
 
   @override
-  String get voidAlarmSubtitle => '보이드 48시간 전부터 알림합니다.';
+  String get voidAlarmSubtitle => '보이드 6시간 전부터 알림합니다.';
 
   @override
-  String get voidAlarmEnabledMessage =>
-      '보이드 알람이 활성화되었습니다.\n48시간 이전부터 알람이 울립니다.';
+  String get voidAlarmEnabledMessage => '보이드 알람이 활성화되었습니다.\n6시간 이전부터 알람이 울립니다.';
 
   @override
   String get voidAlarmDisabledMessage => '보이드 알람이 비활성화되었습니다.';

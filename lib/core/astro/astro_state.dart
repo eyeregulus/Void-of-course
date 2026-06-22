@@ -24,7 +24,7 @@ class AstroState with ChangeNotifier {
   SharedPreferences? _prefs; // 캐시된 SharedPreferences 인스턴스
   bool _isScheduling = false; // _schedulePreVoidAlarm 동시 실행 방지
   bool _voidAlarmEnabled = false;
-  int _preVoidAlarmHours = 48;
+  int _preVoidAlarmHours = 6;
 
   DateTime _selectedDate = DateTime.now();
   bool _isFollowingTime = true;
@@ -171,7 +171,7 @@ class AstroState with ChangeNotifier {
     await _alarmService.init();
     //void alarm enabled 상태 저장
     _voidAlarmEnabled = _prefs!.getBool('voidAlarmEnabled') ?? false;
-    _preVoidAlarmHours = 48; // 임시 강제 (48시간)
+    _preVoidAlarmHours = _prefs!.getInt('preVoidAlarmHours') ?? 6;
     _showRetrogradeCard = _prefs!.getBool('showRetrogradeCard') ?? true;
 
     // [Analytics] 앱 시작 시 유저 속성(User Property) 설정
