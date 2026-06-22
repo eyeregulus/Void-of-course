@@ -6,7 +6,7 @@
     android:minResizeHeight="60dp"
     android:targetCellWidth="3"
     android:targetCellHeight="1"
-    android:updatePeriodMillis="0"
+    android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/voc_widget"
     android:previewImage="@mipmap/ic_launcher"
     android:resizeMode="horizontal|vertical"

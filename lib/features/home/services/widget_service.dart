@@ -154,10 +154,9 @@ class WidgetService {
       }
 
       final prefs = await SharedPreferences.getInstance();
+      await prefs.reload();
 
       if (!await refreshInstalledFlag(prefs, allowClear: false)) return;
-
-      await prefs.reload();
 
       final period = await resolveCurrentVocPeriod(prefs);
 
@@ -444,7 +443,7 @@ class WidgetService {
 
         _widgetVocStartAlarmCallback,
 
-        exact: true,
+        exact: false,
 
         wakeup: true,
 
@@ -469,7 +468,7 @@ class WidgetService {
           previewTime,
           _widgetVocMidAlarmBaseId,
           _widgetVocMidAlarmCallback,
-          exact: true,
+          exact: false,
           wakeup: false, // 화면 켤 필요 없음
           allowWhileIdle: true,
           rescheduleOnReboot: true,
@@ -486,7 +485,7 @@ class WidgetService {
 
         _widgetVocEndAlarmCallback,
 
-        exact: true,
+        exact: false,
 
         wakeup: true,
 
@@ -524,7 +523,7 @@ class WidgetService {
         midTime,
         _widgetVocMidAlarmBaseId + slotIdx,
         _widgetVocMidAlarmCallback,
-        exact: true,
+        exact: false,
         wakeup: false, // 진행 중 갱신은 화면 켜지 않아도 됨
         allowWhileIdle: true,
         rescheduleOnReboot: true,

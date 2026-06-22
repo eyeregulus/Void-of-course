@@ -118,6 +118,7 @@ class AstroState with ChangeNotifier {
       );
       _isInitialized = true;
       _lastError = null;
+      await _syncVocSchedules();
     } catch (e, stack) {
       if (kDebugMode) {
         developer.log('Initialization error: $e\n$stack', name: 'AstroState');
@@ -311,6 +312,7 @@ class AstroState with ChangeNotifier {
     _isScheduling = true;
     try {
       final prefs = _prefs ?? await SharedPreferences.getInstance();
+      await prefs.reload();
       await prefs.setInt('cached_pre_void_hours', _preVoidAlarmHours);
       await prefs.setString('cached_language_code', _currentLocale);
 

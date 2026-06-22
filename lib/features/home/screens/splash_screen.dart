@@ -127,7 +127,7 @@ class _SplashScreenState extends State<SplashScreen> {
         systemNavigationBarIconBrightness: Brightness.light,
       ),
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: const Color(0xFF2C3E50),
         body: Consumer<AstroState>(
           builder: (context, astroState, child) {
             if (_canProceed(astroState)) {
@@ -139,7 +139,7 @@ class _SplashScreenState extends State<SplashScreen> {
             return Container(
               width: double.infinity,
               height: double.infinity,
-              color: Theme.of(context).colorScheme.primary,
+              color: const Color(0xFF2C3E50),
               child: const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

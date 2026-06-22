@@ -337,6 +337,7 @@ class _MainAppScreenState extends State<MainAppScreen>
         if (!state.isInitialized) {
           if (state.lastError != null) {
             return Scaffold(
+              backgroundColor: const Color(0xFF2C3E50),
               body: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -350,12 +351,18 @@ class _MainAppScreenState extends State<MainAppScreen>
             );
           }
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            backgroundColor: Color(0xFF2C3E50),
+            body: Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
           );
         }
 
         if (state.lastError != null) {
           return Scaffold(
+            backgroundColor: const Color(0xFF2C3E50),
             body: Center(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
