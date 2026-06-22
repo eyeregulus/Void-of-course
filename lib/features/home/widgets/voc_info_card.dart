@@ -57,10 +57,20 @@ class _VocInfoCardState extends State<VocInfoCard> {
       if (widget.provider.isFollowingTime) {
         // 실시간 모드: UTC를 선택된 타임존으로 변환하여 정확한 날짜 결정
         final tzNow = tz.TZDateTime.from(now, location);
-        selectedDayStart = tz.TZDateTime(location, tzNow.year, tzNow.month, tzNow.day);
+        selectedDayStart = tz.TZDateTime(
+          location,
+          tzNow.year,
+          tzNow.month,
+          tzNow.day,
+        );
       } else {
         // 날짜 선택 모드: 사용자가 선택한 날짜를 그대로 사용
-        selectedDayStart = tz.TZDateTime(location, selectedDate.year, selectedDate.month, selectedDate.day);
+        selectedDayStart = tz.TZDateTime(
+          location,
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+        );
       }
       final selectedDayEnd = selectedDayStart.add(const Duration(days: 1));
 
@@ -70,23 +80,26 @@ class _VocInfoCardState extends State<VocInfoCard> {
       }
     }
 
+    final locale = Localizations.localeOf(context).languageCode;
+    final isKo = locale == 'ko';
+
     String vocStatusText;
     String vocIcon;
     Color vocColor;
     Color vocBgColor;
 
     if (isVocNow) {
-      vocStatusText = "Void Now";
+      vocStatusText = isKo ? "현재 보이드" : "Void Now";
       vocColor = const Color(0xFFE53935);
       vocBgColor = isDark ? const Color(0xFF3D1F1F) : const Color(0xFFFFF0F0);
       vocIcon = '🚫';
     } else if (doesSelectedDateHaveVoc) {
-      vocStatusText = "Void Today";
+      vocStatusText = isKo ? "오늘 보이드" : "Void Today";
       vocIcon = '🔔';
       vocColor = const Color.fromARGB(255, 235, 88, 4);
       vocBgColor = isDark ? const Color(0xFF3D2E1F) : const Color(0xFFFFF8E1);
     } else {
-      vocStatusText = "Clear";
+      vocStatusText = isKo ? "보이드 없음" : "Clear";
       vocIcon = '✅';
       vocColor = const Color(0xFF4CAF50);
       vocBgColor = isDark ? const Color(0xFF1F3D2A) : const Color(0xFFF0FFF4);
@@ -97,16 +110,18 @@ class _VocInfoCardState extends State<VocInfoCard> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: isDark
-              ? [vocBgColor, const Color(0xFF16213E)]
-              : [vocBgColor, Colors.white],
+          colors:
+              isDark
+                  ? [vocBgColor, const Color(0xFF16213E)]
+                  : [vocBgColor, Colors.white],
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.3)
-                : vocColor.withValues(alpha: 0.15),
+            color:
+                isDark
+                    ? Colors.black.withValues(alpha: 0.3)
+                    : vocColor.withValues(alpha: 0.15),
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
@@ -152,15 +167,16 @@ class _VocInfoCardState extends State<VocInfoCard> {
                           vocColor.withValues(alpha: isDark ? 0.1 : 0.05),
                         ],
                       ),
-                      boxShadow: isVocNow
-                          ? [
-                              BoxShadow(
-                                color: vocColor.withValues(alpha: 0.4),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ]
-                          : null,
+                      boxShadow:
+                          isVocNow
+                              ? [
+                                BoxShadow(
+                                  color: vocColor.withValues(alpha: 0.4),
+                                  blurRadius: 15,
+                                  spreadRadius: 2,
+                                ),
+                              ]
+                              : null,
                     ),
                     child: Center(
                       child: Text(
@@ -183,7 +199,8 @@ class _VocInfoCardState extends State<VocInfoCard> {
                             Text(
                               'Void of Course',
                               style: TextStyle(
-                                color: isDark ? Themes.gold : Themes.midnightBlue,
+                                color:
+                                    isDark ? Themes.gold : Themes.midnightBlue,
                                 fontSize: titleSize,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1.2,
@@ -193,11 +210,16 @@ class _VocInfoCardState extends State<VocInfoCard> {
                                 widget.provider.vocPlanet != null)
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 6, vertical: 2),
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: isDark
-                                      ? Colors.white.withValues(alpha: 0.1)
-                                      : Colors.black.withValues(alpha: 0.05),
+                                  color:
+                                      isDark
+                                          ? Colors.white.withValues(alpha: 0.1)
+                                          : Colors.black.withValues(
+                                            alpha: 0.05,
+                                          ),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Row(
@@ -207,7 +229,8 @@ class _VocInfoCardState extends State<VocInfoCard> {
                                       '${widget.provider.vocAspect}',
                                       style: TextStyle(
                                         color: _getAspectColor(
-                                            widget.provider.vocAspect!),
+                                          widget.provider.vocAspect!,
+                                        ),
                                         fontSize: badgeSize,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -216,7 +239,8 @@ class _VocInfoCardState extends State<VocInfoCard> {
                                       ' ${widget.provider.vocPlanet}',
                                       style: TextStyle(
                                         color: _getPlanetColor(
-                                            widget.provider.vocPlanet!),
+                                          widget.provider.vocPlanet!,
+                                        ),
                                         fontSize: badgeSize,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -229,9 +253,13 @@ class _VocInfoCardState extends State<VocInfoCard> {
                         const SizedBox(height: 1),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 2),
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
-                            color: vocColor.withValues(alpha: isDark ? 0.25 : 0.15),
+                            color: vocColor.withValues(
+                              alpha: isDark ? 0.25 : 0.15,
+                            ),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -246,7 +274,7 @@ class _VocInfoCardState extends State<VocInfoCard> {
                         ),
                         const SizedBox(height: 1),
                         _buildTimeRow(
-                          'Start',
+                          isKo ? '시작' : 'Start',
                           _formatDateTime(widget.provider.vocStart, tzProvider),
                           isDark,
                           bodyColor,
@@ -254,7 +282,7 @@ class _VocInfoCardState extends State<VocInfoCard> {
                         ),
                         const SizedBox(height: 1),
                         _buildTimeRow(
-                          'End',
+                          isKo ? '종료' : 'End',
                           _formatDateTime(widget.provider.vocEnd, tzProvider),
                           isDark,
                           bodyColor,
@@ -273,7 +301,12 @@ class _VocInfoCardState extends State<VocInfoCard> {
   }
 
   Widget _buildTimeRow(
-      String label, String time, bool isDark, Color? bodyColor, bool isCompact) {
+    String label,
+    String time,
+    bool isDark,
+    Color? bodyColor,
+    bool isCompact,
+  ) {
     final textStyle = TextStyle(
       color: bodyColor,
       fontSize: isCompact ? 14.0 : 16.0,
@@ -282,7 +315,7 @@ class _VocInfoCardState extends State<VocInfoCard> {
     return Row(
       children: [
         SizedBox(
-          width: isCompact ? 40.0 : 55.0,
+          width: isCompact ? 35.0 : 44.0,
           child: Text(label, style: textStyle),
         ),
         Text(' : ', style: textStyle),

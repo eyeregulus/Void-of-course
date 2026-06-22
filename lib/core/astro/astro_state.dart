@@ -52,6 +52,17 @@ class AstroState with ChangeNotifier {
   DateTime? _moonPhaseEndTime;
   late String _currentLocale;
 
+  // Mercury and Venus retrograde details
+  bool _mercuryRetrograde = false;
+  DateTime? _mercuryRetroStart;
+  DateTime? _mercuryRetroEnd;
+
+  bool _venusRetrograde = false;
+  DateTime? _venusRetroStart;
+  DateTime? _venusRetroEnd;
+
+  bool _showRetrogradeCard = true;
+
   DateTime get selectedDate => _selectedDate;
   String get moonPhase => _moonPhase;
   String get moonZodiac => _moonZodiac;
@@ -73,6 +84,16 @@ class AstroState with ChangeNotifier {
   DateTime? get moonPhaseStartTime => _moonPhaseStartTime;
   DateTime? get moonPhaseEndTime => _moonPhaseEndTime;
   bool get isFollowingTime => _isFollowingTime;
+
+  bool get mercuryRetrograde => _mercuryRetrograde;
+  DateTime? get mercuryRetroStart => _mercuryRetroStart;
+  DateTime? get mercuryRetroEnd => _mercuryRetroEnd;
+
+  bool get venusRetrograde => _venusRetrograde;
+  DateTime? get venusRetroStart => _venusRetroStart;
+  DateTime? get venusRetroEnd => _venusRetroEnd;
+
+  bool get showRetrogradeCard => _showRetrogradeCard;
 
   bool showTimezoneChangeWarning = false;
 
@@ -131,53 +152,57 @@ class AstroState with ChangeNotifier {
   }
 
   Future<void> _runInitializeBody() async {
-      //스위프 초기화
-      //천문학 라이브러리 초기화
-      await Sweph.init();
-      // 스플래시·홈 진입을 우선 — 캘린더 탭 진입 시 추가 프리로드
-      CalendarVocCache.instance.preloadAroundSilent(DateTime.now(), radius: 1);
-      //shared preferences 초기화 (캐싱)
-      _prefs = await SharedPreferences.getInstance();
-      
-      //현재 로케일 설정
-      final savedLang = _prefs!.getString('language_code');
-      _currentLocale = savedLang ?? Intl.getCurrentLocale() ?? 'en';
-      await _prefs!.setString('cached_language_code', _currentLocale);
+    //스위프 초기화
+    //천문학 라이브러리 초기화
+    await Sweph.init();
+    // 스플래시·홈 진입을 우선 — 캘린더 탭 진입 시 추가 프리로드
+    CalendarVocCache.instance.preloadAroundSilent(DateTime.now(), radius: 1);
+    //shared preferences 초기화 (캐싱)
+    _prefs = await SharedPreferences.getInstance();
 
-      //알림 서비스 초기화
-      await _notificationService.init();
-      //알람 매니저 초기화 (앱 종료 후에도 백그라운드 서비스 시작 가능)
-      await _alarmService.init();
-      //void alarm enabled 상태 저장
-      _voidAlarmEnabled = _prefs!.getBool('voidAlarmEnabled') ?? false;
-      _preVoidAlarmHours = _prefs!.getInt('preVoidAlarmHours') ?? 6;
+    //현재 로케일 설정
+    final savedLang = _prefs!.getString('language_code');
+    _currentLocale = savedLang ?? Intl.getCurrentLocale() ?? 'en';
+    await _prefs!.setString('cached_language_code', _currentLocale);
 
-      // [Analytics] 앱 시작 시 유저 속성(User Property) 설정
-      // 이를 통해 "현재 알람을 켜둔 유저 비율", "한국어/영어 사용자 비율"을 파악할 수 있습니다.
-      await FirebaseAnalytics.instance.setUserProperty(
-        name: 'void_alarm_enabled',
-        value: _voidAlarmEnabled.toString(),
-      );
-      await FirebaseAnalytics.instance.setUserProperty(
-        name: 'language',
-        value: _currentLocale,
-      );
+    //알림 서비스 초기화
+    await _notificationService.init();
+    //알람 매니저 초기화 (앱 종료 후에도 백그라운드 서비스 시작 가능)
+    await _alarmService.init();
+    //void alarm enabled 상태 저장
+    _voidAlarmEnabled = _prefs!.getBool('voidAlarmEnabled') ?? false;
+    _preVoidAlarmHours = _prefs!.getInt('preVoidAlarmHours') ?? 6;
+    _showRetrogradeCard = _prefs!.getBool('showRetrogradeCard') ?? true;
 
-      await _updateData();
+    // [Analytics] 앱 시작 시 유저 속성(User Property) 설정
+    // 이를 통해 "현재 알람을 켜둔 유저 비율", "한국어/영어 사용자 비율"을 파악할 수 있습니다.
+    await FirebaseAnalytics.instance.setUserProperty(
+      name: 'void_alarm_enabled',
+      value: _voidAlarmEnabled.toString(),
+    );
+    await FirebaseAnalytics.instance.setUserProperty(
+      name: 'language',
+      value: _currentLocale,
+    );
 
-      // 알람이 활성화되어 있으면 예약 알림 설정 (앱 재시작 시에도 동작)
-      // 항상 스케줄링하여 서비스가 죽었더라도 재시작되도록 함
-      // try-catch로 감싸서 서비스 시작 실패가 앱 초기화 실패로 번지지 않도록 함
-      // (삼성 One UI / Android 15: 앱 첫 실행 시 ForegroundServiceStartNotAllowedException)
-      try {
-        await _syncVocSchedules();
-      } catch (e) {
-        if (kDebugMode) {
-          developer.log('_syncVocSchedules failed on init (ignored): $e', name: 'AstroState');
-        }
+    await _updateData();
+
+    // 알람이 활성화되어 있으면 예약 알림 설정 (앱 재시작 시에도 동작)
+    // 항상 스케줄링하여 서비스가 죽었더라도 재시작되도록 함
+    // try-catch로 감싸서 서비스 시작 실패가 앱 초기화 실패로 번지지 않도록 함
+    // (삼성 One UI / Android 15: 앱 첫 실행 시 ForegroundServiceStartNotAllowedException)
+    try {
+      await _syncVocSchedules();
+    } catch (e) {
+      if (kDebugMode) {
+        developer.log(
+          '_syncVocSchedules failed on init (ignored): $e',
+          name: 'AstroState',
+        );
       }
+    }
 
-      await _updateAnalyticsUserSegment();
+    await _updateAnalyticsUserSegment();
   }
 
   //
@@ -301,6 +326,12 @@ class AstroState with ChangeNotifier {
     _preVoidAlarmHours = hours;
     await _prefs?.setInt('preVoidAlarmHours', hours);
     await _syncVocSchedules();
+    notifyListeners();
+  }
+
+  Future<void> setShowRetrogradeCard(bool value) async {
+    _showRetrogradeCard = value;
+    await _prefs?.setBool('showRetrogradeCard', value);
     notifyListeners();
   }
 
@@ -435,12 +466,18 @@ class AstroState with ChangeNotifier {
       final duration = nextEvent.difference(now) + const Duration(seconds: 1);
 
       if (kDebugMode) {
-        developer.log('Scheduling next UI update in $duration for event at $nextEvent', name: 'AstroState');
+        developer.log(
+          'Scheduling next UI update in $duration for event at $nextEvent',
+          name: 'AstroState',
+        );
       }
 
       _timer = Timer(duration, () async {
         if (kDebugMode) {
-          developer.log('Timer fired for UI update. Refreshing data...', name: 'AstroState');
+          developer.log(
+            'Timer fired for UI update. Refreshing data...',
+            name: 'AstroState',
+          );
         }
 
         // If we are still following time, refresh the data.
@@ -456,7 +493,10 @@ class AstroState with ChangeNotifier {
       });
     } else {
       if (kDebugMode) {
-        developer.log('No future events found to schedule an update for.', name: 'AstroState');
+        developer.log(
+          'No future events found to schedule an update for.',
+          name: 'AstroState',
+        );
       }
     }
   }
@@ -497,9 +537,7 @@ class AstroState with ChangeNotifier {
     await refreshData();
   }
 
-
-// ----------------------------------------------------------------------------------------------------
-
+  // ----------------------------------------------------------------------------------------------------
 
   //실제 계산 시작
   Future<void> _updateData() async {
@@ -507,7 +545,8 @@ class AstroState with ChangeNotifier {
     notifyListeners();
 
     // 선택된 타임존 기준으로 계산 시점을 결정
-    final selectedTimezoneId = _prefs?.getString('selected_timezone') ?? 'Asia/Seoul';
+    final selectedTimezoneId =
+        _prefs?.getString('selected_timezone') ?? 'Asia/Seoul';
     DateTime dateForCalc;
     try {
       final location = tz.getLocation(selectedTimezoneId);
@@ -517,12 +556,13 @@ class AstroState with ChangeNotifier {
         dateForCalc = DateTime.now().toUtc();
       } else {
         // 날짜 선택 모드: 선택된 날짜를 선택된 타임존의 자정으로 변환
-        dateForCalc = tz.TZDateTime(
-          location,
-          _selectedDate.year,
-          _selectedDate.month,
-          _selectedDate.day,
-        ).toUtc();
+        dateForCalc =
+            tz.TZDateTime(
+              location,
+              _selectedDate.year,
+              _selectedDate.month,
+              _selectedDate.day,
+            ).toUtc();
       }
     } catch (e) {
       dateForCalc = _selectedDate.toUtc();
@@ -542,7 +582,7 @@ class AstroState with ChangeNotifier {
         final now = DateTime.now();
         final vocStart = vocTimes['start'] as DateTime?;
         final vocEnd = vocTimes['end'] as DateTime;
-        
+
         if (vocStart != null && now.isAfter(vocStart) && now.isBefore(vocEnd)) {
           // We are currently IN the VOC. We need the NEXT VOC start for the widget.
           final nextVocTimes = _calculator.findVoidOfCoursePeriod(
@@ -562,11 +602,22 @@ class AstroState with ChangeNotifier {
       final moonSignTimes = _calculator.getMoonSignTimes(dateForCalc);
 
       final moonSignName = _calculator.getMoonSignName(dateForCalc);
-      
+
       final moonPhaseTimes = _calculator.getMoonPhaseTimes(dateForCalc);
 
       // getMoonPhaseTimes가 nextPhaseName도 함께 반환 (findNextPhase 중복 호출 제거)
-      final nextMoonPhaseName = moonPhaseTimes['nextPhaseName'] as String? ?? 'N/A';
+      final nextMoonPhaseName =
+          moonPhaseTimes['nextPhaseName'] as String? ?? 'N/A';
+
+      // 수성 및 금성 역행 계산
+      final mercuryRetroInfo = _calculator.findRetrogradePeriod(
+        HeavenlyBody.SE_MERCURY,
+        dateForCalc,
+      );
+      final venusRetroInfo = _calculator.findRetrogradePeriod(
+        HeavenlyBody.SE_VENUS,
+        dateForCalc,
+      );
 
       if (kDebugMode) {
         print('[DEBUG] moonPhaseInfo: $moonPhaseInfo');
@@ -575,6 +626,8 @@ class AstroState with ChangeNotifier {
         print('[DEBUG] vocTimes: $vocTimes');
         print('[DEBUG] moonSignTimes: $moonSignTimes');
         print('[DEBUG] moonPhaseTimes: $moonPhaseTimes');
+        print('[DEBUG] mercuryRetroInfo: $mercuryRetroInfo');
+        print('[DEBUG] venusRetroInfo: $venusRetroInfo');
       }
 
       final Map<String, dynamic> result = {
@@ -593,6 +646,12 @@ class AstroState with ChangeNotifier {
         'moonPhaseEndTime': moonPhaseTimes['end'],
         'nextVocStart': nextVocStart,
         'nextVocEnd': nextVocEnd,
+        'mercuryRetrograde': mercuryRetroInfo['isRetrograde'] ?? false,
+        'mercuryRetroStart': mercuryRetroInfo['start'],
+        'mercuryRetroEnd': mercuryRetroInfo['end'],
+        'venusRetrograde': venusRetroInfo['isRetrograde'] ?? false,
+        'venusRetroStart': venusRetroInfo['start'],
+        'venusRetroEnd': venusRetroInfo['end'],
       };
 
       await _updateStateFromResult(result);
@@ -624,6 +683,13 @@ class AstroState with ChangeNotifier {
     _nextMoonPhaseTime = result['nextMoonPhaseTime'] as DateTime?;
     _moonPhaseStartTime = result['moonPhaseStartTime'] as DateTime?;
     _moonPhaseEndTime = result['moonPhaseEndTime'] as DateTime?;
+
+    _mercuryRetrograde = result['mercuryRetrograde'] as bool? ?? false;
+    _mercuryRetroStart = result['mercuryRetroStart'] as DateTime?;
+    _mercuryRetroEnd = result['mercuryRetroEnd'] as DateTime?;
+    _venusRetrograde = result['venusRetrograde'] as bool? ?? false;
+    _venusRetroStart = result['venusRetroStart'] as DateTime?;
+    _venusRetroEnd = result['venusRetroEnd'] as DateTime?;
 
     // Cache VOC times and settings for background service
     await _prefs?.setInt('cached_pre_void_hours', _preVoidAlarmHours);

@@ -17,12 +17,14 @@ class MoonPhaseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tzProvider = Provider.of<TimezoneProvider>(context);
-    final phaseStartTime = provider.moonPhaseStartTime != null
-        ? tzProvider.convert(provider.moonPhaseStartTime!)
-        : null;
-    final phaseEndTime = provider.moonPhaseEndTime != null
-        ? tzProvider.convert(provider.moonPhaseEndTime!)
-        : null;
+    final phaseStartTime =
+        provider.moonPhaseStartTime != null
+            ? tzProvider.convert(provider.moonPhaseStartTime!)
+            : null;
+    final phaseEndTime =
+        provider.moonPhaseEndTime != null
+            ? tzProvider.convert(provider.moonPhaseEndTime!)
+            : null;
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bodyColor = theme.textTheme.bodyLarge?.color;
@@ -35,6 +37,34 @@ class MoonPhaseCard extends StatelessWidget {
     final iconGap = isCompact ? 12.0 : 16.0;
     final titleSize = isCompact ? 15.0 : 17.0;
     final phaseNameSize = isCompact ? 16.0 : 18.0;
+
+    final locale = Localizations.localeOf(context).languageCode;
+    final isKo = locale == 'ko';
+
+    String getPhaseName(String phase) {
+      final clean = _calculator.getMoonPhaseNameOnly(phase).trim();
+      if (!isKo) return clean;
+      switch (clean) {
+        case 'New Moon':
+          return 'New Moon (신월)';
+        case 'Crescent Moon':
+          return 'Crescent Moon (크레센트)';
+        case 'First Quarter':
+          return 'First Quarter (퍼스트쿼터)';
+        case 'Gibbous Moon':
+          return 'Gibbous Moon (지보스문)';
+        case 'Full Moon':
+          return 'Full Moon (풀문)';
+        case 'Disseminating Moon':
+          return 'Disseminating Moon (디세미네이팅 문)';
+        case 'Last Quarter':
+          return 'Last Quarter (라스트쿼터)';
+        case 'Balsamic Moon':
+          return 'Balsamic Moon (발사믹)';
+        default:
+          return clean;
+      }
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -81,15 +111,16 @@ class MoonPhaseCard extends StatelessWidget {
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         center: Alignment(0.0, -0.3),
-                        colors: isDark
-                            ? [
-                                const Color(0xFF2A4A6E),
-                                const Color(0xFF1E3A5F),
-                              ]
-                            : [
-                                const Color(0xFFF0EDE5),
-                                const Color.fromARGB(255, 243, 242, 241),
-                              ],
+                        colors:
+                            isDark
+                                ? [
+                                  const Color(0xFF2A4A6E),
+                                  const Color(0xFF1E3A5F),
+                                ]
+                                : [
+                                  const Color(0xFFF0EDE5),
+                                  const Color.fromARGB(255, 243, 242, 241),
+                                ],
                       ),
                     ),
                     child: Center(
@@ -116,7 +147,7 @@ class MoonPhaseCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 1),
                         Text(
-                          _calculator.getMoonPhaseNameOnly(provider.moonPhase),
+                          getPhaseName(provider.moonPhase),
                           style: TextStyle(
                             color: theme.textTheme.titleLarge?.color,
                             fontSize: phaseNameSize,
@@ -127,7 +158,7 @@ class MoonPhaseCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 1),
                         _buildTimeRow(
-                          'Start',
+                          isKo ? '시작' : 'Start',
                           phaseStartTime != null
                               ? _dateFormat.format(phaseStartTime)
                               : 'N/A',
@@ -137,7 +168,7 @@ class MoonPhaseCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 1),
                         _buildTimeRow(
-                          'End',
+                          isKo ? '종료' : 'End',
                           phaseEndTime != null
                               ? _dateFormat.format(phaseEndTime)
                               : 'N/A',
@@ -158,7 +189,12 @@ class MoonPhaseCard extends StatelessWidget {
   }
 
   Widget _buildTimeRow(
-      String label, String time, bool isDark, Color? bodyColor, bool isCompact) {
+    String label,
+    String time,
+    bool isDark,
+    Color? bodyColor,
+    bool isCompact,
+  ) {
     final textStyle = TextStyle(
       color: bodyColor,
       fontSize: isCompact ? 14.0 : 16.0,
@@ -167,7 +203,7 @@ class MoonPhaseCard extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: isCompact ? 40.0 : 55.0,
+          width: isCompact ? 35.0 : 44.0,
           child: Text(label, style: textStyle),
         ),
         Text(' : ', style: textStyle),

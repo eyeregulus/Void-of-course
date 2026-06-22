@@ -289,7 +289,7 @@ class GoogleCalendarService extends ChangeNotifier {
       for (final period in vocPeriods) {
         final start = period['start']!;
         final moonZodiac = calculator.getMoonZodiacEmoji(start);
-        final title = '🌙 Void of Course $moonZodiac';
+        final title = '$moonZodiac Void of Course🌙';
 
         final id = await _addEventToCalendar(
           calendarId: calendarId,

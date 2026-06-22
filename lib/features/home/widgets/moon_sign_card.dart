@@ -8,10 +8,7 @@ import 'package:void_of_course/themes.dart';
 class MoonSignCard extends StatelessWidget {
   final AstroState provider;
 
-  const MoonSignCard({
-    super.key,
-    required this.provider,
-  });
+  const MoonSignCard({super.key, required this.provider});
 
   static final _dateFormat = DateFormat('MM/dd HH:mm');
 
@@ -73,13 +70,12 @@ class MoonSignCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tzProvider = Provider.of<TimezoneProvider>(context);
-    final nextSignTime = provider.nextSignTime != null
-        ? tzProvider.convert(provider.nextSignTime!)
-        : null;
+    final nextSignTime =
+        provider.nextSignTime != null
+            ? tzProvider.convert(provider.nextSignTime!)
+            : null;
     final formattedNextSignTime =
-        nextSignTime != null
-            ? _dateFormat.format(nextSignTime)
-            : 'N/A';
+        nextSignTime != null ? _dateFormat.format(nextSignTime) : 'N/A';
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bodyColor = theme.textTheme.bodyLarge?.color;
@@ -92,6 +88,40 @@ class MoonSignCard extends StatelessWidget {
     final cardPadding = isCompact ? 10.0 : 12.0;
     final iconGap = isCompact ? 12.0 : 16.0;
     final titleSize = isCompact ? 15.0 : 17.0;
+
+    final locale = Localizations.localeOf(context).languageCode;
+    final isKo = locale == 'ko';
+
+    String getZodiacNameKo(String sign) {
+      switch (sign) {
+        case 'Aries':
+          return '양';
+        case 'Taurus':
+          return '황소';
+        case 'Gemini':
+          return '쌍둥이';
+        case 'Cancer':
+          return '게';
+        case 'Leo':
+          return '사자';
+        case 'Virgo':
+          return '처녀';
+        case 'Libra':
+          return '천칭';
+        case 'Scorpio':
+          return '전갈';
+        case 'Sagittarius':
+          return '사수';
+        case 'Capricorn':
+          return '염소';
+        case 'Aquarius':
+          return '물병';
+        case 'Pisces':
+          return '물고기';
+        default:
+          return sign;
+      }
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -138,15 +168,16 @@ class MoonSignCard extends StatelessWidget {
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         center: Alignment(0.0, -0.0),
-                        colors: isDark
-                            ? [
-                                signColor.withValues(alpha: 0.3),
-                                const Color(0xFF1E3A5F),
-                              ]
-                            : [
-                                signColor.withValues(alpha: 0.15),
-                                const Color(0xFFF0EDE5),
-                              ],
+                        colors:
+                            isDark
+                                ? [
+                                  signColor.withValues(alpha: 0.3),
+                                  const Color(0xFF1E3A5F),
+                                ]
+                                : [
+                                  signColor.withValues(alpha: 0.15),
+                                  const Color(0xFFF0EDE5),
+                                ],
                       ),
                     ),
                     child: Center(
@@ -167,7 +198,9 @@ class MoonSignCard extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Moon in ${provider.moonInSign}',
+                          isKo
+                              ? 'Moon in ${provider.moonInSign} (${getZodiacNameKo(provider.moonInSign)})'
+                              : 'Moon in ${provider.moonInSign}',
                           style: TextStyle(
                             color: isDark ? Themes.gold : Themes.midnightBlue,
                             fontSize: titleSize,
@@ -179,9 +212,13 @@ class MoonSignCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 1),
                         _buildTimeRow(
-                          'Start',
+                          isKo ? '시작' : 'Start',
                           provider.currentSignStartTime != null
-                              ? _dateFormat.format(tzProvider.convert(provider.currentSignStartTime!))
+                              ? _dateFormat.format(
+                                tzProvider.convert(
+                                  provider.currentSignStartTime!,
+                                ),
+                              )
                               : 'N/A',
                           isDark,
                           bodyColor,
@@ -189,7 +226,7 @@ class MoonSignCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 1),
                         _buildTimeRow(
-                          'End',
+                          isKo ? '종료' : 'End',
                           formattedNextSignTime,
                           isDark,
                           bodyColor,
@@ -208,7 +245,12 @@ class MoonSignCard extends StatelessWidget {
   }
 
   Widget _buildTimeRow(
-      String label, String time, bool isDark, Color? bodyColor, bool isCompact) {
+    String label,
+    String time,
+    bool isDark,
+    Color? bodyColor,
+    bool isCompact,
+  ) {
     final textStyle = TextStyle(
       color: bodyColor,
       fontSize: isCompact ? 14.0 : 16.0,
@@ -217,7 +259,7 @@ class MoonSignCard extends StatelessWidget {
     return Row(
       children: [
         SizedBox(
-          width: isCompact ? 40.0 : 55.0,
+          width: isCompact ? 35.0 : 44.0,
           child: Text(label, style: textStyle),
         ),
         Text(' : ', style: textStyle),

@@ -9,6 +9,7 @@ import 'package:void_of_course/features/home/widgets/moon_phase_card.dart';
 import 'package:void_of_course/features/home/widgets/moon_sign_card.dart';
 import 'package:void_of_course/features/calendar/widgets/reset_date_button.dart';
 import 'package:void_of_course/features/home/widgets/voc_info_card.dart';
+import 'package:void_of_course/features/home/widgets/retrograde_card.dart';
 import 'package:void_of_course/features/settings/widgets/timezone_selector_dialog.dart';
 import 'package:void_of_course/core/widgets/app_snackbar.dart';
 import 'package:void_of_course/features/ads/services/ad_service.dart';
@@ -342,6 +343,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(height: 4),
                             VocInfoCard(provider: astroState),
                             const SizedBox(height: 4),
+                            if (astroState.showRetrogradeCard) ...[
+                              RetrogradeCard(provider: astroState),
+                              const SizedBox(height: 4),
+                            ],
                             DateSelector(
                               dateController: _dateController,
                               onPreviousDay: () => _changeDate(-1),

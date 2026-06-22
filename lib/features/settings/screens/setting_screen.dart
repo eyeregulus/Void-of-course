@@ -30,7 +30,7 @@ class SettingScreen extends StatelessWidget {
     final appLocalizations = AppLocalizations.of(context)!;
     final localeProvider = Provider.of<LocaleProvider>(context, listen: false);
     final isKorean = localeProvider.locale?.languageCode == 'ko';
-    
+
     final String serviceName = isKorean ? serviceNameKo : serviceNameEn;
     final String title = appLocalizations.goToServiceTitle(serviceName);
     final String contentText = appLocalizations.goToServiceContent(serviceName);
@@ -98,6 +98,7 @@ class SettingScreen extends StatelessWidget {
     final appLocalizations = AppLocalizations.of(context)!;
     // 언어 설정을 바꾸는 데 필요한 정보를 가져와요.
     final localeProvider = Provider.of<LocaleProvider>(context);
+    final isKorean = localeProvider.locale?.languageCode == 'ko';
 
     // 화면의 기본 틀을 만들어요.
     return Scaffold(
@@ -200,6 +201,43 @@ class SettingScreen extends StatelessWidget {
                           },
                         ),
                       ),
+
+                      // 행성 역행 정보 켜기/끄기 설정 카드
+                      SettingCard(
+                        icon: Icons.explore_outlined,
+                        title:
+                            isKorean
+                                ? '수성, 금성 역행'
+                                : 'Mercury & Venus Retrograde',
+                        iconColor: Colors.orangeAccent,
+                        trailing: Consumer<AstroState>(
+                          builder: (context, astroState, child) {
+                            return Switch(
+                              value: astroState.showRetrogradeCard,
+                              onChanged: (value) async {
+                                await astroState.setShowRetrogradeCard(value);
+                                if (!context.mounted) return;
+
+                                final message =
+                                    value
+                                        ? (isKorean
+                                            ? '수성·금성 역행 정보가 활성화되었습니다.\n홈 화면에서 확인해주세요.'
+                                            : 'Mercury & Venus retrograde info enabled.\nPlease check the home screen.')
+                                        : (isKorean
+                                            ? '수성·금성 역행 정보가 비활성화되었습니다.'
+                                            : 'Mercury & Venus retrograde info disabled.');
+
+                                await AppSnackBar.show(
+                                  context,
+                                  message: message,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+
+                      // 두 번째 설정 카드: 테마 변경 (다크 모드/라이트 모드)
                       SettingCard(
                         icon: themeIcon, // 위에서 정한 달 또는 해 아이콘을 보여줘요.
                         title: appLocalizations.darkMode, // '다크 모드'라는 제목을 보여줘요.
@@ -238,6 +276,7 @@ class SettingScreen extends StatelessWidget {
                           },
                         ),
                       ),
+
                       // 세 번째 설정 카드: 언어 설정
                       SettingCard(
                         icon: Icons.language, // 언어 아이콘을 보여줘요.

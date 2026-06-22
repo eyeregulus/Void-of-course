@@ -53,41 +53,54 @@ class InfoScreen extends StatelessWidget {
         titleKo: '<IOS 출시 이벤트🎊🎉 >',
         titleEn: '<IOS Launching Event🎊🎉 >',
         contentKo: '''
-안녕하세요 리오입니다.
-이번에 IOS 앱을 출시하게 되어,\n작은 이벤트를 진행하게 되었습니다 🎊🎉
+안녕하세요, 리오입니다 👋
 
-리뷰 이벤트 참여 방법은 아래와 같습니다.
+Void of Course iOS 버전이 출시되었습니다! 🎉
+출시를 기념하여 작은 감사 이벤트를 진행합니다.
 
-대상 : 안드로이드 / IOS 에서 리뷰 남겨주신 유저
-상품 : 프리미엄 "Plus" 기능 1개월 이용권
-기간 : 26.06.23 ~ 26.07.07
+📌 이벤트 내용
+앱을 사용해보신 분들의 솔직한 피드백을 기다립니다.
+소중한 의견을 남겨주신 분들께 감사 선물을 드립니다.
 
-참여 방법 : 아래 구글폼에 리뷰 캡쳐 사진을 포함하여, 구글폼을 입력해주세요.
-🇰🇷한국 & 🌍글로벌 유저 모두 참여 가능합니다.
+🎁 참여 혜택
+•참여자 전원 - 프리미엄 Plus 1개월 이용권
+•베스트 리뷰어 1명 - 프리미엄 Plus 영구권
 
-- 가장 정성스러운 리뷰를 남겨주신 1분을 선정하여, 프리미엄 "Plus" 기능을 영구 지원해 드립니다.
-- 당첨자 발표 : 26.06.30 (개발자노트 게시)
+📋 참여 방법
+1. 구글 플레이/애플 앱스토어에 리뷰를 남겨주세요.
+2. 해당 리뷰를 캡쳐합니다.
+3. 아래 구글 폼에 리뷰 캡쳐와 이메일을 제출합니다.
+(이메일 제출시, 리뷰를 남긴 계정과 동일한 이메일을 남겨주셔야 합니다.)
 
-많은 참여 부탁드립니다.
-감사합니다
-리오 드림
+📅 기간: 2026.06.23 ~ 2026.07.07
+🏆 당첨자 발표: 2026.07.10 (개발자 노트)
+🌍 한국 및 글로벌 유저 모두 참여 가능
 ''',
         contentEn: '''
-Hi, this is lio.
-I'm happy to announce the IOS app launching event🎊🎉
+Hey everyone, Lio here 👋
 
-Event Details:
-- Eligibility: All users who leave a review on the "Void of Course" Android/IOS app
-- Prize: 1 Month Free "Plus" Premium Service for all participants
-- Event Period: 26.06.15 ~ 26.06.30
+Void of Course is now officially available on iOS! 🎉
+To celebrate the launch, I'm running a small thank-you event.
 
-- How to Participate: Submit the Google Form (including a screenshot of your review)
-🇰🇷 Korean users & 🌍 International users are eligible to participate.
+📌 About This Event
+I'd love to hear your honest feedback on the app.
+As a token of appreciation, I'm offering gifts to everyone who shares their thoughts.
 
-- Additionally, the most high-quality review will be selected, and (Lifetime) "Plus" Premium service will be provided.
-- The winner of the event will be announced on 26.06.30 (in the developer notes section)
+🎁 Rewards
+• All participants — 1 month of Premium Plus for free
+• Most thoughtful feedback — Premium Plus lifetime access
 
-All my best
+📋 How to Join
+1. Leave a review on the Play Store or App Store
+2. Take a screenshot of the review
+3. Submit the review screenshot and your email address via the Google Form below
+(Please use the same email address as the account used for the review)
+
+📅 Period: Jun 23 – Jul 7, 2026
+🏆 Winner announced: Jul 10, 2026 (Developer Notes)
+🌍 Open to both Korean and global users
+
+Thank you so much for your support
 Lio
 ''',
         actions: [

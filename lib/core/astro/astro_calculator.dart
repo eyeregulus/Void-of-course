@@ -726,4 +726,143 @@ class AstroCalculator {
     }
     return events;
   }
+
+  // 어떤 별이나 행성의 역행 여부를 확인하는 함수
+  bool isRetrograde(HeavenlyBody planet, DateTime date) {
+    final jd = getJulianDay(date);
+    final pos = Sweph.swe_calc_ut(
+      jd,
+      planet,
+      SwephFlag.SEFLG_SWIEPH | SwephFlag.SEFLG_SPEED,
+    );
+    return pos.speedInLongitude < 0;
+  }
+
+  // 행성의 역행 기간(Start, End)을 찾아내는 함수
+  Map<String, dynamic> findRetrogradePeriod(HeavenlyBody planet, DateTime date) {
+    final isRetro = isRetrograde(planet, date);
+
+    if (isRetro) {
+      // 1. 현재 역행 중인 경우: 역행의 시작점(Start)과 끝점(End)을 찾음
+      // 시작점 찾기: 과거로 하루씩 가며 순행(speed >= 0)이었던 날을 찾음
+      DateTime startSearch = date;
+      const int maxDaysRetro = 90; // 수성 3주, 금성 6주이므로 90일이면 충분
+      DateTime? retroStartBracket;
+      for (int i = 1; i <= maxDaysRetro; i++) {
+        final checkDate = date.subtract(Duration(days: i));
+        if (!isRetrograde(planet, checkDate)) {
+          retroStartBracket = checkDate;
+          break;
+        }
+      }
+
+      // 끝점 찾기: 미래로 하루씩 가며 순행(speed >= 0)으로 바뀌는 날을 찾음
+      DateTime? retroEndBracket;
+      for (int i = 1; i <= maxDaysRetro; i++) {
+        final checkDate = date.add(Duration(days: i));
+        if (!isRetrograde(planet, checkDate)) {
+          retroEndBracket = checkDate;
+          break;
+        }
+      }
+
+      DateTime? startResult;
+      if (retroStartBracket != null) {
+        startResult = _findRetrogradeTransition(
+            planet, retroStartBracket, retroStartBracket.add(const Duration(days: 1)), true);
+      }
+
+      DateTime? endResult;
+      if (retroEndBracket != null) {
+        endResult = _findRetrogradeTransition(
+            planet, retroEndBracket.subtract(const Duration(days: 1)), retroEndBracket, false);
+      }
+
+      return {
+        'isRetrograde': true,
+        'start': startResult,
+        'end': endResult,
+      };
+    } else {
+      // 2. 현재 순행 중인 경우: 가장 가까운 미래의 역행 기간을 찾아서 보여줌
+      final int maxSearchDays = planet == HeavenlyBody.SE_VENUS ? 600 : 180;
+      DateTime? nextRetroDay;
+      for (int i = 1; i <= maxSearchDays; i++) {
+        final checkDate = date.add(Duration(days: i));
+        if (isRetrograde(planet, checkDate)) {
+          nextRetroDay = checkDate;
+          break;
+        }
+      }
+
+      if (nextRetroDay != null) {
+        final startResult = _findRetrogradeTransition(
+          planet,
+          nextRetroDay.subtract(const Duration(days: 1)),
+          nextRetroDay,
+          true,
+        );
+
+        DateTime? nextDirectDay;
+        for (int i = 1; i <= 90; i++) {
+          final checkDate = nextRetroDay.add(Duration(days: i));
+          if (!isRetrograde(planet, checkDate)) {
+            nextDirectDay = checkDate;
+            break;
+          }
+        }
+
+        DateTime? endResult;
+        if (nextDirectDay != null) {
+          endResult = _findRetrogradeTransition(
+            planet,
+            nextDirectDay.subtract(const Duration(days: 1)),
+            nextDirectDay,
+            false,
+          );
+        }
+
+        return {
+          'isRetrograde': false,
+          'start': startResult,
+          'end': endResult,
+        };
+      }
+
+      return {
+        'isRetrograde': false,
+        'start': null,
+        'end': null,
+      };
+    }
+  }
+
+  // 이진 탐색을 통해 역행/순행 전환의 정확한 시간을 찾음
+  DateTime _findRetrogradeTransition(
+      HeavenlyBody planet, DateTime start, DateTime end, bool toRetrograde) {
+    DateTime left = start.toUtc();
+    DateTime right = end.toUtc();
+
+    for (int i = 0; i < 20; i++) {
+      final mid = left.add(
+          Duration(milliseconds: right.difference(left).inMilliseconds ~/ 2));
+      final isRetro = isRetrograde(planet, mid);
+
+      if (toRetrograde) {
+        if (isRetro) {
+          right = mid;
+        } else {
+          left = mid;
+        }
+      } else {
+        if (isRetro) {
+          left = mid;
+        } else {
+          right = mid;
+        }
+      }
+    }
+    return left;
+  }
 }
+
