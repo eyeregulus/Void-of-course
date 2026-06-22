@@ -315,7 +315,9 @@ class _VocInfoCardState extends State<VocInfoCard> {
     return Row(
       children: [
         SizedBox(
-          width: isCompact ? 35.0 : 44.0,
+          width: label == '시작' || label == '종료'
+              ? (isCompact ? 28.0 : 32.0)
+              : (isCompact ? 35.0 : 44.0),
           child: Text(label, style: textStyle),
         ),
         Text(' : ', style: textStyle),

@@ -30,37 +30,40 @@ class RetrogradeCard extends StatelessWidget {
     final locale = Localizations.localeOf(context).languageCode;
     final isKo = locale == 'ko';
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Row(
       children: [
         // 수성 역행 카드
-        _buildPlanetCard(
-          context: context,
-          planetSymbol: '☿',
-          planetName: 'Mercury',
-          isRetrograde: provider.mercuryRetrograde,
-          startTime: _formatDateTime(provider.mercuryRetroStart, tzProvider),
-          endTime: _formatDateTime(provider.mercuryRetroEnd, tzProvider),
-          planetColor: const Color(0xFF9C27B0), // 수성: 보라색
-          isDark: isDark,
-          bodyColor: bodyColor,
-          isCompact: isCompact,
-          isKo: isKo,
+        Expanded(
+          child: _buildPlanetCard(
+            context: context,
+            planetSymbol: '☿',
+            planetName: isKo ? '수성' : 'Mercury',
+            isRetrograde: provider.mercuryRetrograde,
+            startTime: _formatDateTime(provider.mercuryRetroStart, tzProvider),
+            endTime: _formatDateTime(provider.mercuryRetroEnd, tzProvider),
+            planetColor: const Color(0xFF9C27B0), // 수성: 보라색
+            isDark: isDark,
+            bodyColor: bodyColor,
+            isCompact: isCompact,
+            isKo: isKo,
+          ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(width: 4),
         // 금성 역행 카드
-        _buildPlanetCard(
-          context: context,
-          planetSymbol: '♀',
-          planetName: 'Venus',
-          isRetrograde: provider.venusRetrograde,
-          startTime: _formatDateTime(provider.venusRetroStart, tzProvider),
-          endTime: _formatDateTime(provider.venusRetroEnd, tzProvider),
-          planetColor: const Color(0xFFE91E63), // 금성: 핑크/분홍색
-          isDark: isDark,
-          bodyColor: bodyColor,
-          isCompact: isCompact,
-          isKo: isKo,
+        Expanded(
+          child: _buildPlanetCard(
+            context: context,
+            planetSymbol: '♀',
+            planetName: isKo ? '금성' : 'Venus',
+            isRetrograde: provider.venusRetrograde,
+            startTime: _formatDateTime(provider.venusRetroStart, tzProvider),
+            endTime: _formatDateTime(provider.venusRetroEnd, tzProvider),
+            planetColor: const Color(0xFFE91E63), // 금성: 핑크/분홍색
+            isDark: isDark,
+            bodyColor: bodyColor,
+            isCompact: isCompact,
+            isKo: isKo,
+          ),
         ),
       ],
     );
@@ -84,25 +87,15 @@ class RetrogradeCard extends StatelessWidget {
             ? const Color(0xFFE53935) // 역행: 빨간색
             : const Color(0xFF4CAF50); // 순행: 초록색
 
-    final statusBgColor =
-        isRetrograde
-            ? (isDark ? const Color(0xFF3D1F1F) : const Color(0xFFFFF0F0))
-            : (isDark ? const Color(0xFF1F3D2A) : const Color(0xFFF0FFF4));
-
     final statusText =
-        isRetrograde
-            ? (isKo ? '현재 역행' : 'Retrograde')
-            : (isKo ? '현재 순행' : 'Direct');
+        isRetrograde ? (isKo ? '역행' : 'Retro') : (isKo ? '순행' : 'Direct');
 
-    final alignmentWidth = isCompact ? 66.0 : 82.0;
-    // 세로 크기 축소를 위해 alignmentHeight를 별도로 더 작게 설정
-    final alignmentHeight = isCompact ? 60.0 : 76.0;
-    final circleSize = isCompact ? 46.0 : 56.0;
+    final circleSize = isCompact ? 36.0 : 42.0;
     final isMercury = planetSymbol == '☿';
     final symbolSize =
-        isMercury ? (isCompact ? 26.0 : 34.0) : (isCompact ? 20.0 : 26.0);
+        isMercury ? (isCompact ? 22.0 : 26.0) : (isCompact ? 16.0 : 20.0);
 
-    final titleSize = isCompact ? 15.0 : 17.0;
+    final titleSize = isCompact ? 14.0 : 16.0;
 
     return Container(
       decoration: BoxDecoration(
@@ -111,7 +104,7 @@ class RetrogradeCard extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: Themes.cardGradient(isDark),
         ),
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
@@ -121,16 +114,16 @@ class RetrogradeCard extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: [
             // 상태 색상 악센트 글로우 (우상단 배치)
             Positioned(
-              right: -40,
-              top: -40,
+              right: -30,
+              top: -30,
               child: Container(
-                width: 150,
-                height: 150,
+                width: 100,
+                height: 100,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
@@ -143,19 +136,14 @@ class RetrogradeCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: isCompact ? 12.0 : 16.0,
-                vertical: isCompact ? 8.0 : 10.0,
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              padding: EdgeInsets.all(isCompact ? 10.0 : 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // 정렬용 외부 영역 (다른 카드들과 X축 라인을 완벽히 일치시키고 높이는 소형화)
-                  SizedBox(
-                    width: alignmentWidth,
-                    height: alignmentHeight,
-                    child: Center(
-                      child: Container(
+                  Row(
+                    children: [
+                      Container(
                         width: circleSize,
                         height: circleSize,
                         decoration: BoxDecoration(
@@ -185,64 +173,62 @@ class RetrogradeCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              planetName,
+                              style: TextStyle(
+                                color:
+                                    isDark ? Themes.gold : Themes.midnightBlue,
+                                fontSize: titleSize,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 1.5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: statusColor.withValues(
+                                  alpha: isDark ? 0.25 : 0.15,
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                statusText,
+                                style: TextStyle(
+                                  color: statusColor,
+                                  fontSize: isCompact ? 10.0 : 12.0,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: isCompact ? 12.0 : 16.0),
-
-                  // 역행 세부 정보
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          planetName,
-                          style: TextStyle(
-                            color: isDark ? Themes.gold : Themes.midnightBlue,
-                            fontSize: titleSize,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2.5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: statusColor.withValues(
-                              alpha: isDark ? 0.25 : 0.15,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            statusText,
-                            style: TextStyle(
-                              color: statusColor,
-                              fontSize: isCompact ? 12.0 : 14.0,
-                              fontWeight:
-                                  FontWeight.w900, // 글로우 된 텍스트 볼드(w900)로 강조
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        _buildTimeRow(
-                          isKo ? '시작' : 'Start',
-                          startTime,
-                          bodyColor,
-                          isCompact,
-                        ),
-                        const SizedBox(height: 1),
-                        _buildTimeRow(
-                          isKo ? '종료' : 'End',
-                          endTime,
-                          bodyColor,
-                          isCompact,
-                        ),
-                      ],
-                    ),
+                  const SizedBox(height: 8),
+                  _buildTimeRow(
+                    isKo ? '시작' : 'Start',
+                    startTime,
+                    bodyColor,
+                    isCompact,
+                  ),
+                  const SizedBox(height: 2),
+                  _buildTimeRow(
+                    isKo ? '종료' : 'End',
+                    endTime,
+                    bodyColor,
+                    isCompact,
                   ),
                 ],
               ),
@@ -261,13 +247,16 @@ class RetrogradeCard extends StatelessWidget {
   ) {
     final textStyle = TextStyle(
       color: bodyColor,
-      fontSize: isCompact ? 14.0 : 16.0,
+      fontSize: isCompact ? 11.0 : 13.0,
       fontWeight: FontWeight.w700,
     );
     return Row(
       children: [
         SizedBox(
-          width: isCompact ? 35.0 : 44.0,
+          width:
+              label == '시작' || label == '종료'
+                  ? (isCompact ? 22.0 : 26.0)
+                  : (isCompact ? 28.0 : 36.0),
           child: Text(label, style: textStyle),
         ),
         Text(' : ', style: textStyle),
