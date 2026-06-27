@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -26,8 +27,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
   final CalendarVocCache _vocCache = CalendarVocCache.instance;
 
   Map<DateTime, List<Map<String, dynamic>>> _rawVocEvents = {};
-  Map<DateTime, List<Map<String, dynamic>>> _tzAdjustedEvents = {};
-  Map<DateTime, Map<String, dynamic>> _vocSpans = {};
+  final Map<DateTime, List<Map<String, dynamic>>> _tzAdjustedEvents = {};
+  final Map<DateTime, Map<String, dynamic>> _vocSpans = {};
 
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -38,6 +39,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   bool _lastIsDst = false;
   int _fetchGeneration = 0;
   int? _lastAnalyticsMonthKey;
+  Timer? _debounceTimer;
 
   @override
   void initState() {
@@ -52,6 +54,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   void dispose() {
     _selectedEvents.dispose();
+    _debounceTimer?.cancel();
     super.dispose();
   }
 
@@ -74,10 +77,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _tzAdjustedEvents.clear();
     _vocSpans.clear();
 
-    final Set<Map<String, dynamic>> uniqueEvents = {};
+    final Map<String, Map<String, dynamic>> uniqueEventsMap = {};
     for (final eventsList in _rawVocEvents.values) {
-      uniqueEvents.addAll(eventsList);
+      for (final voc in eventsList) {
+        final start = voc['start'] as DateTime?;
+        if (start != null) {
+          final key = start.toIso8601String();
+          uniqueEventsMap[key] = voc;
+        }
+      }
     }
+    final uniqueEvents = uniqueEventsMap.values.toList();
 
     for (final voc in uniqueEvents) {
       final startUtc = voc['start'] as DateTime?;
@@ -168,7 +178,49 @@ class _CalendarScreenState extends State<CalendarScreen> {
       AppAnalytics.logCalendarMonthChanged(focusedDay.year, focusedDay.month);
     }
     setState(() => _focusedDay = focusedDay);
-    _ensureMonthWindowLoaded(focusedDay);
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      if (mounted) {
+        _ensureMonthWindowLoaded(focusedDay);
+      }
+    });
+  }
+
+  Color _getAspectColor(String aspect) {
+    if (['☌', '□', '☍'].contains(aspect)) {
+      return const Color.fromARGB(255, 255, 4, 0); // Hard aspects - Red
+    }
+    if (['✶', '△'].contains(aspect)) {
+      return const Color.fromARGB(255, 4, 0, 250); // Soft aspects - Blue
+    }
+    return const Color(0xFF9E9E9E);
+  }
+
+  Color _getPlanetColor(String planet) {
+    switch (planet) {
+      case '☉':
+        return const Color.fromARGB(255, 209, 98, 46);
+      case '☾':
+        return const Color.fromARGB(232, 158, 158, 158);
+      case '☿':
+        return const Color(0xFF9C27B0);
+      case '♀':
+        return const Color.fromARGB(255, 2, 245, 245);
+      case '♂':
+        return const Color.fromARGB(255, 255, 4, 0);
+      case '♃':
+        return const Color.fromARGB(255, 73, 73, 73);
+      case '♄':
+        return const Color.fromARGB(255, 99, 0, 0);
+      case '♅':
+        return const Color.fromARGB(255, 35, 67, 250);
+      case '♆':
+        return const Color.fromARGB(255, 0, 141, 177);
+      case '⯓':
+        return const Color.fromARGB(255, 63, 0, 0);
+      default:
+        return const Color(0xFF9E9E9E);
+    }
   }
 
   Future<void> _ensureMonthWindowLoaded(DateTime month) async {
@@ -258,6 +310,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
             ],
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: appLocalizations.localeName == 'ko' ? '오늘로 이동' : 'Today',
+            onPressed: () {
+              final now = DateTime.now();
+              setState(() {
+                _focusedDay = now;
+                _selectedDay = now;
+              });
+              _ensureMonthWindowLoaded(now);
+              AppAnalytics.logCalendarDaySelected(
+                year: now.year,
+                month: now.month,
+                day: now.day,
+                hasVoc: _getEventsForDay(now).isNotEmpty,
+              );
+            },
+          ),
+        ],
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         elevation: Theme.of(context).appBarTheme.elevation,
@@ -298,8 +370,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
               todayDecoration: BoxDecoration(
                 color:
                     Theme.of(context).brightness == Brightness.dark
-                        ? Themes.gold.withOpacity(0.3)
-                        : Themes.midnightBlue.withOpacity(0.3),
+                        ? Themes.gold.withValues(alpha: 0.3)
+                        : Themes.midnightBlue.withValues(alpha: 0.3),
                 shape: BoxShape.circle,
               ),
               selectedDecoration: BoxDecoration(
@@ -451,6 +523,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             final tzEnd = tzProvider.convert(vocEnd);
                             final timeFormat = DateFormat('HH:mm');
 
+                            final aspect = event['aspect'] as String?;
+                            final planet = event['planet'] as String?;
+                            final isDark = Theme.of(context).brightness == Brightness.dark;
+
                             return Card(
                               margin: const EdgeInsets.symmetric(
                                 horizontal: 12.0,
@@ -461,7 +537,50 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                   Icons.timer_off_outlined,
                                   color: Colors.red,
                                 ),
-                                title: const Text('Void of course'),
+                                title: Row(
+                                  children: [
+                                    const Text('Void of course'),
+                                    if (aspect != null &&
+                                        planet != null &&
+                                        aspect.isNotEmpty &&
+                                        planet.isNotEmpty) ...[
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 2,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isDark
+                                              ? Colors.white.withValues(alpha: 0.1)
+                                              : Colors.black.withValues(alpha: 0.05),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              aspect,
+                                              style: TextStyle(
+                                                color: _getAspectColor(aspect),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                            Text(
+                                              ' $planet',
+                                              style: TextStyle(
+                                                color: _getPlanetColor(planet),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                                 subtitle: Text(
                                   '${timeFormat.format(tzStart)} - ${timeFormat.format(tzEnd)}',
                                 ),

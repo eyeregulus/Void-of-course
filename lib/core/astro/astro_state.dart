@@ -152,9 +152,8 @@ class AstroState with ChangeNotifier {
   }
 
   Future<void> _runInitializeBody() async {
-    //스위프 초기화
-    //천문학 라이브러리 초기화
     await Sweph.init();
+    await CalendarVocCache.instance.initWorker();
     // 스플래시·홈 진입을 우선 — 캘린더 탭 진입 시 추가 프리로드
     CalendarVocCache.instance.preloadAroundSilent(DateTime.now(), radius: 1);
     //shared preferences 초기화 (캐싱)

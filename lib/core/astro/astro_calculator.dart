@@ -381,8 +381,8 @@ class AstroCalculator {
         date.subtract(Duration(days: daysRange)).toUtc(); // 찾기 시작하는 시간
     DateTime utcEnd = date.add(Duration(days: daysRange)).toUtc(); // 찾기 끝나는 시간
 
-    // 100번 반복해서 아주 정확한 시간을 찾을 때까지 범위를 반씩 줄여나가요。
-    for (int i = 0; i < 100; i++) {
+    // 35번 반복해서 아주 정확한 시간을 찾을 때까지 범위를 반씩 줄여나가요。
+    for (int i = 0; i < 35; i++) {
       if (utcStart.isAtSameMomentAs(utcEnd)) break;
       final mid = utcStart.add(
         Duration(milliseconds: utcEnd.difference(utcStart).inMilliseconds ~/ 2),
@@ -446,8 +446,8 @@ class AstroCalculator {
       return null;
     }
 
-    // 100번 반복해서 시간을 아주 정확하게 찾아요。
-    for (int i = 0; i < 100; i++) {
+    // 35번 반복해서 시간을 아주 정확하게 찾아요。
+    for (int i = 0; i < 35; i++) {
       if (utcStart.isAtSameMomentAs(utcEnd)) break;
       final mid = utcStart.add(
         Duration(milliseconds: utcEnd.difference(utcStart).inMilliseconds ~/ 2),
@@ -501,8 +501,8 @@ class AstroCalculator {
       return null;
     }
 
-    // 100번 반복해서 시간을 아주 정확하게 찾아요。
-    for (int i = 0; i < 100; i++) {
+    // 35번 반복해서 시간을 아주 정확하게 찾아요。
+    for (int i = 0; i < 35; i++) {
       if (utcStart.isAtSameMomentAs(utcEnd)) break;
       final mid = utcStart.add(
         Duration(milliseconds: utcEnd.difference(utcStart).inMilliseconds ~/ 2),

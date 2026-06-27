@@ -1,6 +1,8 @@
 import 'dart:developer' as developer;
+import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:sweph/sweph.dart';
 
 import 'package:void_of_course/core/astro/astro_calculator.dart';
@@ -15,9 +17,28 @@ class CalendarVocCache {
 
   final Map<String, Map<DateTime, List<Map<String, dynamic>>>> _cache = {};
   final Set<String> _inFlight = {};
+  final Map<String, Future<Map<DateTime, List<Map<String, dynamic>>>>>
+  _inFlightFutures = {};
 
   bool hasMonth(int year, int month) =>
       _cache.containsKey(monthKey(year, month));
+
+  SendPort? _workerSendPort;
+  int _requestIdCounter = 0;
+
+  Future<void> initWorker() async {
+    if (_workerSendPort != null) return;
+    final token = RootIsolateToken.instance;
+    if (token == null) return;
+
+    final receivePort = ReceivePort();
+    await Isolate.spawn(_astroWorkerEntryPoint, {
+      'sendPort': receivePort.sendPort,
+      'token': token,
+    });
+
+    _workerSendPort = await receivePort.first as SendPort;
+  }
 
   /// TableCalendar 한 페이지(이전·현재·다음 달) 기준 좌표
   static List<(int, int)> windowCoords(DateTime month) {
@@ -43,31 +64,116 @@ class CalendarVocCache {
   }
 
   List<(int, int)> missingMonths(Iterable<(int, int)> coords) {
-    return coords
-        .where((m) => !hasMonth(m.$1, m.$2))
-        .toList();
+    return coords.where((m) => !hasMonth(m.$1, m.$2)).toList();
   }
 
   bool isWindowCached(DateTime month) =>
       missingMonths(windowCoords(month)).isEmpty;
 
   Map<DateTime, List<Map<String, dynamic>>> mergeWindow(DateTime month) {
+    final coords = windowCoords(month);
     final merged = <DateTime, List<Map<String, dynamic>>>{};
-    for (final m in windowCoords(month)) {
-      merged.addAll(_cache[monthKey(m.$1, m.$2)] ?? {});
+    for (final c in coords) {
+      final mKey = monthKey(c.$1, c.$2);
+      final mData = _cache[mKey];
+      if (mData != null) {
+        merged.addAll(mData);
+      }
     }
     return merged;
   }
 
-  Future<Map<String, Map<DateTime, List<Map<String, dynamic>>>>>
-      loadMonths(List<(int, int)> months) async {
+  Future<Map<DateTime, List<Map<String, dynamic>>>> loadSingleMonth(
+    int year,
+    int month,
+  ) async {
+    final key = monthKey(year, month);
+    if (_cache.containsKey(key)) {
+      return _cache[key]!;
+    }
+    if (_inFlightFutures.containsKey(key)) {
+      return _inFlightFutures[key]!;
+    }
+
+    final future = () async {
+      await Future.delayed(Duration.zero);
+      if (_workerSendPort == null) {
+        await initWorker();
+      }
+
+      if (_workerSendPort != null) {
+        final replyPort = ReceivePort();
+        final requestId = ++_requestIdCounter;
+
+        _workerSendPort!.send({
+          'id': requestId,
+          'year': year,
+          'month': month,
+          'replyPort': replyPort.sendPort,
+        });
+
+        final response = await replyPort.first as Map<String, dynamic>;
+        replyPort.close();
+
+        if (response['success'] as bool) {
+          final rawData = response['data'] as Map;
+          final formattedData = <DateTime, List<Map<String, dynamic>>>{};
+          rawData.forEach((k, v) {
+            if (k is DateTime && v is List) {
+              formattedData[k] =
+                  v.map((item) {
+                    if (item is Map) {
+                      return Map<String, dynamic>.from(item);
+                    }
+                    return <String, dynamic>{};
+                  }).toList();
+            }
+          });
+          return formattedData;
+        } else {
+          throw Exception(response['error']);
+        }
+      } else {
+        final calculator = AstroCalculator();
+        return calculator.getVocEventsForMonth(year, month);
+      }
+    }();
+
+    _inFlightFutures[key] = future;
+    try {
+      final res = await future;
+      _cache[key] = res;
+      return res;
+    } finally {
+      _inFlightFutures.remove(key);
+    }
+  }
+
+  Future<Map<String, Map<DateTime, List<Map<String, dynamic>>>>> loadMonths(
+    List<(int, int)> months,
+  ) async {
     if (months.isEmpty) return {};
-    await Sweph.init();
-    final calculator = AstroCalculator();
     final out = <String, Map<DateTime, List<Map<String, dynamic>>>>{};
+    final futures =
+        <(int, int), Future<Map<DateTime, List<Map<String, dynamic>>>>>{};
+
     for (final m in months) {
-      out[monthKey(m.$1, m.$2)] =
-          calculator.getVocEventsForMonth(m.$1, m.$2);
+      futures[m] = loadSingleMonth(m.$1, m.$2);
+    }
+
+    for (final entry in futures.entries) {
+      final m = entry.key;
+      try {
+        out[monthKey(m.$1, m.$2)] = await entry.value;
+      } catch (e, stack) {
+        if (kDebugMode) {
+          developer.log(
+            'Error loading month ${m.$1}-${m.$2}: $e\n$stack',
+            name: 'CalendarVocCache',
+          );
+        }
+        out[monthKey(m.$1, m.$2)] = {};
+      }
     }
     return out;
   }
@@ -77,13 +183,13 @@ class CalendarVocCache {
     final missing = missingMonths(coordsInRadius(center, radius));
     if (missing.isEmpty) return;
 
-    final keys =
-        missing.map((m) => monthKey(m.$1, m.$2)).toList();
+    final keys = missing.map((m) => monthKey(m.$1, m.$2)).toList();
     if (keys.any(_inFlight.contains)) {
-      final stillMissing = missing.where((m) {
-        final k = monthKey(m.$1, m.$2);
-        return !_cache.containsKey(k) && !_inFlight.contains(k);
-      }).toList();
+      final stillMissing =
+          missing.where((m) {
+            final k = monthKey(m.$1, m.$2);
+            return !_cache.containsKey(k) && !_inFlight.contains(k);
+          }).toList();
       if (stillMissing.isEmpty) return;
       _runSilentLoad(stillMissing);
       return;
@@ -129,6 +235,38 @@ class CalendarVocCache {
     } finally {
       for (final k in keys) {
         _inFlight.remove(k);
+      }
+    }
+  }
+}
+
+void _astroWorkerEntryPoint(Map<String, dynamic> initData) async {
+  final SendPort mainSendPort = initData['sendPort'];
+  final RootIsolateToken token = initData['token'];
+
+  BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+  await Sweph.init();
+  final calculator = AstroCalculator();
+
+  final commandPort = ReceivePort();
+  mainSendPort.send(commandPort.sendPort);
+
+  await for (final message in commandPort) {
+    if (message is Map<String, dynamic>) {
+      final int requestId = message['id'];
+      final int year = message['year'];
+      final int month = message['month'];
+      final SendPort replyPort = message['replyPort'];
+
+      try {
+        final res = calculator.getVocEventsForMonth(year, month);
+        replyPort.send({'id': requestId, 'success': true, 'data': res});
+      } catch (e) {
+        replyPort.send({
+          'id': requestId,
+          'success': false,
+          'error': e.toString(),
+        });
       }
     }
   }
