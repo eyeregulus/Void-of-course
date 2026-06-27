@@ -113,10 +113,6 @@ void onStart(ServiceInstance service) async {
     await notificationsPlugin.cancel(countdownNotificationId);
     await notificationsPlugin.cancel(preVoidNotificationId);
     await notificationsPlugin.cancel(vocStartNotificationId);
-    if (service is AndroidServiceInstance) {
-      await service.setAsBackgroundService();
-    }
-    await Future.delayed(const Duration(milliseconds: 500));
     await service.stopSelf();
   });
 
@@ -187,7 +183,7 @@ void onStart(ServiceInstance service) async {
   // 캐시된 설정값 (매초 reload 대신 주기적으로 갱신)
   String? cachedStartStr = prefs.getString('cached_voc_start');
   String? cachedEndStr = prefs.getString('cached_voc_end');
-  int cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 6;
+  int cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 48;
   bool cachedIsEnabled = prefs.getBool('voidAlarmEnabled') ?? false;
   String cachedLanguageCode = prefs.getString('cached_language_code') ?? 'en';
 
@@ -197,7 +193,7 @@ void onStart(ServiceInstance service) async {
     await prefs.reload();
     cachedStartStr = prefs.getString('cached_voc_start');
     cachedEndStr = prefs.getString('cached_voc_end');
-    cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 6;
+    cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 48;
     cachedIsEnabled = prefs.getBool('voidAlarmEnabled') ?? false;
     cachedLanguageCode = prefs.getString('cached_language_code') ?? 'en';
     tickCount = 0; // 갱신 타이머 리셋
@@ -287,7 +283,7 @@ void onStart(ServiceInstance service) async {
             await prefs.reload();
             cachedStartStr = prefs.getString('cached_voc_start');
             cachedEndStr = prefs.getString('cached_voc_end');
-            cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 6;
+            cachedPreHours = prefs.getInt('cached_pre_void_hours') ?? 48;
             cachedIsEnabled = prefs.getBool('voidAlarmEnabled') ?? false;
             cachedLanguageCode =
                 prefs.getString('cached_language_code') ?? 'en';
@@ -310,11 +306,7 @@ void onStart(ServiceInstance service) async {
             ); // 사용자가 알람 끄면 종료 알림도 삭제
             previousState = stateNone;
             timer.cancel();
-            if (service is AndroidServiceInstance) {
-              await service.setAsBackgroundService();
-            }
-            await Future.delayed(const Duration(milliseconds: 500));
-            await service.stopSelf();
+            service.stopSelf();
             return;
           }
 
@@ -339,11 +331,7 @@ void onStart(ServiceInstance service) async {
               await notificationsPlugin.cancel(preVoidNotificationId);
               await notificationsPlugin.cancel(vocStartNotificationId);
               timer.cancel();
-              if (service is AndroidServiceInstance) {
-                await service.setAsBackgroundService();
-              }
-              await Future.delayed(const Duration(milliseconds: 500));
-              await service.stopSelf();
+              service.stopSelf();
               return;
             } else if (utcNow.isBefore(vocStart)) {
               // Pre-Void
