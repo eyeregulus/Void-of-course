@@ -36,7 +36,7 @@ import 'package:void_of_course/features/calendar/services/google_calendar_servic
 import 'package:void_of_course/features/premium/services/purchase_service.dart';
 import 'package:void_of_course/core/services/version_check_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:void_of_course/features/settings/services/app_notice_config.dart';
 
 Future<void> _initWithTimeout(
   String label,
@@ -242,18 +242,29 @@ class _MainAppScreenState extends State<MainAppScreen>
 
   Future<void> _checkAndShowEventNotice() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final packageInfo = await PackageInfo.fromPlatform();
-      final currentVersion =
-          '${packageInfo.version}+${packageInfo.buildNumber}';
-      final lastShown = prefs.getString('last_shown_notice_version');
+      if (!AppNoticeConfig.enabled) return;
 
-      if (lastShown != currentVersion) {
-        await Future.delayed(const Duration(milliseconds: 600));
-        if (!mounted) return;
-
-        await _showNoticeDialog(currentVersion, prefs);
+      // 만료 시각 체크
+      if (AppNoticeConfig.expiryDate.isNotEmpty) {
+        final expiry = DateTime.tryParse(AppNoticeConfig.expiryDate);
+        if (expiry != null && DateTime.now().isAfter(expiry)) {
+          return;
+        }
       }
+
+      final prefs = await SharedPreferences.getInstance();
+
+      if (AppNoticeConfig.showPolicy == NoticeShowPolicy.oncePerId) {
+        final lastShownId = prefs.getString('last_shown_notice_id');
+        if (lastShownId == AppNoticeConfig.noticeId) {
+          return;
+        }
+      }
+
+      await Future.delayed(const Duration(milliseconds: 600));
+      if (!mounted) return;
+
+      await _showNoticeDialog(prefs);
     } catch (e) {
       if (kDebugMode) {
         developer.log('Error showing event notice: $e', name: 'Main');
@@ -261,117 +272,25 @@ class _MainAppScreenState extends State<MainAppScreen>
     }
   }
 
-  Future<void> _showNoticeDialog(
-    String currentVersion,
-    SharedPreferences prefs,
-  ) async {
-    final locale = Localizations.localeOf(context).languageCode;
-    final isKo = locale == 'ko';
-
-    final title = isKo ? 'iOS 출시 기념 이벤트 🎊' : 'iOS Launch Event 🎊';
-    final body =
-        isKo
-            ? '안녕하세요 리오입니다.\n'
-                'iOS 앱스토어 출시 기념 리뷰 이벤트가 진행되고 있습니다.\n'
-                '이벤트 기간 : 26.06.23 ~ 07.07\n'
-                '자세한 내용은 개발자 노트를 확인해주세요^^'
-            : 'Hello, this is Lio.\n'
-                'The iOS App Store launch celebration review event is underway!\n'
-                'Event Period: Jun 23 ~ Jul 7, 2026\n'
-                'Please check the developer notes for details^^';
-    final closeText = isKo ? '닫기' : 'Close';
-    final viewDetailsText = isKo ? '자세히 보기' : 'View Details';
+  Future<void> _showNoticeDialog(SharedPreferences prefs) async {
+    if (!mounted) return;
 
     await showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        final isDark = Theme.of(context).brightness == Brightness.dark;
-        final Color backgroundColor =
-            isDark ? const Color(0xFF1A1A2E) : Colors.white;
-        final Color textColor =
-            isDark ? const Color(0xFFF0EDE5) : const Color(0xFF1A1A2E);
-        final Color primaryColor = const Color(0xFFD4AF37); // Gold
-
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          backgroundColor: backgroundColor,
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.campaign, color: primaryColor, size: 28),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          color: textColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  body,
-                  style: TextStyle(
-                    color: textColor.withValues(alpha: 0.8),
-                    fontSize: 14,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _onTabTapped(4);
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: primaryColor,
-                      ),
-                      child: Text(
-                        viewDetailsText,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor:
-                            isDark
-                                ? const Color(0xFFB8B5AD)
-                                : const Color(0xFF6B7280),
-                      ),
-                      child: Text(
-                        closeText,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+        return AppNoticeDialog(
+          prefs: prefs,
+          onViewDetails: () {
+            _onTabTapped(4);
+          },
         );
       },
     );
 
-    await prefs.setString('last_shown_notice_version', currentVersion);
+    if (AppNoticeConfig.showPolicy == NoticeShowPolicy.oncePerId) {
+      await prefs.setString('last_shown_notice_id', AppNoticeConfig.noticeId);
+    }
   }
 
   @override
@@ -389,6 +308,21 @@ class _MainAppScreenState extends State<MainAppScreen>
       Provider.of<AstroState>(context, listen: false).ensureServiceRunning();
       WidgetService.refreshFromPrefs();
       WidgetService.refreshFromPrefs();
+
+      // 앱 포그라운드로 복귀 시 전면/스플래시 광고 표시 (30분 제한, 프리미엄 여부 등 자동 검증)
+      AdService().loadAndShowSplashAd(
+        adUnitId: AdIds.interstitial,
+        onAdDismissed: () {
+          if (kDebugMode) {
+            developer.log('App resumed: Ad dismissed.', name: 'Main');
+          }
+        },
+        onAdFailed: () {
+          if (kDebugMode) {
+            developer.log('App resumed: Ad failed or skipped.', name: 'Main');
+          }
+        },
+      );
     } else if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {
@@ -685,5 +619,238 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
     } else {
       return const SizedBox.shrink();
     }
+  }
+}
+
+class AppNoticeDialog extends StatefulWidget {
+  final SharedPreferences prefs;
+  final VoidCallback onViewDetails;
+
+  const AppNoticeDialog({
+    super.key,
+    required this.prefs,
+    required this.onViewDetails,
+  });
+
+  @override
+  State<AppNoticeDialog> createState() => _AppNoticeDialogState();
+}
+
+class _AppNoticeDialogState extends State<AppNoticeDialog> {
+  late bool _isKoActive;
+  bool _isInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final localeProvider =
+          Provider.of<LocaleProvider>(context, listen: false);
+      final locale = localeProvider.locale?.languageCode ??
+          Localizations.localeOf(context).languageCode;
+      _isKoActive = locale == 'ko';
+      _isInitialized = true;
+    }
+  }
+
+  Widget _buildTabButton(String label, bool isKo, bool isDark) {
+    final isActive = _isKoActive == isKo;
+    final primaryColor = const Color(0xFFD4AF37); // Gold
+    return GestureDetector(
+      onTap: () {
+        if (_isKoActive != isKo) {
+          setState(() {
+            _isKoActive = isKo;
+          });
+        }
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: isActive ? primaryColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isActive
+                ? Colors.black
+                : (isDark ? Colors.white54 : Colors.black54),
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color backgroundColor =
+        isDark ? const Color(0xFF1A1A2E) : Colors.white;
+    final Color textColor =
+        isDark ? const Color(0xFFF0EDE5) : const Color(0xFF1A1A2E);
+    final Color primaryColor = const Color(0xFFD4AF37); // Gold
+
+    final title =
+        _isKoActive ? AppNoticeConfig.titleKo : AppNoticeConfig.titleEn;
+    final body = _isKoActive ? AppNoticeConfig.bodyKo : AppNoticeConfig.bodyEn;
+    final closeText = _isKoActive ? '닫기' : 'Close';
+    final viewDetailsText = _isKoActive ? '자세히 보기' : 'View Details';
+
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24.0),
+      ),
+      elevation: 8,
+      backgroundColor: backgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 상단 헤더: 아이콘 + 토글 버튼
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.campaign, color: primaryColor, size: 28),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Notice',
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+                if (AppNoticeConfig.showBoth)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.white10
+                          : Colors.black.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.all(2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildTabButton('KO', true, isDark),
+                        _buildTabButton('EN', false, isDark),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // 공지 제목 (애니메이션 전환)
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: SizedBox(
+                width: double.infinity,
+                key: ValueKey<String>(title),
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    height: 1.3,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Divider(
+              color: isDark ? Colors.white10 : Colors.black12,
+              height: 1,
+            ),
+            const SizedBox(height: 12),
+            // 공지 본문 내용 (스크롤 및 애니메이션 전환)
+            Flexible(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                    body,
+                    key: ValueKey<String>(body),
+                    style: TextStyle(
+                      color: textColor.withValues(alpha: 0.8),
+                      fontSize: 14,
+                      height: 1.6,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            // 하단 버튼 바
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    widget.onViewDetails();
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    viewDetailsText,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: isDark
+                        ? const Color(0xFFB8B5AD)
+                        : const Color(0xFF6B7280),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    closeText,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

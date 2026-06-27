@@ -45,11 +45,14 @@ class InfoScreen extends StatelessWidget {
     // 현재 언어 코드를 확인해요 (ko 또는 en)
     final isKorean = Localizations.localeOf(context).languageCode == 'ko';
 
+    final showIosEvent = DateTime.now().isBefore(DateTime(2026, 7, 8));
+
     // 여기에 게시글 데이터를 추가해요. (최신 글이 위로 오도록 리스트의 앞쪽에 넣어주세요)
     final List<DeveloperNote> notes = [
       // ▼▼▼ [최신 글] ▼▼▼
-      DeveloperNote(
-        date: '2026-06-23',
+      if (showIosEvent)
+        DeveloperNote(
+          date: '2026-06-23',
         titleKo: '<IOS 출시 이벤트🎊🎉 >',
         titleEn: '<IOS Launching Event🎊🎉 >',
         contentKo: '''
