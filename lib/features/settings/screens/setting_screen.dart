@@ -218,7 +218,9 @@ class SettingScreen extends StatelessWidget {
                             return Switch(
                               value: astroState.showRetrogradeCard,
                               onChanged: (value) async {
-                                await AppAnalytics.setRetrogradeCardEnabled(value);
+                                await AppAnalytics.setRetrogradeCardEnabled(
+                                  value,
+                                );
                                 await astroState.setShowRetrogradeCard(value);
                                 if (!context.mounted) return;
 

@@ -107,6 +107,7 @@ void _initHeavyServicesInBackground() async {
     _initWithTimeout('AdMob', () async {
       try {
         await MobileAds.instance.initialize();
+        await MobileAds.instance.setAppMuted(true);
         await AdService().initialize();
       } catch (e) {
         developer.log('AdMob init failed: $e', name: 'Main');
@@ -323,7 +324,10 @@ class _MainAppScreenState extends State<MainAppScreen>
             },
             onAdFailed: () {
               if (kDebugMode) {
-                developer.log('App resumed: Ad failed or skipped.', name: 'Main');
+                developer.log(
+                  'App resumed: Ad failed or skipped.',
+                  name: 'Main',
+                );
               }
             },
           );
@@ -664,9 +668,12 @@ class _AppNoticeDialogState extends State<AppNoticeDialog> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_isInitialized) {
-      final localeProvider =
-          Provider.of<LocaleProvider>(context, listen: false);
-      final locale = localeProvider.locale?.languageCode ??
+      final localeProvider = Provider.of<LocaleProvider>(
+        context,
+        listen: false,
+      );
+      final locale =
+          localeProvider.locale?.languageCode ??
           Localizations.localeOf(context).languageCode;
       _isKoActive = locale == 'ko';
       _isInitialized = true;
@@ -695,9 +702,10 @@ class _AppNoticeDialogState extends State<AppNoticeDialog> {
         child: Text(
           label,
           style: TextStyle(
-            color: isActive
-                ? Colors.black
-                : (isDark ? Colors.white54 : Colors.black54),
+            color:
+                isActive
+                    ? Colors.black
+                    : (isDark ? Colors.white54 : Colors.black54),
             fontSize: 13,
             fontWeight: FontWeight.bold,
           ),
@@ -722,9 +730,7 @@ class _AppNoticeDialogState extends State<AppNoticeDialog> {
     final viewDetailsText = _isKoActive ? '자세히 보기' : 'View Details';
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24.0)),
       elevation: 8,
       backgroundColor: backgroundColor,
       child: Padding(
@@ -755,9 +761,10 @@ class _AppNoticeDialogState extends State<AppNoticeDialog> {
                 if (AppNoticeConfig.showBoth)
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? Colors.white10
-                          : Colors.black.withValues(alpha: 0.05),
+                      color:
+                          isDark
+                              ? Colors.white10
+                              : Colors.black.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     padding: const EdgeInsets.all(2),
@@ -790,10 +797,7 @@ class _AppNoticeDialogState extends State<AppNoticeDialog> {
               ),
             ),
             const SizedBox(height: 12),
-            Divider(
-              color: isDark ? Colors.white10 : Colors.black12,
-              height: 1,
-            ),
+            Divider(color: isDark ? Colors.white10 : Colors.black12, height: 1),
             const SizedBox(height: 12),
             // 공지 본문 내용 (스크롤 및 애니메이션 전환)
             Flexible(
@@ -847,9 +851,10 @@ class _AppNoticeDialogState extends State<AppNoticeDialog> {
                     Navigator.of(context).pop();
                   },
                   style: TextButton.styleFrom(
-                    foregroundColor: isDark
-                        ? const Color(0xFFB8B5AD)
-                        : const Color(0xFF6B7280),
+                    foregroundColor:
+                        isDark
+                            ? const Color(0xFFB8B5AD)
+                            : const Color(0xFF6B7280),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 12,

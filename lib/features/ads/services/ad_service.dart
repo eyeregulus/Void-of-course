@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:developer' as developer;
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/foundation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:void_of_course/features/ads/services/ad_ids.dart';
@@ -142,6 +141,8 @@ class AdService {
       if (kDebugMode) {
         developer.log('Showing interstitial ad.', name: 'AdService');
       }
+      // 광고 표시 시간을 업데이트하여 스플래시 광고와의 중복 노출을 방지합니다 (업계 표준)
+      await _prefs?.setInt(_lastSplashAdShowTimeKey, DateTime.now().millisecondsSinceEpoch);
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
           onAdDismissed();
@@ -193,8 +194,8 @@ class AdService {
     // 30분 (밀리초 단위)
     const thirtyMinutesInMillis = 30 * 60 * 1000;
 
-    // 새로고침 30번 이상 누른 경우 30분 규칙을 무시하고 광고 표시
-    final shouldShowAdByClickCount = _calculateClickCount >= _adFrequency;
+    // 클릭 카운트가 일정 수 이상이면 광고 표시 후 카운트를 리셋합니다 (시간 제한은 항상 적용)
+    final shouldResetClickCount = _calculateClickCount >= _adFrequency;
 
     // 30분 이내에 광고를 본 경우, 광고를 표시하지 않습니다.
     if (currentTimeMillis - lastAdShowTimeMillis < thirtyMinutesInMillis) {
@@ -216,12 +217,12 @@ class AdService {
       // 광고 표시 시간을 지금으로 기록합니다.
       await _prefs?.setInt(_lastSplashAdShowTimeKey, currentTimeMillis);
 
-      // 새로고침 횟수로 인해 광고를 표시한 경우 카운트를 리셋합니다.
-      if (shouldShowAdByClickCount) {
+      // 광고 표시 후 클릭 카운트를 리셋합니다.
+      if (shouldResetClickCount) {
         _calculateClickCount = 0;
         await _saveCalculateClickCount();
         if (kDebugMode) {
-          print("스플래시 광고 표시로 인해 클릭 카운트를 리셋했습니다.");
+          developer.log('스플래시 광고 표시로 인해 클릭 카운트를 리셋했습니다.', name: 'AdService');
         }
       }
 
@@ -300,7 +301,7 @@ class AdService {
     final currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
     const thirtyMinutesInMillis = 30 * 60 * 1000;
 
-    final shouldShowAdByClickCount = _calculateClickCount >= _adFrequency;
+    final shouldResetClickCount = _calculateClickCount >= _adFrequency;
 
     if (currentTimeMillis - lastAdShowTimeMillis < thirtyMinutesInMillis) {
       if (kDebugMode) {
@@ -323,7 +324,7 @@ class AdService {
         }
       }
 
-      if (shouldShowAdByClickCount) {
+      if (shouldResetClickCount) {
         _calculateClickCount = 0;
         await _saveCalculateClickCount();
         if (kDebugMode) {
@@ -394,7 +395,7 @@ class AdService {
             await _prefs?.setInt(_lastSplashAdShowTimeKey, currentTimeMillis);
           } on Exception catch (_) {}
 
-          if (shouldShowAdByClickCount) {
+          if (shouldResetClickCount) {
             _calculateClickCount = 0;
             await _saveCalculateClickCount();
             if (kDebugMode) {

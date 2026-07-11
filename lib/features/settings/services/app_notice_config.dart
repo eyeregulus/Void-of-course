@@ -12,7 +12,7 @@ enum NoticeShowPolicy {
 /// 나중에 새로운 공지를 올리거나 설정을 바꾸고 싶을 때 이 파일만 수정하시면 됩니다.
 class AppNoticeConfig {
   /// 공지 팝업 활성화 여부
-  static const bool enabled = true;
+  static const bool enabled = false;
 
   /// 한/영 둘 다 한 번에 노출할지 여부
   /// true일 경우 사용자의 언어 설정에 관계없이 한국어와 영어 공지가 동시에 노출됩니다.

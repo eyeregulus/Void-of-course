@@ -139,7 +139,6 @@ class AstroState with ChangeNotifier {
       );
       _isInitialized = true;
       _lastError = null;
-      await _syncVocSchedules();
     } catch (e, stack) {
       if (kDebugMode) {
         developer.log('Initialization error: $e\n$stack', name: 'AstroState');
@@ -188,22 +187,9 @@ class AstroState with ChangeNotifier {
       value: _showRetrogradeCard.toString(),
     );
 
+    // _updateData() -> _updateStateFromResult() -> _syncVocSchedules() 순서로 호수되며,
+    // _syncVocSchedules() 내부에 자체 에러 핸들링이 있어 별도 try-catch 불필요입니다.
     await _updateData();
-
-    // 알람이 활성화되어 있으면 예약 알림 설정 (앱 재시작 시에도 동작)
-    // 항상 스케줄링하여 서비스가 죽었더라도 재시작되도록 함
-    // try-catch로 감싸서 서비스 시작 실패가 앱 초기화 실패로 번지지 않도록 함
-    // (삼성 One UI / Android 15: 앱 첫 실행 시 ForegroundServiceStartNotAllowedException)
-    try {
-      await _syncVocSchedules();
-    } catch (e) {
-      if (kDebugMode) {
-        developer.log(
-          '_syncVocSchedules failed on init (ignored): $e',
-          name: 'AstroState',
-        );
-      }
-    }
 
     await _updateAnalyticsUserSegment();
   }
@@ -215,18 +201,6 @@ class AstroState with ChangeNotifier {
 
     if (_voidAlarmEnabled || await WidgetService.isEnabled(_prefs)) {
       await _syncVocSchedules();
-    }
-
-    // 언어가 변경되면 알림 메시지도 갱신되어야 하므로 데이터 갱신 (배경 서비스용)
-    if (_vocStart != null) {
-      // Trigger update to save new locale to prefs if not already done by _schedulePreVoidAlarm
-      // But _schedulePreVoidAlarm doesn't save to prefs. _updateStateFromResult does.
-      // So let's just save explicitly here or rely on _updateData if called.
-      // Actually, _updateData calls _updateStateFromResult.
-      // Let's call _updateData to be safe and consistent.
-      // But _updateData might be expensive.
-      // Let's just ensure prefs are saved.
-      // We already saved 'cached_language_code' above.
     }
   }
 

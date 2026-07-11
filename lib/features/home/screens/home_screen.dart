@@ -142,7 +142,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(width: 8),
                       const PremiumBadge(),
                     ],
-
                   ],
                 );
               },
@@ -354,7 +353,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               onResetToToday: () => _resetDateToToday(),
                               showCalendar: () => showCalendarDialog(context),
                               selectedDate: astroState.selectedDate,
-                              isRetrogradeCardVisible: astroState.showRetrogradeCard,
+                              isRetrogradeCardVisible:
+                                  astroState.showRetrogradeCard,
                             ),
                             if (!astroState.showRetrogradeCard) ...[
                               const SizedBox(height: 7),

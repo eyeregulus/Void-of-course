@@ -14,10 +14,7 @@ class AppAnalytics {
   }
 
   static Future<void> setLanguage(String languageCode) {
-    return _analytics.setUserProperty(
-      name: 'language',
-      value: languageCode,
-    );
+    return _analytics.setUserProperty(name: 'language', value: languageCode);
   }
 
   static Future<void> setVoidAlarmEnabled(bool enabled) async {
@@ -52,10 +49,7 @@ class AppAnalytics {
   static Future<void> logCalendarMonthChanged(int year, int month) {
     return _analytics.logEvent(
       name: 'calendar_month_changed',
-      parameters: {
-        'year': year,
-        'month': month,
-      },
+      parameters: {'year': year, 'month': month},
     );
   }
 
