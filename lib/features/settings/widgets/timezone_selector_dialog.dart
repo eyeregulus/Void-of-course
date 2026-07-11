@@ -4,7 +4,7 @@ import 'package:void_of_course/core/utils/timezone_provider.dart';
 import 'package:void_of_course/core/utils/locale_provider.dart';
 import 'package:void_of_course/core/astro/astro_state.dart';
 import 'package:void_of_course/themes.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:void_of_course/core/utils/app_analytics.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 
 void showTimezoneSelectorDialog(BuildContext context) {
@@ -145,10 +145,7 @@ class _TimezoneSelectorDialogState extends State<TimezoneSelectorDialog> {
                             Provider.of<AstroState>(context, listen: false);
 
                         // Analytics 로깅
-                        await FirebaseAnalytics.instance.logEvent(
-                          name: 'select_timezone',
-                          parameters: {'timezone_id': tz.id},
-                        );
+                        await AppAnalytics.logSelectTimezone(tz.id);
 
                         // 1. 타임존 설정
                         await timezoneProvider.setTimezone(tz.id);

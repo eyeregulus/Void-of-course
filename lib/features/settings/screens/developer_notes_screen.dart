@@ -50,12 +50,64 @@ class InfoScreen extends StatelessWidget {
     // 여기에 게시글 데이터를 추가해요. (최신 글이 위로 오도록 리스트의 앞쪽에 넣어주세요)
     final List<DeveloperNote> notes = [
       // ▼▼▼ [최신 글] ▼▼▼
+      DeveloperNote(
+        date: '2026-07-11',
+        titleKo: '<1.2.10+79 업데이트>',
+        titleEn: '<1.2.10+79 Update>',
+        contentKo: '''
+안녕하세요, 리오입니다 🦁
+이번 1.2.10+79 업데이트 사항입니다.
+
+1. 보이드 계산 최적화
+2. 전면광고 소리 제거 및 음소거 재생 지원
+3. 다크모드 및 광고 설정 개선
+
+앱을 편하게 사용하시고 계시거나 or 불편한 점이 있다면, 언제든 피드백을 보내주세요. 
+
+따뜻한 리뷰는 개발자에게 큰 힘이 됩니다.
+감사합니다.
+
+리오 드림
+''',
+        contentEn: '''
+Hi, this is developer Lio 🦁
+Here are the updates for version 1.2.10+79.
+
+1. Optimized Void of Course calculations
+2. Muted playback support for interstitial ads
+3. Improved dark mode and ad configurations
+
+If you enjoy using the app or have any feedback, please feel free to reach out.
+
+Your warm reviews are a huge support to the developer.
+Thank you.
+
+Best regards,
+Lio
+''',
+        actions: [
+          NoteAction(
+            label: appLocalizations.btnReviewPlayStore, // 구글 플레이 리뷰
+            url:
+                'https://play.google.com/store/apps/details?id=dev.lioluna.voidofcourse',
+          ),
+          NoteAction(
+            label: appLocalizations.btnReviewAppStore, // 앱스토어 리뷰
+            url: 'https://apps.apple.com/kr/app/void-of-course/id6777887938',
+          ),
+          NoteAction(
+            label: appLocalizations.btnContact, // 개발자에게 한마디
+            url: 'mailto:eyeregulus@gmail.com',
+          ),
+        ],
+      ),
+
       if (showIosEvent)
         DeveloperNote(
           date: '2026-06-23',
-        titleKo: '<IOS 출시 이벤트🎊🎉 >',
-        titleEn: '<IOS Launching Event🎊🎉 >',
-        contentKo: '''
+          titleKo: '<IOS 출시 이벤트🎊🎉 >',
+          titleEn: '<IOS Launching Event🎊🎉 >',
+          contentKo: '''
 안녕하세요, 리오입니다 🦁
 
 Void of Course iOS 버전이 출시되었습니다! 🎉
@@ -79,7 +131,7 @@ Void of Course iOS 버전이 출시되었습니다! 🎉
 🏆 당첨자 발표: 2026.07.10 (개별 이메일 연락)
 🌍 한국 및 글로벌 유저 모두 참여 가능
 ''',
-        contentEn: '''
+          contentEn: '''
 Hi, this is Lio 🦁
 
 Void of Course is now officially available on iOS! 🎉
@@ -106,30 +158,30 @@ As a token of appreciation, I'm offering gifts to everyone who shares their thou
 Thank you so much for your support
 Lio
 ''',
-        actions: [
-          NoteAction(
-            label: appLocalizations.btnReviewPlayStore,
-            url:
-                'https://play.google.com/store/apps/details?id=dev.lioluna.voidofcourse',
-          ),
-          NoteAction(
-            label: appLocalizations.btnReviewAppStore,
-            url: 'https://apps.apple.com/kr/app/void-of-course/id6777887938',
-          ),
-          NoteAction(
-            label:
-                appLocalizations
-                    .btnReviewEventForm, // '리뷰 이벤트 구글폼' / 'Review Event Google Form'
-            url: 'https://forms.gle/Deq7FYd2EdQgv1S88',
-          ),
-          NoteAction(
-            label:
-                appLocalizations
-                    .btnContact, // '개발자에게 한마디' / 'Contact Developer'
-            url: 'mailto:eyeregulus@gmail.com',
-          ),
-        ],
-      ),
+          actions: [
+            NoteAction(
+              label: appLocalizations.btnReviewPlayStore,
+              url:
+                  'https://play.google.com/store/apps/details?id=dev.lioluna.voidofcourse',
+            ),
+            NoteAction(
+              label: appLocalizations.btnReviewAppStore,
+              url: 'https://apps.apple.com/kr/app/void-of-course/id6777887938',
+            ),
+            NoteAction(
+              label:
+                  appLocalizations
+                      .btnReviewEventForm, // '리뷰 이벤트 구글폼' / 'Review Event Google Form'
+              url: 'https://forms.gle/Deq7FYd2EdQgv1S88',
+            ),
+            NoteAction(
+              label:
+                  appLocalizations
+                      .btnContact, // '개발자에게 한마디' / 'Contact Developer'
+              url: 'mailto:eyeregulus@gmail.com',
+            ),
+          ],
+        ),
 
       DeveloperNote(
         date: '2026-06-05',

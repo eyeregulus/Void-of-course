@@ -376,32 +376,15 @@ class _MainAppScreenState extends State<MainAppScreen>
 
   void _onTabTapped(int index) {
     if (_selectedIndex != index) {
-      String? eventName;
-      switch (index) {
-        case 0:
-          eventName = 'click_home_tab';
-          break;
-        case 1:
-          eventName = 'click_calendar_tab';
-          CalendarVocCache.instance.preloadAroundSilent(
-            DateTime.now(),
-            radius: 2,
-          );
-          break;
-        case 2:
-          eventName = 'click_premium_tab';
-          break;
-        case 3:
-          eventName = 'click_settings_tab';
-          break;
-        case 4:
-          eventName = 'click_info_tab';
-          break;
+      // 캘린더 탭 선택 시 주변 월 사전 로드
+      if (index == 1) {
+        CalendarVocCache.instance.preloadAroundSilent(
+          DateTime.now(),
+          radius: 2,
+        );
       }
 
-      if (eventName != null) {
-        FirebaseAnalytics.instance.logEvent(name: eventName);
-      }
+      AppAnalytics.logTabTap(index);
 
       switch (index) {
         case 1:
