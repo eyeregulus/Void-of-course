@@ -194,6 +194,20 @@ class AppAnalytics {
     );
   }
 
+  /// 개발자 노트 내 링크 버튼 탭 (리뷰 남기기, 구글 폼, 메일 전송 등)
+  static Future<void> logTapDeveloperNoteAction({
+    required String label,
+    required String url,
+  }) {
+    return _analytics.logEvent(
+      name: 'tap_developer_note_action',
+      parameters: {
+        'label': label,
+        'url': url,
+      },
+    );
+  }
+
   // ---------------------------------------------------------------------------
   // 외부 링크
   // ---------------------------------------------------------------------------
@@ -283,5 +297,9 @@ class AppAnalytics {
   /// [별칭] logExpandDeveloperNote 와 동일 (developer_notes_screen.dart 호환)
   static Future<void> logDeveloperNoteExpanded(String noteDate) =>
       logExpandDeveloperNote(noteDate);
+
+  /// [별칭] logTapDeveloperNoteAction 과 동일
+  static Future<void> logDeveloperNoteActionClicked(String label, String url) =>
+      logTapDeveloperNoteAction(label: label, url: url);
 }
 

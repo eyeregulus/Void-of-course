@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:void_of_course/core/utils/app_analytics.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:void_of_course/core/astro/astro_calculator.dart';
 import 'package:void_of_course/core/background/notification_service.dart';
@@ -115,7 +115,7 @@ class AstroState with ChangeNotifier {
   }
 
   Future<void> followTime() async {
-    await FirebaseAnalytics.instance.logEvent(name: 'click_reset_today');
+    await AppAnalytics.logTapResetToToday();
     if (_isFollowingTime) return;
     _isFollowingTime = true;
     _selectedDate = DateTime.now();
@@ -174,18 +174,9 @@ class AstroState with ChangeNotifier {
 
     // [Analytics] 앱 시작 시 유저 속성(User Property) 설정
     // 이를 통해 "현재 알람을 켜둔 유저 비율", "한국어/영어 사용자 비율"을 파악할 수 있습니다.
-    await FirebaseAnalytics.instance.setUserProperty(
-      name: 'void_alarm_enabled',
-      value: _voidAlarmEnabled.toString(),
-    );
-    await FirebaseAnalytics.instance.setUserProperty(
-      name: 'language',
-      value: _currentLocale,
-    );
-    await FirebaseAnalytics.instance.setUserProperty(
-      name: 'retrograde_card_enabled',
-      value: _showRetrogradeCard.toString(),
-    );
+    await AppAnalytics.setVoidAlarmEnabled(_voidAlarmEnabled);
+    await AppAnalytics.setLanguage(_currentLocale);
+    await AppAnalytics.setRetrogradeCardEnabled(_showRetrogradeCard);
 
     // _updateData() -> _updateStateFromResult() -> _syncVocSchedules() 순서로 호수되며,
     // _syncVocSchedules() 내부에 자체 에러 핸들링이 있어 별도 try-catch 불필요입니다.
@@ -283,14 +274,8 @@ class AstroState with ChangeNotifier {
       (false, true) => 'widget_only',
       (false, false) => 'neither',
     };
-    await FirebaseAnalytics.instance.setUserProperty(
-      name: 'void_usage_segment',
-      value: segment,
-    );
-    await FirebaseAnalytics.instance.setUserProperty(
-      name: 'home_widget_enabled',
-      value: hasWidget.toString(),
-    );
+    await AppAnalytics.setHasHomeWidget(hasWidget);
+    await AppAnalytics.setVoidAlarmEnabled(_voidAlarmEnabled);
   }
 
   /// 앱이 포그라운드로 복귀할 때 호출하여 서비스가 실행 중인지 확인하고 필요시 재시작
@@ -479,7 +464,12 @@ class AstroState with ChangeNotifier {
   }
 
   Future<void> updateDate(DateTime newDate) async {
-    await FirebaseAnalytics.instance.logEvent(name: 'click_calendar');
+    await AppAnalytics.logTapCalendarDay(
+      year: newDate.year,
+      month: newDate.month,
+      day: newDate.day,
+      hasVoc: false,
+    );
     final now = DateTime.now();
     final bool isSameDay =
         newDate.year == now.year &&
@@ -510,7 +500,7 @@ class AstroState with ChangeNotifier {
 
   /// 유저가 직접 새로고침 버튼을 눌렀을 때 호출 (Analytics 이벤트 전송)
   Future<void> refreshDataByUser() async {
-    await FirebaseAnalytics.instance.logEvent(name: 'click_refresh');
+    await AppAnalytics.logTapRefresh();
     await refreshData();
   }
 

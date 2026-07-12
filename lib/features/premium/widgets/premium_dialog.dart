@@ -159,20 +159,7 @@ class _PremiumDialogState extends State<PremiumDialog>
     }
   }
 
-  String _getDebugMessage(Offerings? offerings) {
-    if (offerings == null) return "Offerings is NULL";
-    final offering =
-        offerings.all['ofrng5f35ae8b2b'] ??
-        offerings.all['main_offering'] ??
-        offerings.current;
-    if (offering == null) {
-      return "No matching offering found. Keys: ${offerings.all.keys.join(',')}";
-    }
-    final packages = offering.availablePackages
-        .map((e) => e.identifier)
-        .join(', ');
-    return "Pkg not found. Avail: $packages";
-  }
+
 
   // 현재 선택된 티어의 정보를 가져와요. (RevenueCat에서 불러온 실제 가격 반영)
   _TierInfo _getDynamicTierInfo(

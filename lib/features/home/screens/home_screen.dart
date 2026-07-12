@@ -16,7 +16,7 @@ import 'package:void_of_course/features/ads/services/ad_service.dart';
 import 'package:void_of_course/features/premium/services/purchase_service.dart';
 import 'package:void_of_course/features/premium/widgets/premium_badge.dart';
 import 'package:void_of_course/l10n/app_localizations.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:void_of_course/core/utils/app_analytics.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -202,12 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () async {
                   // DST 토글: 천문 계산은 UTC 기반이므로 재계산 불필요
                   // 카드 위젯들이 TimezoneProvider를 리스닝하므로 convert()로 자동 갱신
-                  await FirebaseAnalytics.instance.logEvent(
-                    name: 'toggle_dst',
-                    parameters: {
-                      'enabled': (!tzProvider.isDstApplied).toString(),
-                    },
-                  );
+                  await AppAnalytics.logToggleDst(!tzProvider.isDstApplied);
                   final astroState = Provider.of<AstroState>(
                     context,
                     listen: false,
@@ -229,9 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: isDark ? const Color(0xFFD4AF37) : const Color(0xFF2C3E50),
           ),
           onPressed: () {
-            FirebaseAnalytics.instance.logEvent(
-              name: 'click_timezone_selector',
-            );
+            AppAnalytics.logTapTimezoneButton();
             showTimezoneSelectorDialog(context);
           },
           tooltip: 'Timezone',

@@ -26,7 +26,6 @@ import 'package:flutter/services.dart';
 import 'package:void_of_course/core/background/background_service.dart';
 import 'package:void_of_course/features/ads/services/native_ad_service.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:void_of_course/features/calendar/services/calendar_voc_cache.dart';
 import 'package:void_of_course/features/home/services/widget_service.dart';
@@ -225,10 +224,7 @@ class _MainAppScreenState extends State<MainAppScreen>
     try {
       final installedWidgets = await HomeWidget.getInstalledWidgets();
       final hasWidget = installedWidgets.isNotEmpty;
-      await FirebaseAnalytics.instance.setUserProperty(
-        name: 'has_home_widget',
-        value: hasWidget.toString(),
-      );
+      await AppAnalytics.setHasHomeWidget(hasWidget);
       if (!mounted) return;
       await Provider.of<AstroState>(
         context,

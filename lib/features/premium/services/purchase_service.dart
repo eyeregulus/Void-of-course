@@ -67,8 +67,9 @@ class PurchaseService extends ChangeNotifier {
 
       // 안드로이드의 경우 첫 실행 시 자동으로 구매 내역을 스토어에서 복원 (재설치 시 프리미엄 유지)
       if (!hasRestored && defaultTargetPlatform == TargetPlatform.android) {
-        if (kDebugMode)
+        if (kDebugMode) {
           developer.log('Auto restoring purchases on first launch...');
+        }
         try {
           await Purchases.restorePurchases();
         } catch (restoreError) {
@@ -187,8 +188,7 @@ class PurchaseService extends ChangeNotifier {
 
   Future<bool> purchasePackage(Package package) async {
     try {
-      // Purchases.purchasePackage는 이제 PurchaseResult 객체를 반환합니다.
-      final result = await Purchases.purchasePackage(package);
+      final result = await Purchases.purchase(PurchaseParams.package(package));
       _updateStatus(result.customerInfo);
       return true;
     } catch (e) {
