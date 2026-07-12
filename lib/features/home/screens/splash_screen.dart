@@ -76,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _splashStartTime ??= DateTime.now();
 
     final adService = AdService();
-    final adUnitId = AdIds.interstitial;
+    final adUnitId = AdIds.appOpen;
     final minDuration =
         kDebugMode ? const Duration(milliseconds: 800) : Duration.zero;
 

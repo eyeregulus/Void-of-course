@@ -166,13 +166,24 @@ class CalendarVocCache {
       try {
         out[monthKey(m.$1, m.$2)] = await entry.value;
       } catch (e, stack) {
-        if (kDebugMode) {
+        developer.log(
+          'Error loading month ${m.$1}-${m.$2} via background isolate: $e. Falling back to main thread calculation.',
+          name: 'CalendarVocCache',
+          error: e,
+          stackTrace: stack,
+        );
+        try {
+          final calculator = AstroCalculator();
+          out[monthKey(m.$1, m.$2)] = calculator.getVocEventsForMonth(m.$1, m.$2);
+        } catch (fallbackError, fallbackStack) {
           developer.log(
-            'Error loading month ${m.$1}-${m.$2}: $e\n$stack',
+            'Fallback calculation failed for month ${m.$1}-${m.$2}: $fallbackError\n$fallbackStack',
             name: 'CalendarVocCache',
+            error: fallbackError,
+            stackTrace: fallbackStack,
           );
+          out[monthKey(m.$1, m.$2)] = {};
         }
-        out[monthKey(m.$1, m.$2)] = {};
       }
     }
     return out;
