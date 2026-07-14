@@ -303,45 +303,8 @@ class _MainAppScreenState extends State<MainAppScreen>
       _checkWidgetStatus();
       Provider.of<AstroState>(context, listen: false).ensureServiceRunning();
       WidgetService.refreshFromPrefs();
-      WidgetService.refreshFromPrefs();
 
-      // 앱 포그라운드로 복귀 시 전면/스플래시 광고 표시 (30분 제한, 프리미엄 여부 등 자동 검증)
-      // iOS의 경우 백그라운드에서 복귀할 때 뷰 계층구조가 완전히 활성화될 시간을 벌어주기 위해 600ms 지연을 둡니다.
-      if (Platform.isIOS) {
-        Future.delayed(const Duration(milliseconds: 600), () {
-          if (!mounted) return;
-          AdService().loadAndShowSplashAd(
-            adUnitId: AdIds.interstitial,
-            onAdDismissed: () {
-              if (kDebugMode) {
-                developer.log('App resumed: Ad dismissed.', name: 'Main');
-              }
-            },
-            onAdFailed: () {
-              if (kDebugMode) {
-                developer.log(
-                  'App resumed: Ad failed or skipped.',
-                  name: 'Main',
-                );
-              }
-            },
-          );
-        });
-      } else {
-        AdService().loadAndShowSplashAd(
-          adUnitId: AdIds.interstitial,
-          onAdDismissed: () {
-            if (kDebugMode) {
-              developer.log('App resumed: Ad dismissed.', name: 'Main');
-            }
-          },
-          onAdFailed: () {
-            if (kDebugMode) {
-              developer.log('App resumed: Ad failed or skipped.', name: 'Main');
-            }
-          },
-        );
-      }
+      // 사용자의 편의성을 위해, 앱을 백그라운드에 두었다가 복귀할 때는 시간 경과에 상관없이 전면광고를 노출하지 않음
     } else if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {

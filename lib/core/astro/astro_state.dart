@@ -153,9 +153,6 @@ class AstroState with ChangeNotifier {
   Future<void> _runInitializeBody() async {
     await Sweph.init();
     await CalendarVocCache.instance.initWorker();
-    // 스플래시·홈 진입을 우선 — 캘린더 탭 진입 시 추가 프리로드
-    CalendarVocCache.instance.preloadAroundSilent(DateTime.now(), radius: 1);
-    //shared preferences 초기화 (캐싱)
     _prefs = await SharedPreferences.getInstance();
 
     //현재 로케일 설정
@@ -183,6 +180,9 @@ class AstroState with ChangeNotifier {
     await _updateData();
 
     await _updateAnalyticsUserSegment();
+
+    // 메인 스레드 계산(_updateData)이 완전히 끝난 후, 안전하게 백그라운드 프리로드 진행 (동시성 충돌 방지)
+    CalendarVocCache.instance.preloadAroundSilent(DateTime.now(), radius: 1);
   }
 
   //

@@ -11,11 +11,12 @@ import 'package:void_of_course/core/utils/app_analytics.dart';
 import 'package:void_of_course/features/premium/widgets/premium_badge.dart';
 
 // 앱 내 전역적으로 사용되는 외부 링크 및 이메일 상수입니다.
-const String playStoreUrl = 'https://play.google.com/store/apps/details?id=dev.lioluna.voidofcourse';
-const String appStoreUrl = 'https://apps.apple.com/kr/app/void-of-course/id6777887938';
+const String playStoreUrl =
+    'https://play.google.com/store/apps/details?id=dev.lioluna.voidofcourse';
+const String appStoreUrl =
+    'https://apps.apple.com/kr/app/void-of-course/id6777887938';
 const String developerEmail = 'mailto:eyeregulus@gmail.com';
 const String feedbackFormUrl = 'https://forms.gle/Deq7FYd2EdQgv1S88';
-
 
 // 링크 버튼 정보를 담는 클래스예요.
 class NoteAction {
@@ -58,16 +59,16 @@ class InfoScreen extends StatelessWidget {
     final List<DeveloperNote> notes = [
       // ▼▼▼ [최신 글] ▼▼▼
       DeveloperNote(
-        date: '2026-07-11',
-        titleKo: '<1.2.10+79 업데이트>',
-        titleEn: '<1.2.10+79 Update>',
+        date: '2026-07-13',
+        titleKo: '<26-07-13 업데이트>',
+        titleEn: '<26-07-13 Update>',
         contentKo: '''
 안녕하세요, 리오입니다 🦁
 이번 1.2.10+79 업데이트 사항입니다.
 
 1. 보이드 계산 최적화
-2. 전면광고 소리 제거 및 음소거 재생 지원
-3. 다크모드 및 광고 설정 개선
+2. 전면광고 형식 변경 및 음소거 처리
+3. IOS, Android 크로스플랫폼을 위한 기본 구조 완성
 
 앱을 편하게 사용하시고 계시거나 or 불편한 점이 있다면, 언제든 피드백을 보내주세요. 
 
@@ -95,8 +96,7 @@ Lio
         actions: [
           NoteAction(
             label: appLocalizations.btnReviewPlayStore, // 구글 플레이 리뷰
-            url:
-                playStoreUrl,
+            url: playStoreUrl,
           ),
           NoteAction(
             label: appLocalizations.btnReviewAppStore, // 앱스토어 리뷰
@@ -168,8 +168,7 @@ Lio
           actions: [
             NoteAction(
               label: appLocalizations.btnReviewPlayStore,
-              url:
-                  playStoreUrl,
+              url: playStoreUrl,
             ),
             NoteAction(
               label: appLocalizations.btnReviewAppStore,
@@ -224,8 +223,7 @@ If you have any feedback or questions, please contact us.
         actions: [
           NoteAction(
             label: appLocalizations.btnReview, // '리뷰 남기러 가기' / 'Leave a Review'
-            url:
-                playStoreUrl,
+            url: playStoreUrl,
           ),
           NoteAction(
             label:
@@ -268,8 +266,7 @@ If you have any feedback or questions, please contact us.
         actions: [
           NoteAction(
             label: appLocalizations.btnReview, // '리뷰 남기러 가기' / 'Leave a Review'
-            url:
-                playStoreUrl,
+            url: playStoreUrl,
           ),
           NoteAction(
             label:
@@ -311,8 +308,7 @@ If you have any feedback or questions, please contact us.
         actions: [
           NoteAction(
             label: appLocalizations.btnReview, // '리뷰 남기러 가기' / 'Leave a Review'
-            url:
-                playStoreUrl,
+            url: playStoreUrl,
           ),
           NoteAction(
             label:
@@ -354,8 +350,7 @@ If you have any feedback or questions, please contact us.
         actions: [
           NoteAction(
             label: appLocalizations.btnReview, // '리뷰 남기러 가기' / 'Leave a Review'
-            url:
-                playStoreUrl,
+            url: playStoreUrl,
           ),
           NoteAction(
             label:
@@ -430,8 +425,7 @@ Warm reviews are a great strength to the developer.
         actions: [
           NoteAction(
             label: appLocalizations.btnReview, // '리뷰 남기러 가기' / 'Leave a Review'
-            url:
-                playStoreUrl,
+            url: playStoreUrl,
           ),
           NoteAction(
             label:
@@ -617,13 +611,12 @@ Warm reviews are a great strength to the developer.
                                                                   .iOS &&
                                                           targetUrl ==
                                                               playStoreUrl) {
-                                                        targetUrl =
-                                                            appStoreUrl;
+                                                        targetUrl = appStoreUrl;
                                                       }
                                                       await AppAnalytics.logTapDeveloperNoteAction(
-                                                         label: action.label,
-                                                         url: targetUrl,
-                                                       );
+                                                        label: action.label,
+                                                        url: targetUrl,
+                                                      );
                                                       final uri = Uri.parse(
                                                         targetUrl,
                                                       );

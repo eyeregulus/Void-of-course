@@ -21,6 +21,8 @@ class AdService {
   SharedPreferences? _prefs; // 캐시된 SharedPreferences
 
   InterstitialAd? _interstitialAd;
+  AppOpenAd? _appOpenAd;
+  bool _isAppOpenAdLoading = false;
   int _calculateClickCount = 0;
   final int _adFrequency = 30; // 광고 표시 빈도 (10번 클릭마다)
 
@@ -48,6 +50,7 @@ class AdService {
     }
     if (Platform.isAndroid || Platform.isIOS) {
       _loadInterstitialAd();
+      _loadAppOpenAd();
     }
     _isInitialized = true;
   }
@@ -80,7 +83,6 @@ class AdService {
   /// 전면 광고를 로드합니다.
   void _loadInterstitialAd() {
     InterstitialAd.load(
-      // 이전에 설정된 일반 전면 광고 로드 (centralized AdIds)
       adUnitId: AdIds.interstitial,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
@@ -104,17 +106,35 @@ class AdService {
     );
   }
 
+  /// 앱 오프닝 광고를 로드합니다.
+  void _loadAppOpenAd() {
+    if (_isAppOpenAdLoading || _appOpenAd != null) return;
+    _isAppOpenAdLoading = true;
+    AppOpenAd.load(
+      adUnitId: AdIds.appOpen,
+      request: const AdRequest(),
+      adLoadCallback: AppOpenAdLoadCallback(
+        onAdLoaded: (ad) {
+          if (kDebugMode) {
+            developer.log('AppOpen ad loaded.', name: 'AdService');
+          }
+          _appOpenAd = ad;
+          _isAppOpenAdLoading = false;
+        },
+        onAdFailedToLoad: (error) {
+          if (kDebugMode) {
+            developer.log('AppOpen ad failed to load: $error', name: 'AdService');
+          }
+          _appOpenAd = null;
+          _isAppOpenAdLoading = false;
+        },
+      ),
+    );
+  }
+
   /// 광고를 표시할지 결정하고, 필요 시 광고를 보여줍니다.
   /// 광고가 표시되면 true, 아니면 false를 반환합니다.
   Future<bool> showAdIfNeeded(Function onAdDismissed) async {
-    /*
-    if (kDebugMode) {
-      developer.log('showAdIfNeeded skipped (debug build)', name: 'AdService');
-      onAdDismissed();
-      return false;
-    }
-    */
-
     // 프리미엄(라이트 이상) 결제 유저인 경우 광고를 표시하지 않습니다.
     if (PurchaseService.instance.isLite) {
       onAdDismissed();
@@ -164,19 +184,11 @@ class AdService {
     return false; // 광고가 표시되지 않음
   }
 
-  /// 스플래시 화면에 미리 로드된 전면 광고를 표시합니다.
+  /// 스플래시 화면에 미리 로드된 앱 오프닝 광고를 표시합니다.
   Future<void> showSplashAd({
     required Function onAdDismissed,
     required Function onAdFailed,
   }) async {
-    /*
-    if (kDebugMode) {
-      developer.log('showSplashAd skipped (debug build)', name: 'AdService');
-      onAdFailed();
-      return;
-    }
-    */
-
     // 프리미엄(라이트 이상) 결제 유저인 경우 광고를 표시하지 않습니다.
     if (PurchaseService.instance.isLite) {
       onAdFailed();
@@ -184,8 +196,10 @@ class AdService {
     }
 
     if (await _skipInterstitialForFirstLaunch()) {
-      onAdFailed();
-      return;
+      if (!kDebugMode) {
+        onAdFailed();
+        return;
+      }
     }
 
     final lastAdShowTimeMillis = _prefs?.getInt(_lastSplashAdShowTimeKey) ?? 0;
@@ -201,18 +215,19 @@ class AdService {
     if (currentTimeMillis - lastAdShowTimeMillis < thirtyMinutesInMillis) {
       if (kDebugMode) {
         developer.log(
-          '스플래시 광고: 마지막 광고 표시 후 30분이 지나지 않았습니다.',
+          '스플래시 광고: 마지막 광고 표시 후 30분이 지나지 않았습니다. (디버그 모드이므로 무시하고 진행)',
           name: 'AdService',
         );
+      } else {
+        onAdFailed();
+        return;
       }
-      onAdFailed();
-      return;
     }
 
     // 미리 로드된 광고가 있는지 확인합니다.
-    if ((Platform.isAndroid || Platform.isIOS) && _interstitialAd != null) {
+    if ((Platform.isAndroid || Platform.isIOS) && _appOpenAd != null) {
       if (kDebugMode) {
-        developer.log('미리 로드된 스플래시 광고를 표시합니다.', name: 'AdService');
+        developer.log('미리 로드된 스플래시 앱 오프닝 광고를 표시합니다.', name: 'AdService');
       }
       // 광고 표시 시간을 지금으로 기록합니다.
       await _prefs?.setInt(_lastSplashAdShowTimeKey, currentTimeMillis);
@@ -221,38 +236,37 @@ class AdService {
       if (shouldResetClickCount) {
         _calculateClickCount = 0;
         await _saveCalculateClickCount();
-        if (kDebugMode) {
-          developer.log('스플래시 광고 표시로 인해 클릭 카운트를 리셋했습니다.', name: 'AdService');
-        }
       }
 
-      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+      _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
           onAdDismissed(); // 광고가 닫히면 콜백 실행
           ad.dispose();
-          _loadInterstitialAd(); // 다음 광고를 미리 로드합니다.
+          _appOpenAd = null;
+          _loadAppOpenAd(); // 다음 광고를 미리 로드합니다.
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
           if (kDebugMode) {
-            developer.log('스플래시 광고 표시에 실패했습니다: $error', name: 'AdService');
+            developer.log('스플래시 앱 오프닝 광고 표시에 실패했습니다: $error', name: 'AdService');
           }
           onAdFailed(); // 광고 표시에 실패하면 콜백 실행
           ad.dispose();
-          _loadInterstitialAd(); // 다음 광고를 미리 로드합니다.
+          _appOpenAd = null;
+          _loadAppOpenAd(); // 다음 광고를 미리 로드합니다.
         },
       );
-      await _showInterstitialWithTimeout(_interstitialAd!, () => onAdFailed());
+      await _showAppOpenWithTimeout(_appOpenAd!, () => onAdFailed());
     } else {
       // 광고가 아직 로드되지 않은 경우, 바로 onAdFailed를 호출합니다.
       if (kDebugMode) {
-        developer.log('스플래시 광고: 미리 로드된 광고가 없습니다.', name: 'AdService');
+        developer.log('스플래시 광고: 미리 로드된 앱 오프닝 광고가 없습니다.', name: 'AdService');
       }
       onAdFailed();
     }
   }
 
-  Future<void> _showInterstitialWithTimeout(
-    InterstitialAd ad,
+  Future<void> _showAppOpenWithTimeout(
+    AppOpenAd ad,
     void Function() onGiveUp, {
     Duration timeout = const Duration(seconds: 3),
   }) async {
@@ -263,7 +277,7 @@ class AdService {
     }
   }
 
-  /// 주어진 광고 단위 ID로 스플래시 전면광고를 표시합니다.
+  /// 주어진 광고 단위 ID로 스플래시 앱 오프닝 광고를 표시합니다.
   /// 미리 로드된 광고가 있으면 즉시 표시하고, 없으면 새로 로드합니다.
   /// `timeout` 내에 로드되지 않으면 `onAdFailed`가 호출됩니다.
   Future<void> loadAndShowSplashAd({
@@ -272,15 +286,6 @@ class AdService {
     required Function onAdFailed,
     Duration timeout = const Duration(seconds: 3),
   }) async {
-    // 디버그 모드에서는 스플래시 광고를 즉시 건너뜁니다.
-    /*
-    if (kDebugMode) {
-      developer.log('디버그 모드이므로 스플래시 광고를 건너뜁니다.', name: 'AdService');
-      onAdFailed();
-      return;
-    }
-    */
-
     // 프리미엄(라이트 이상) 결제 유저인 경우 광고를 표시하지 않습니다.
     if (PurchaseService.instance.isLite) {
       onAdFailed();
@@ -293,8 +298,10 @@ class AdService {
     }
 
     if (await _skipInterstitialForFirstLaunch()) {
-      onAdFailed();
-      return;
+      if (!kDebugMode) {
+        onAdFailed();
+        return;
+      }
     }
 
     final lastAdShowTimeMillis = _prefs?.getInt(_lastSplashAdShowTimeKey) ?? 0;
@@ -305,16 +312,17 @@ class AdService {
 
     if (currentTimeMillis - lastAdShowTimeMillis < thirtyMinutesInMillis) {
       if (kDebugMode) {
-        print('스플래시 광고 로드: 30분 규칙 때문에 표시하지 않습니다.');
+        print('스플래시 광고 로드: 30분 규칙 때문에 표시하지 않습니다. (디버그 모드이므로 무시하고 진행)');
+      } else {
+        onAdFailed();
+        return;
       }
-      onAdFailed();
-      return;
     }
 
     // 미리 로드된 광고가 있으면 즉시 표시
-    if (_interstitialAd != null) {
+    if (_appOpenAd != null) {
       if (kDebugMode) {
-        print('미리 로드된 스플래시 광고를 즉시 표시합니다.');
+        print('미리 로드된 스플래시 앱 오프닝 광고를 즉시 표시합니다.');
       }
       try {
         await _prefs?.setInt(_lastSplashAdShowTimeKey, currentTimeMillis);
@@ -327,41 +335,38 @@ class AdService {
       if (shouldResetClickCount) {
         _calculateClickCount = 0;
         await _saveCalculateClickCount();
-        if (kDebugMode) {
-          developer.log('클릭 카운트를 리셋합니다.', name: 'AdService');
-        }
       }
 
-      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+      _appOpenAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
           try {
             ad.dispose();
           } on Exception catch (_) {}
-          _interstitialAd = null;
-          _loadInterstitialAd();
+          _appOpenAd = null;
+          _loadAppOpenAd();
           onAdDismissed();
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
           try {
             ad.dispose();
           } on Exception catch (_) {}
-          _interstitialAd = null;
-          _loadInterstitialAd();
+          _appOpenAd = null;
+          _loadAppOpenAd();
           onAdFailed();
         },
       );
 
-      await _showInterstitialWithTimeout(_interstitialAd!, () => onAdFailed());
+      await _showAppOpenWithTimeout(_appOpenAd!, () => onAdFailed());
       return;
     }
 
     // 미리 로드된 광고가 없으면 새로 로드 시도
     if (kDebugMode) {
-      developer.log('미리 로드된 광고가 없어 새로 로드합니다.', name: 'AdService');
+      developer.log('미리 로드된 앱 오프닝 광고가 없어 새로 로드합니다.', name: 'AdService');
     }
     final completer = Completer<void>();
     Timer? timer;
-    InterstitialAd? loadedAd;
+    AppOpenAd? loadedAd;
 
     void cleanupAndFail([String? reason]) {
       timer?.cancel();
@@ -376,7 +381,7 @@ class AdService {
       }
       onAdFailed();
       if (kDebugMode && reason != null) {
-        developer.log('loadAndShowSplashAd failed: $reason', name: 'AdService');
+        developer.log('loadAndShowSplashAd (AppOpen) failed: $reason', name: 'AdService');
       }
     }
 
@@ -384,10 +389,10 @@ class AdService {
       cleanupAndFail('timeout');
     });
 
-    InterstitialAd.load(
+    AppOpenAd.load(
       adUnitId: adUnitId,
       request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
+      adLoadCallback: AppOpenAdLoadCallback(
         onAdLoaded: (ad) async {
           timer?.cancel();
           loadedAd = ad;
@@ -398,9 +403,6 @@ class AdService {
           if (shouldResetClickCount) {
             _calculateClickCount = 0;
             await _saveCalculateClickCount();
-            if (kDebugMode) {
-              developer.log('클릭 카운트를 리셋합니다.', name: 'AdService');
-            }
           }
 
           loadedAd!.fullScreenContentCallback = FullScreenContentCallback(
@@ -408,14 +410,14 @@ class AdService {
               try {
                 ad.dispose();
               } on Exception catch (_) {}
-              _loadInterstitialAd();
+              _loadAppOpenAd();
               onAdDismissed();
             },
             onAdFailedToShowFullScreenContent: (ad, error) {
               try {
                 ad.dispose();
               } on Exception catch (_) {}
-              _loadInterstitialAd();
+              _loadAppOpenAd();
               onAdFailed();
             },
           );
