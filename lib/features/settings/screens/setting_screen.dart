@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart'; // 웹사이트나 이메일 �
 import 'package:void_of_course/features/ads/widgets/reusable_native_ad_widget.dart';
 import 'package:void_of_course/core/utils/app_analytics.dart';
 import 'package:void_of_course/features/premium/widgets/premium_badge.dart';
+import 'package:void_of_course/core/services/version_check_service.dart';
 
 // 설정 화면을 보여주는 위젯이에요.
 class SettingScreen extends StatelessWidget {
@@ -145,6 +146,7 @@ class SettingScreen extends StatelessWidget {
                   child: Column(
                     // 카드들을 위에서 아래로 차례대로 쌓을 거예요.
                     children: [
+                      const UpdateBanner(),
                       // 첫 번째 설정 카드: 보이드 알람 켜기/끄기
                       SettingCard(
                         icon: Icons.notifications_active_outlined,
@@ -398,6 +400,117 @@ class SettingScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class UpdateBanner extends StatelessWidget {
+  const UpdateBanner({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final locale = Localizations.localeOf(context).languageCode;
+    
+    return ValueListenableBuilder<bool>(
+      valueListenable: VersionCheckService.hasUpdate,
+      builder: (context, hasUpdate, child) {
+        if (!hasUpdate) return const SizedBox.shrink();
+        
+        final latestVersion = VersionCheckService.latestVersionStr;
+        final title = locale == 'ko' 
+            ? '새로운 버전($latestVersion) 출시!' 
+            : 'New version ($latestVersion) available!';
+        final subtitle = locale == 'ko'
+            ? '더 안정적인 서비스를 위해 최신 버전으로 업데이트하세요.'
+            : 'Update to the latest version for better stability.';
+        final buttonText = locale == 'ko' ? '업데이트' : 'Update';
+
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16.0),
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: isDark 
+                  ? [const Color(0xFF2C1B4D), const Color(0xFF1A1A2E)]
+                  : [const Color(0xFFF3E8FF), const Color(0xFFFFFDF8)],
+            ),
+            borderRadius: BorderRadius.circular(16.0),
+            border: Border.all(
+              color: const Color(0xFFD4AF37), // 골드 포인트
+              width: 1.5,
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD4AF37).withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.system_update_alt_rounded,
+                  color: Color(0xFFD4AF37),
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: isDark ? Colors.white : const Color(0xFF2C3E50),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isDark ? Colors.white70 : Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: () async {
+                  final url = VersionCheckService.updateUrlStr;
+                  if (url.isNotEmpty) {
+                    final Uri uri = Uri.parse(url);
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                    }
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFD4AF37),
+                  foregroundColor: isDark ? const Color(0xFF0F0F1A) : Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  buttonText,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

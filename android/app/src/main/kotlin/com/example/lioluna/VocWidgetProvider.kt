@@ -31,6 +31,15 @@ class VocWidgetProvider : HomeWidgetProvider() {
         markWidgetInstalled(context)
     }
 
+    private fun getLongSafe(prefs: SharedPreferences, key: String, defValue: Long): Long {
+        val value = prefs.all[key] ?: return defValue
+        return when (value) {
+            is Number -> value.toLong()
+            is String -> value.toLongOrNull() ?: defValue
+            else -> defValue
+        }
+    }
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -42,10 +51,10 @@ class VocWidgetProvider : HomeWidgetProvider() {
         val now = System.currentTimeMillis()
 
         // Read timestamps saved from Dart
-        val currentStart = widgetData.getLong("current_voc_start_ms", 0L)
-        val currentEnd = widgetData.getLong("current_voc_end_ms", 0L)
-        val nextStart = widgetData.getLong("next_voc_start_ms", 0L)
-        val nextEnd = widgetData.getLong("next_voc_end_ms", 0L)
+        val currentStart = getLongSafe(widgetData, "current_voc_start_ms", 0L)
+        val currentEnd = getLongSafe(widgetData, "current_voc_end_ms", 0L)
+        val nextStart = getLongSafe(widgetData, "next_voc_start_ms", 0L)
+        val nextEnd = getLongSafe(widgetData, "next_voc_end_ms", 0L)
         val moonZodiac = widgetData.getString("moon_zodiac", "") ?: ""
 
         var activeStartMs = currentStart

@@ -67,11 +67,11 @@ class AppAnalytics {
 
   static Future<void> logTabTap(int index) {
     const names = [
-      'tap_home_tab',
-      'tap_calendar_tab',
-      'tap_premium_tab',
-      'tap_settings_tab',
-      'tap_info_tab',
+      'click_home_tab',
+      'click_calendar_tab',
+      'click_premium_tab',
+      'click_settings_tab',
+      'click_info_tab',
     ];
     if (index < 0 || index >= names.length) return Future.value();
     return _analytics.logEvent(name: names[index]);
@@ -83,17 +83,22 @@ class AppAnalytics {
 
   /// 오늘로 되돌아가기 버튼 탭
   static Future<void> logTapResetToToday() {
-    return _analytics.logEvent(name: 'tap_reset_to_today');
+    return _analytics.logEvent(name: 'click_reset_today');
   }
 
   /// 새로고침 버튼 탭 (유저 직접)
   static Future<void> logTapRefresh() {
-    return _analytics.logEvent(name: 'tap_refresh');
+    return _analytics.logEvent(name: 'click_refresh');
+  }
+
+  /// 달력 아이콘 버튼 탭 (달력 팝업 열기)
+  static Future<void> logTapCalendarIcon() {
+    return _analytics.logEvent(name: 'click_calendar');
   }
 
   /// 타임존 변경 버튼 탭
   static Future<void> logTapTimezoneButton() {
-    return _analytics.logEvent(name: 'tap_timezone_button');
+    return _analytics.logEvent(name: 'click_timezone_selector');
   }
 
   // ---------------------------------------------------------------------------
@@ -159,7 +164,7 @@ class AppAnalytics {
   /// 캘린더 월 이동 (스와이프)
   static Future<void> logSwipeCalendarMonth(int year, int month) {
     return _analytics.logEvent(
-      name: 'swipe_calendar_month',
+      name: 'calendar_month_changed',
       parameters: {'year': year, 'month': month},
     );
   }
@@ -172,7 +177,7 @@ class AppAnalytics {
     required bool hasVoc,
   }) {
     return _analytics.logEvent(
-      name: 'tap_calendar_day',
+      name: 'calendar_day_selected',
       parameters: {
         'year': year,
         'month': month,
@@ -200,7 +205,7 @@ class AppAnalytics {
     required String url,
   }) {
     return _analytics.logEvent(
-      name: 'tap_developer_note_action',
+      name: 'click_note_action',
       parameters: {
         'label': label,
         'url': url,
@@ -214,21 +219,21 @@ class AppAnalytics {
 
   static Future<void> logExternalLinkTap(String serviceName) {
     return _analytics.logEvent(
-      name: 'tap_external_link',
+      name: 'click_external_link',
       parameters: {'service_name': serviceName},
     );
   }
 
   static Future<void> logExternalLinkConfirm(String serviceName) {
     return _analytics.logEvent(
-      name: 'confirm_external_link',
+      name: 'click_external_link_confirm',
       parameters: {'service_name': serviceName},
     );
   }
 
   static Future<void> logExternalLinkCancel(String serviceName) {
     return _analytics.logEvent(
-      name: 'cancel_external_link',
+      name: 'click_external_link_cancel',
       parameters: {'service_name': serviceName},
     );
   }
@@ -238,37 +243,37 @@ class AppAnalytics {
   // ---------------------------------------------------------------------------
 
   static Future<void> logPremiumTabClick() {
-    return _analytics.logEvent(name: 'tap_premium_tab');
+    return _analytics.logEvent(name: 'click_premium_tab');
   }
 
   static Future<void> logPremiumInfoButtonClick() {
-    return _analytics.logEvent(name: 'tap_premium_info');
+    return _analytics.logEvent(name: 'click_premium_info');
   }
 
   static Future<void> logPremiumTierSelect(String tier) {
     return _analytics.logEvent(
-      name: 'select_tier',
+      name: 'select_premium_tier',
       parameters: {'tier': tier},
     );
   }
 
   static Future<void> logPremiumPurchase(String tier) {
     return _analytics.logEvent(
-      name: 'attempt_purchase',
+      name: 'purchase_premium_attempt',
       parameters: {'tier': tier},
     );
   }
 
   static Future<void> logPremiumRestore() {
-    return _analytics.logEvent(name: 'attempt_restore');
+    return _analytics.logEvent(name: 'restore_premium_attempt');
   }
 
   static Future<void> logPremiumWidgetClick() {
-    return _analytics.logEvent(name: 'tap_widget_feature');
+    return _analytics.logEvent(name: 'click_premium_widget');
   }
 
   static Future<void> logPremiumCalendarSyncClick() {
-    return _analytics.logEvent(name: 'tap_calendar_sync_feature');
+    return _analytics.logEvent(name: 'click_premium_calendar_sync');
   }
 
   static Future<void> logPremiumCalendarSyncDuration(int months) {

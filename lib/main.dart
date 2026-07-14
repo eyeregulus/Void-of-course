@@ -18,7 +18,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:void_of_course/features/home/screens/splash_screen.dart';
 import 'package:void_of_course/core/utils/locale_provider.dart';
 import 'package:void_of_course/l10n/app_localizations.dart';
-import 'package:in_app_update/in_app_update.dart';
 import 'package:void_of_course/core/widgets/exit_confirmation_dialog.dart';
 import 'package:void_of_course/features/ads/services/ad_service.dart';
 import 'package:void_of_course/features/ads/services/ad_ids.dart';
@@ -351,22 +350,8 @@ class _MainAppScreenState extends State<MainAppScreen>
   }
 
   Future<void> _checkForUpdate() async {
-    if (Platform.isIOS) {
-      if (mounted) {
-        await VersionCheckService.checkForUpdates(context);
-      }
-      return;
-    }
-
-    try {
-      final info = await InAppUpdate.checkForUpdate();
-      if (info.updateAvailability == UpdateAvailability.updateAvailable) {
-        await InAppUpdate.performImmediateUpdate();
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        developer.log('Error checking for update: $e', name: 'Main');
-      }
+    if (mounted) {
+      await VersionCheckService.checkForUpdates(context);
     }
   }
 
@@ -538,7 +523,39 @@ class _MainAppScreenState extends State<MainAppScreen>
                     label: AppLocalizations.of(context)!.premium,
                   ),
                   BottomNavigationBarItem(
-                    icon: const Icon(Icons.settings),
+                    icon: ValueListenableBuilder<bool>(
+                      valueListenable: VersionCheckService.hasUpdate,
+                      builder: (context, hasUpdate, child) {
+                        return Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            const Icon(Icons.settings),
+                            if (hasUpdate)
+                              Positioned(
+                                right: -2,
+                                top: -2,
+                                child: Container(
+                                  padding: const EdgeInsets.all(1.5),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isDarkMode
+                                          ? const Color(0xFF1A1A2E)
+                                          : Colors.white,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 8,
+                                    minHeight: 8,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
                     label: AppLocalizations.of(context)!.settings,
                   ),
                   BottomNavigationBarItem(

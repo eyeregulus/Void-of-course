@@ -85,9 +85,13 @@ class _HomeScreenState extends State<HomeScreen> {
     await AdService().showAdIfNeeded(() {});
   }
 
-  Future<void> _resetDateToToday() => _refreshToToday(awaitFeedback: true);
+  Future<void> _resetDateToToday() {
+    AppAnalytics.logTapResetToToday();
+    return _refreshToToday(awaitFeedback: true);
+  }
 
   Future<void> _onPullRefresh() async {
+    AppAnalytics.logTapRefresh();
     final started = DateTime.now();
     await _refreshToToday(awaitFeedback: false);
     final elapsed = DateTime.now().difference(started);
@@ -344,7 +348,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPreviousDay: () => _changeDate(-1),
                               onNextDay: () => _changeDate(1),
                               onResetToToday: () => _resetDateToToday(),
-                              showCalendar: () => showCalendarDialog(context),
+                              showCalendar: () {
+                                AppAnalytics.logTapCalendarIcon();
+                                showCalendarDialog(context);
+                              },
                               selectedDate: astroState.selectedDate,
                               isRetrogradeCardVisible:
                                   astroState.showRetrogradeCard,
