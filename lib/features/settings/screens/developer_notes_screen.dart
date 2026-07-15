@@ -63,7 +63,7 @@ class InfoScreen extends StatelessWidget {
         titleKo: '<26-07-13 업데이트>',
         titleEn: '<26-07-13 Update>',
         contentKo: '''
-안녕하세요, 리오입니다 🦁
+안녕하세요, 리오입니다.
 이번 1.2.10+79 업데이트 사항입니다.
 
 1. 보이드 계산 최적화
@@ -78,7 +78,7 @@ class InfoScreen extends StatelessWidget {
 리오 드림
 ''',
         contentEn: '''
-Hi, this is developer Lio 🦁
+Hi, this is developer Lio
 Here are the updates for version 1.2.10+79.
 
 1. Optimized Void of Course calculations
@@ -115,7 +115,7 @@ Lio
           titleKo: '<IOS 출시 이벤트🎊🎉 >',
           titleEn: '<IOS Launching Event🎊🎉 >',
           contentKo: '''
-안녕하세요, 리오입니다 🦁
+안녕하세요, 리오입니다.
 
 Void of Course iOS 버전이 출시되었습니다! 🎉
 출시를 기념하여 작은 감사 이벤트를 진행합니다.
@@ -139,7 +139,7 @@ Void of Course iOS 버전이 출시되었습니다! 🎉
 🌍 한국 및 글로벌 유저 모두 참여 가능
 ''',
           contentEn: '''
-Hi, this is Lio 🦁
+Hi, this is Lio
 
 Void of Course is now officially available on iOS! 🎉
 To celebrate the launch, I'm running a small thank-you event.
