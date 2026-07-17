@@ -58,7 +58,7 @@ subprojects {
             extensions.getByName("android") as com.android.build.gradle.LibraryExtension
         androidExt.ndkVersion = "27.0.12077973"
         androidExt.packaging {
-            jniLibs.useLegacyPackaging = false
+            jniLibs.useLegacyPackaging = true
         }
 
         val hasNativeCMake = sequenceOf(

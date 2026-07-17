@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:void_of_course/features/premium/services/purchase_service.dart';
 import 'package:void_of_course/core/astro/astro_calculator.dart';
 import 'package:void_of_course/core/utils/timezone_provider.dart';
+import 'package:void_of_course/core/astro/sweph_initializer.dart';
 import 'package:sweph/sweph.dart';
 
 /// 동기화 기간 옵션 (오늘 기준 미래 방향)
@@ -229,7 +230,7 @@ class GoogleCalendarService extends ChangeNotifier {
 
       // 3. VOC 이벤트 계산
       //    범위: 2주 전 ~ (오늘 + syncRange.months개월)
-      await Sweph.init();
+      await SwephInitializer.init();
       final calculator = AstroCalculator();
       final now = DateTime.now().toUtc();
       final rangeStart = now.subtract(const Duration(days: 14)); // 2주 전

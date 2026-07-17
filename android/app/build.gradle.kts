@@ -40,17 +40,16 @@ android {
     defaultConfig {
         applicationId = "dev.lioluna.voidofcourse"
         minSdk = flutter.minSdkVersion
-        targetSdk = 36
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-
-        ndk {
-            debugSymbolLevel = "FULL"
-        }
     }
 
     buildTypes {
         release {
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
             // key.properties 파일이 있을 때만 서명 설정 적용
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
@@ -60,8 +59,8 @@ android {
 
     packaging {
         jniLibs {
-            // Android 15+ 16KB 페이지 크기 지원을 위해 false 유지
-            useLegacyPackaging = false
+            // Android 15+ 16KB 페이지 크기 지원을 유지하면서 에뮬레이터 호환성을 위해 true로 설정
+            useLegacyPackaging = true
         }
         // 네이티브 라이브러리 압축 해제 (16KB 정렬에 필요)
         resources {

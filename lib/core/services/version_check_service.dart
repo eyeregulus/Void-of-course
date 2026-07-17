@@ -61,11 +61,9 @@ class VersionCheckService {
       final bool needsUpdate = _isVersionLessThan(currentVersion, latestVersion) || 
                                _isVersionLessThan(currentVersion, minVersion);
 
-      // --- [임시 테스트 코드] 화면을 확인하기 위해 강제로 업데이트 활성화 ---
-      latestVersionStr = '9.9.9';
+      latestVersionStr = latestVersion;
       updateUrlStr = updateUrl;
-      hasUpdate.value = true; 
-      // ------------------------------------------------------------------
+      hasUpdate.value = needsUpdate;
 
     } catch (e) {
       if (kDebugMode) {

@@ -3,7 +3,7 @@ description: "Void of Course moon tracker — astrology calendar, VOC alarm, and
 
 publish_to: 'none'
 
-version: 1.2.10+79
+version: 1.2.10+81
 
 environment:
   sdk: ^3.7.2
@@ -14,7 +14,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   ffi: ^2.1.0
-  sweph: ^2.10.3  # 호환성 유지
+  sweph: ^3.2.1+2.10.3  # 호환성 및 16KB 정렬 지원 유지
   animated_theme_switcher: ^2.0.10
   provider: ^6.1.2
   google_fonts: ^6.2.1  # 업데이트: 안정 버전

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sweph/sweph.dart';
+import 'package:void_of_course/core/astro/sweph_initializer.dart';
 import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -31,7 +32,7 @@ class VoidCycleScheduler {
   static Future<({DateTime start, DateTime end})?> findUpcomingVoc(
     SharedPreferences prefs,
   ) async {
-    await Sweph.init();
+    await SwephInitializer.init();
     tz_data.initializeTimeZones();
 
     final selectedTimezoneId =
@@ -82,7 +83,7 @@ class VoidCycleScheduler {
     SharedPreferences prefs,
     int count,
   ) async {
-    await Sweph.init();
+    await SwephInitializer.init();
     tz_data.initializeTimeZones();
 
     final selectedTimezoneId =
@@ -300,7 +301,7 @@ class VoidCycleScheduler {
     SharedPreferences prefs,
     DateTime endedVocEnd,
   ) async {
-    await Sweph.init();
+    await SwephInitializer.init();
     tz_data.initializeTimeZones();
 
     var searchDate = endedVocEnd.add(const Duration(minutes: 1));

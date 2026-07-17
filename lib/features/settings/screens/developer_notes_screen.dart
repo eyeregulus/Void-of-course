@@ -59,16 +59,16 @@ class InfoScreen extends StatelessWidget {
     final List<DeveloperNote> notes = [
       // ▼▼▼ [최신 글] ▼▼▼
       DeveloperNote(
-        date: '2026-07-13',
-        titleKo: '<26-07-13 업데이트>',
-        titleEn: '<26-07-13 Update>',
+        date: '2026-07-17',
+        titleKo: '<26-07-17 업데이트>',
+        titleEn: '<26-07-17 Update>',
         contentKo: '''
 안녕하세요, 리오입니다.
-이번 1.2.10+79 업데이트 사항입니다.
+이번 1.2.10+81 업데이트 사항입니다.
 
 1. 보이드 계산 최적화
 2. 전면광고 형식 변경 및 음소거 처리
-3. IOS, Android 크로스플랫폼을 위한 기본 구조 완성
+3. IOS, Android 크로스플랫폼 기본 구조 완성
 
 앱을 편하게 사용하시고 계시거나 or 불편한 점이 있다면, 언제든 피드백을 보내주세요. 
 
@@ -79,7 +79,7 @@ class InfoScreen extends StatelessWidget {
 ''',
         contentEn: '''
 Hi, this is developer Lio
-Here are the updates for version 1.2.10+79.
+Here are the updates for version 1.2.10+81.
 
 1. Optimized Void of Course calculations
 2. Muted playback support for interstitial ads

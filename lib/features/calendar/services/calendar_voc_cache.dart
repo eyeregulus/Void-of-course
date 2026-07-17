@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:sweph/sweph.dart';
+import 'package:void_of_course/core/astro/sweph_initializer.dart';
 
 import 'package:void_of_course/core/astro/astro_calculator.dart';
 
@@ -31,10 +32,13 @@ class CalendarVocCache {
     final token = RootIsolateToken.instance;
     if (token == null) return;
 
+    final epheFilesPath = SwephInitializer.epheFilesPath;
+
     final receivePort = ReceivePort();
     await Isolate.spawn(_astroWorkerEntryPoint, {
       'sendPort': receivePort.sendPort,
       'token': token,
+      'epheFilesPath': epheFilesPath,
     });
 
     _workerSendPort = await receivePort.first as SendPort;
@@ -254,9 +258,10 @@ class CalendarVocCache {
 void _astroWorkerEntryPoint(Map<String, dynamic> initData) async {
   final SendPort mainSendPort = initData['sendPort'];
   final RootIsolateToken token = initData['token'];
+  final String? epheFilesPath = initData['epheFilesPath'];
 
   BackgroundIsolateBinaryMessenger.ensureInitialized(token);
-  await Sweph.init();
+  await SwephInitializer.init(customEpheFilesPath: epheFilesPath);
   final calculator = AstroCalculator();
 
   final commandPort = ReceivePort();

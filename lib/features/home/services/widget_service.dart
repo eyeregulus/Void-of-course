@@ -8,6 +8,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sweph/sweph.dart';
+import 'package:void_of_course/core/astro/sweph_initializer.dart';
 import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -98,7 +99,7 @@ class WidgetService {
   static Future<({DateTime start, DateTime end})?> resolveCurrentVocPeriod(
     SharedPreferences prefs,
   ) async {
-    await Sweph.init();
+    await SwephInitializer.init();
 
     tz_data.initializeTimeZones();
 
@@ -205,7 +206,7 @@ class WidgetService {
   static Future<({DateTime start, DateTime end})?> findNextVocPeriod(
     DateTime afterUtc,
   ) async {
-    await Sweph.init();
+    await SwephInitializer.init();
 
     final utcNow = DateTime.now().toUtc();
 

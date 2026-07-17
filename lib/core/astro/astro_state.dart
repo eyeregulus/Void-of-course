@@ -9,6 +9,7 @@ import 'package:void_of_course/core/astro/astro_calculator.dart';
 import 'package:void_of_course/core/background/notification_service.dart';
 import 'package:void_of_course/core/background/alarm_service.dart';
 import 'package:sweph/sweph.dart';
+import 'package:void_of_course/core/astro/sweph_initializer.dart';
 import 'package:void_of_course/features/calendar/services/calendar_voc_cache.dart';
 import 'package:void_of_course/core/astro/void_cycle_scheduler.dart';
 import 'package:void_of_course/features/home/services/widget_service.dart';
@@ -140,6 +141,7 @@ class AstroState with ChangeNotifier {
       _isInitialized = true;
       _lastError = null;
     } catch (e, stack) {
+      print('AstroState Initialization error: $e\n$stack');
       if (kDebugMode) {
         developer.log('Initialization error: $e\n$stack', name: 'AstroState');
       }
@@ -151,7 +153,7 @@ class AstroState with ChangeNotifier {
   }
 
   Future<void> _runInitializeBody() async {
-    await Sweph.init();
+    await SwephInitializer.init();
     await CalendarVocCache.instance.initWorker();
     _prefs = await SharedPreferences.getInstance();
 
