@@ -365,7 +365,7 @@ class SettingScreen extends StatelessWidget {
                           // 카드 아무 곳이나 누르면 확인 대화상자를 띄웁니다.
                           _showUrlConfirmationDialog(
                             context,
-                            url: 'https://www.youtube.com/@ERE-Co',
+                            url: 'https://www.youtube.com/@Eye_of_regulus_Astrology',
                             serviceNameKo: '유튜브',
                             serviceNameEn: 'YouTube',
                           );

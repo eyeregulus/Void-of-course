@@ -47,6 +47,15 @@ android {
 
     buildTypes {
         release {
+            // 코드 축소 및 최적화 활성화 (R8)
+            // 리소스 축소 활성화
+            isShrinkResources = true
+            
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
             ndk {
                 debugSymbolLevel = "FULL"
             }

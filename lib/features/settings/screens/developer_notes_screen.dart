@@ -64,7 +64,7 @@ class InfoScreen extends StatelessWidget {
         titleEn: '<26-07-17 Update>',
         contentKo: '''
 안녕하세요, 리오입니다.
-이번 1.2.10+81 업데이트 사항입니다.
+이번 1.2.10+82 업데이트 사항입니다.
 
 1. 보이드 계산 최적화
 2. 전면광고 형식 변경 및 음소거 처리
@@ -79,7 +79,7 @@ class InfoScreen extends StatelessWidget {
 ''',
         contentEn: '''
 Hi, this is developer Lio
-Here are the updates for version 1.2.10+81.
+Here are the updates for version 1.2.10+82.
 
 1. Optimized Void of Course calculations
 2. Muted playback support for interstitial ads
