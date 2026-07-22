@@ -23,7 +23,16 @@
         android:label="Void of course"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:extractNativeLibs="true">
+        android:extractNativeLibs="true"
+        android:resizeableActivity="true">
+
+        <!-- 대형 화면 및 폴더블 기기에서 화면 비율 제한을 방지하고 멀티 윈도우/리사이징을 안정적으로 지원 -->
+        <property
+            android:name="android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_OVERRIDE"
+            android:value="false" />
+        <property
+            android:name="android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_FULLSCREEN_OVERRIDE"
+            android:value="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

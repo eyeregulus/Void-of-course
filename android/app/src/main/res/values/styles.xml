@@ -6,8 +6,8 @@
              the Flutter engine draws its first frame -->
         <item name="android:windowBackground">@drawable/launch_background</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <!-- Android 15+: SHORT_EDGES 대신 always 사용 (edge-to-edge) -->
-        <item name="android:windowLayoutInDisplayCutoutMode">always</item>
+        <!-- Android 15+: SHORT_EDGES를 자동으로 always로 인식 (하위 호환성을 위해 shortEdges 유지) -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
     <!-- Theme applied to the Android Window as soon as the process has started.
          This theme determines the color of the Android Window while your
@@ -18,6 +18,6 @@
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">@color/splash_color</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">always</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
 </resources>

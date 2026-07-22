@@ -40,7 +40,7 @@ android {
     defaultConfig {
         applicationId = "dev.lioluna.voidofcourse"
         minSdk = flutter.minSdkVersion
-        targetSdk = 35
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -48,6 +48,7 @@ android {
     buildTypes {
         release {
             // 코드 축소 및 최적화 활성화 (R8)
+            isMinifyEnabled = true
             // 리소스 축소 활성화
             isShrinkResources = true
             

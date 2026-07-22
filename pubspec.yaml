@@ -3,7 +3,7 @@ description: "Void of Course moon tracker — astrology calendar, VOC alarm, and
 
 publish_to: 'none'
 
-version: 1.2.10+82
+version: 1.2.11+83
 
 environment:
   sdk: ^3.7.2
